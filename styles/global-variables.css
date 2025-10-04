@@ -1,0 +1,43 @@
+/* styles/global-variables.css */ 
+
+ :root {
+    /* --- Color Palette --- */
+    --color-primary: #FF6200;
+    --color-secondary: #00A3A0;     
+    --color-text-dark: #333333;     
+    --color-background-light: #F9F9F9;
+    --color-error: #CC0000;         
+    --color-border: #CCCCCC;
+
+    /* --- Typography --- */
+    --font-family-base: 'Arial', sans-serif; /* Font*/
+    --font-size-base: 1rem;         /* 16px */
+    --font-size-large: 1.5rem;      /* For headers */
+    --font-size-small: 0.875rem;    /* For small text */
+
+    /* --- Spacing System (8px grid) --- */
+    --spacing-xs: 4px;              /* Extra Small */
+    --spacing-s: 8px;               /* Small */
+    --spacing-m: 16px;              /* Medium (Standard padding/margins) */
+    --spacing-l: 24px;              /* Large */
+    --spacing-xl: 32px;             /* Extra Large */
+
+    /* --- Other Tokens --- */
+    --border-radius-base: 4px;
+    --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --transition-speed-fast: 0.2s;
+}
+
+/* Base style for the body, affecting the Light DOM */
+body {
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+}
+
+/* Standard box-sizing rule for predictability */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
