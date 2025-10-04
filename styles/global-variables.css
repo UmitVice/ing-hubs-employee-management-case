@@ -1,26 +1,29 @@
-/* styles/global-variables.css */ 
+/**
+ * styles/global-variables.css
+ */
 
  :root {
-    /* --- Color Palette --- */
-    --color-primary: #FF6200;
-    --color-secondary: #00A3A0;     
-    --color-text-dark: #333333;     
-    --color-background-light: #F9F9F9;
-    --color-error: #CC0000;         
-    --color-border: #CCCCCC;
+    /* --- Color Palette (ING Corporate Guide) --- */
+    --color-primary: #FF6200;       /* Primary Orange */
+    --color-secondary: #00A3A0;     /* Secondary Accent Color */
+    --color-text-dark: #333333;     /* Main Text Color */
+    --color-background-light: #F9F9F9; /* Main Screen Background (Light Grey) */
+    --color-error: #CC0000;         /* Error Message Red */
+    --color-border: #CCCCCC;        /* Standard Border Grey */
+    --color-success: #008000;       /* Optional: For success messages */
 
     /* --- Typography --- */
-    --font-family-base: 'Arial', sans-serif; /* Font*/
+    --font-family-base: 'Arial', sans-serif;
     --font-size-base: 1rem;         /* 16px */
     --font-size-large: 1.5rem;      /* For headers */
     --font-size-small: 0.875rem;    /* For small text */
 
-    /* --- Spacing System (8px grid) --- */
-    --spacing-xs: 4px;              /* Extra Small */
-    --spacing-s: 8px;               /* Small */
-    --spacing-m: 16px;              /* Medium (Standard padding/margins) */
-    --spacing-l: 24px;              /* Large */
-    --spacing-xl: 32px;             /* Extra Large */
+    /* --- Spacing System (8px grid, REM units enforced) --- */
+    --spacing-xs: 0.25rem;          /* 4px */
+    --spacing-s: 0.5rem;            /* 8px */
+    --spacing-m: 1rem;              /* 16px (Standard spacing) */
+    --spacing-l: 1.5rem;            /* 24px */
+    --spacing-xl: 2rem;             /* 32px */
 
     /* --- Other Tokens --- */
     --border-radius-base: 4px;

@@ -5,29 +5,23 @@ export class AppRoot extends LitElement {
     return css`
       :host {
         display: grid;
-        min-height: 100vh;
-        margin: 0;
+        min-height: var(--min-height-screen);
+        margin: var(--spacing-0);
         box-sizing: border-box;
         place-items: center;
+        background-color: var(--color-background-light);
       }
 
       .title {
-        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-        font-size: clamp(24px, 6vw, 48px);
+        font-family: var(--font-family-base);
+        font-size: clamp(var(--font-size-large), 6vw, var(--font-size-xxl));
         font-weight: 600;
-        letter-spacing: 0.5px;
+        letter-spacing: var(--letter-spacing-tight);
         text-align: center;
-        color: #111;
+        color: var(--color-primary);
+        padding: var(--spacing-l);
       }
 
-      @media (prefers-color-scheme: dark) {
-        :host {
-          background: #121212;
-        }
-        .title {
-          color: #f5f5f5;
-        }
-      }
     `;
   }
 
