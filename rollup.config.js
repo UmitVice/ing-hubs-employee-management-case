@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2018 Google LLC
+ * Copyright 2025
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
@@ -10,9 +10,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 
 export default {
-  input: 'my-element.js',
+  input: 'app-root.js',
   output: {
-    file: 'my-element.bundled.js',
+    file: 'dist/app.bundled.js',
     format: 'esm',
   },
   onwarn(warning) {
@@ -23,10 +23,6 @@ export default {
   plugins: [
     replace({preventAssignment: false, 'Reflect.decorate': 'undefined'}),
     resolve(),
-    /**
-     * This minification setup serves the static site generation.
-     * For bundling and minification, check the README.md file.
-     */
     terser({
       ecma: 2021,
       module: true,
@@ -40,3 +36,5 @@ export default {
     summary(),
   ],
 };
+
+
