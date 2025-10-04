@@ -1,8 +1,3 @@
-/**
- * @license
- * Copyright 2025
- */
-
 import '../app-root.js';
 import {fixture, assert} from '@open-wc/testing';
 import {html} from 'lit/static-html.js';
@@ -52,7 +47,6 @@ suite('app-root', () => {
     await el.updateComplete;
     const title = el.shadowRoot.querySelector('.title');
     const titleCs = getComputedStyle(title);
-    // --color-primary: #FF6200 -> rgb(255, 98, 0)
     assert.equal(titleCs.color, 'rgb(255, 98, 0)');
   });
 });
