@@ -1,16 +1,12 @@
-/**
- * styles/global-variables.css
- */
+ /* styles/global-variables.css*/
 
  :root {
-    /* --- Color Palette (ING Corporate Guide) --- */
-    --color-primary: #FF6200;       /* Primary Orange */
-    --color-secondary: #00A3A0;     /* Secondary Accent Color */
+    --color-primary: #FF6200;       /* Primary Color */
     --color-text-dark: #333333;     /* Main Text Color */
-    --color-background-light: #F9F9F9; /* Main Screen Background (Light Grey) */
-    --color-error: #CC0000;         /* Error Message Red */
-    --color-border: #CCCCCC;        /* Standard Border Grey */
-    --color-success: #008000;       /* Optional: For success messages */
+    --color-background-light: #F9F9F9;
+    --color-error: #CC0000;
+    --color-border: #CCCCCC;
+    --color-success: #008000;
 
     /* --- Typography --- */
     --font-family-base: 'Arial', sans-serif;
@@ -25,13 +21,19 @@
     --spacing-l: 1.5rem;            /* 24px */
     --spacing-xl: 2rem;             /* 32px */
 
-    /* --- Other Tokens --- */
+    /* --- Structural Tokens --- */
     --border-radius-base: 4px;
     --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.1);
     --transition-speed-fast: 0.2s;
+    --border-width-thin: 1px;
+    --opacity-disabled: 0.5;
+    --container-max-width: 1200px;
+    --input-width-md: 18rem;
+    --color-surface: #ffffff;
+    --min-height-screen: 100vh;
+    --spacing-none: 0;
 }
 
-/* Base style for the body, affecting the Light DOM */
 body {
     margin: 0;
     font-family: var(--font-family-base);
