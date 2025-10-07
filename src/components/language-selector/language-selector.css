@@ -1,0 +1,25 @@
+:host {
+    display: inline-block;
+}
+button {
+    background: none;
+    border: var(--border-width-thin) solid transparent;
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    opacity: 0.6;
+    transition: opacity var(--transition-speed-fast), border-color var(--transition-speed-fast);
+    border-radius: var(--border-radius-base);
+}
+button:hover {
+    opacity: 0.8;
+}
+button.active {
+    opacity: 1;
+}
+.flag-icon {
+    width: 2.0rem;
+    height: 1.5rem;
+    display: block;
+}
+
+

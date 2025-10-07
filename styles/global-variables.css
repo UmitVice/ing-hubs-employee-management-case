@@ -28,6 +28,7 @@
     --border-width-thin: 1px;
     --opacity-disabled: 0.5;
     --container-max-width: 1200px;
+    --table-empty-state-height: 32rem;
     --input-width-md: 18rem;
     --color-surface: #ffffff;
     --min-height-screen: 100vh;

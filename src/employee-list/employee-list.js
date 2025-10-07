@@ -1,9 +1,10 @@
-import { LitElement, html, css } from 'lit';
-import { LocalizeMixin, defaultTranslations } from './mixins/localize-mixin.js';
-import { employeeService } from './employee-service.js';
+import { LitElement, html } from 'lit';
+import { t as translate } from '../i18n/i18n.js';
+import { employeeService } from '../employee-service.js';
 import { Router } from '@vaadin/router';
+import { adoptStylesheets } from '../utils/style-loader.js';
 
-export class EmployeeList extends LocalizeMixin(LitElement) {
+export class EmployeeList extends LitElement {
     static properties = {
         employees: { type: Array },
         page: { type: Number },
@@ -12,7 +13,10 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         viewFormat: { type: String }
     };
 
-    static translations = defaultTranslations;
+    static styles = [];
+
+    // Lightweight bridge to the global translator
+    t(key, params = []) { return translate(key, params); }
 
     constructor() {
         super();
@@ -23,11 +27,13 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         this.viewFormat = 'table';
 
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
+        this._onLanguageChanged = () => this.requestUpdate();
         employeeService.addEventListener('employees-changed', this._employeeDataChanged);
     }
     
     disconnectedCallback() {
         employeeService.removeEventListener('employees-changed', this._employeeDataChanged);
+        document.removeEventListener('language-changed', this._onLanguageChanged);
         super.disconnectedCallback();
     }
 
@@ -36,10 +42,12 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         this.page = 1; 
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
         // Load initial data on connect
         this.employees = employeeService.employees; 
+        document.addEventListener('language-changed', this._onLanguageChanged);
+        await adoptStylesheets(this.shadowRoot, [new URL('./employee-list.css', import.meta.url)]);
     }
 
     _handleEdit(id) {
@@ -62,85 +70,6 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         if (newPage >= 1 && newPage <= maxPage) {
             this.page = newPage;
         }
-    }
-
-    static get styles() {
-        return css`
-            .list-container {
-                max-width: var(--container-max-width);
-                margin: var(--spacing-l) auto;
-                padding: var(--spacing-xl);
-                background-color: var(--color-surface);
-                border-radius: var(--border-radius-base);
-                box-shadow: var(--shadow-subtle);
-            }
-            .controls {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: var(--spacing-m);
-            }
-            .btn-add {
-                background-color: var(--color-primary);
-                color: var(--color-surface);
-                border: none;
-                padding: var(--spacing-s) var(--spacing-m);
-                border-radius: var(--border-radius-base);
-                cursor: pointer;
-            }
-            .search-input {
-                padding: var(--spacing-s);
-                border: var(--border-width-thin) solid var(--color-border);
-                border-radius: var(--border-radius-base);
-                width: var(--input-width-md);
-            }
-            .data-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: var(--spacing-m);
-            }
-            .data-table th, .data-table td {
-                padding: var(--spacing-s) var(--spacing-m);
-                border-bottom: var(--border-width-thin) solid var(--color-border);
-                text-align: left;
-                font-size: var(--font-size-base);
-            }
-            .data-table th {
-                background-color: var(--color-background-light);
-                color: var(--color-text-dark);
-                font-weight: bold;
-                text-transform: uppercase;
-            }
-            .actions-cell button {
-                padding: var(--spacing-xs) var(--spacing-s);
-                margin-left: var(--spacing-s);
-                cursor: pointer;
-                border-radius: var(--border-radius-base);
-                border: var(--border-width-thin) solid var(--color-border);
-                background-color: transparent;
-                transition: background-color var(--transition-speed-fast);
-            }
-            .actions-cell button:hover {
-                 background-color: var(--color-border);
-            }
-            .pagination-controls {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-top: var(--spacing-l);
-                gap: var(--spacing-m);
-            }
-            .pagination-controls button {
-                padding: var(--spacing-s);
-                border: var(--border-width-thin) solid var(--color-border);
-                background-color: var(--color-surface);
-                cursor: pointer;
-            }
-            .pagination-controls button:disabled {
-                opacity: var(--opacity-disabled);
-                cursor: not-allowed;
-            }
-        `;
     }
 
     _getCurrentPageEmployees() {
@@ -216,7 +145,9 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
                         `)}
                         ${currentEmployees.length === 0 ? html`
                             <tr>
-                                <td colspan="7" style="text-align:center;">${this.t('noRecordsFound')}</td>
+                                <td colspan="7">
+                                    <div class="empty-state">${this.t('noRecordsFound')}</div>
+                                </td>
                             </tr>
                         ` : ''}
                     </tbody>
@@ -243,3 +174,5 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
 }
 
 customElements.define('employee-list', EmployeeList);
+
+

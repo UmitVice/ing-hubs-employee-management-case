@@ -1,7 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { Router } from '@vaadin/router';
-import './src/employee-list.js';
-import './src/employee-form.js';
+import './src/employee-list/employee-list.js';
+import './src/employee-form/employee-form.js';
+import './src/components/language-selector/language-selector.js';
+import { loadMessages } from './src/i18n/i18n.js';
 
 export class AppRoot extends LitElement {
     static get styles() {
@@ -10,6 +12,12 @@ export class AppRoot extends LitElement {
                 display: block;
                 min-height: var(--min-height-screen);
                 background-color: var(--color-background-light);
+            }
+            header {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                padding: var(--spacing-none) var(--spacing-xl);
             }
             main {
                 max-width: var(--container-max-width);
@@ -22,7 +30,8 @@ export class AppRoot extends LitElement {
     
     /* Initializes the Vaadin Router after the component is first rendered. */
      
-    firstUpdated() {
+    async firstUpdated() {
+        await loadMessages();
         const outlet = this.shadowRoot.querySelector('main');
         
         const router = new Router(outlet);
@@ -56,6 +65,9 @@ export class AppRoot extends LitElement {
 
     render() {
         return html`
+            <header>
+                <language-selector></language-selector>
+            </header>
             <main></main>
         `;
     }
