@@ -13,25 +13,23 @@ export function getLocale() {
     return 'en'; // Default locale
 }
 
-/**
- * Dynamically loads the required translation file based on the detected locale.
- * This function should be called once when the application starts.
- */
+
 export async function loadMessages() {
     const locale = getLocale();
     try {
-        // Use dynamic import for code splitting and only load the necessary file.
-        const module = await import(`./${locale}.json`);
-        loadedMessages[locale] = module.default || module;
+        const response = await fetch(`/src/i18n/${locale}.json`, { headers: { 'Accept': 'application/json' } });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        loadedMessages[locale] = await response.json();
     } catch (error) {
         console.error(`Failed to load messages for locale: ${locale}`, error);
-        
-        // If the specific locale failed, try to load the default 'en' messages.
-        if (locale !== 'en' && !loadedMessages['en']) {
-             const defaultModule = await import(`./en.json`);
-             loadedMessages['en'] = defaultModule.default || defaultModule;
+        if (!loadedMessages['en']) {
+            try {
+                const respEn = await fetch(`/src/i18n/en.json`, { headers: { 'Accept': 'application/json' } });
+                if (respEn.ok) loadedMessages['en'] = await respEn.json();
+            } catch (_)
         }
     }
+    document.dispatchEvent(new CustomEvent('language-changed', { detail: { locale } }));
 }
 
 /**
@@ -39,7 +37,7 @@ export async function loadMessages() {
  * @param {string} key - The translation key (e.g., 'save').
  * @param {string[]} [params=[]] - Parameters for placeholder replacement (e.g., {0}, {1}).
  * @returns {string} The translated and formatted text.
- */s
+ */
 export function t(key, params = []) {
     const locale = getLocale();
     
