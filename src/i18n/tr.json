@@ -26,6 +26,8 @@
     "validationEmailUnique": "Bu e-posta zaten kullanılıyor",
     "validationPhone": "Lütfen 10-15 haneli sadece rakam giriniz",
     "validationLettersOnly": "Sadece harf giriniz",
+    "validationMaxLength": "En fazla {0} karakter",
+    "validationMaxDigits": "En fazla {0} hane",
     "departmentPlaceholder": "Departman seçiniz",
     "positionPlaceholder": "Pozisyon seçiniz",
     "actions": "İşlemler",

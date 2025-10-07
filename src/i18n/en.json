@@ -26,6 +26,8 @@
     "validationEmailUnique": "This email is already used",
     "validationPhone": "Please enter 10-15 digits",
     "validationLettersOnly": "Only letters are allowed",
+    "validationMaxLength": "Maximum {0} characters",
+    "validationMaxDigits": "Maximum {0} digits",
     "departmentPlaceholder": "Select department",
     "positionPlaceholder": "Select position",
     "actions": "Actions",

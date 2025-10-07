@@ -20,6 +20,9 @@ export class EmployeeForm extends LitElement {
         this.mode = 'add';
         this.employee = this._createEmptyEmployee();
         this.errors = {};
+        this.NAME_MAX = 50;
+        this.EMAIL_MAX = 254;
+        this.PHONE_MAX = 15;
     }
 
     async connectedCallback() {
@@ -66,7 +69,7 @@ export class EmployeeForm extends LitElement {
     }
 
     _sanitizeLetters(text) {
-        return (text || '').replace(/[^\p{L}]/gu, '');
+        return (text || '').replace(/[^\p{L}\s]/gu, '');
     }
 
     _sanitizeDigits(text) {
@@ -74,26 +77,48 @@ export class EmployeeForm extends LitElement {
     }
 
     _handleNameInput(field, e) {
-        const sanitized = this._sanitizeLetters(e.target.value);
+        let sanitized = this._sanitizeLetters(e.target.value);
+        if (sanitized.length > this.NAME_MAX) {
+            sanitized = sanitized.slice(0, this.NAME_MAX);
+        }
         this._updateField(field, sanitized);
+        if (sanitized.length >= this.NAME_MAX) {
+            this.errors = { ...this.errors, [field]: this.t('validationMaxLength', [this.NAME_MAX]) };
+        } else if (this.errors[field] && /\d+/.test(this.errors[field])) {
+            const { [field]: _removed, ...rest } = this.errors; this.errors = rest;
+        }
     }
 
     _handleNameKeydown(e) {
+        const control = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End','Enter'].includes(e.key);
+        if (control) return;
+        if (e.key === ' ') {
+            // allow space but enforce max length
+            const value = e.target.value || '';
+            if (value.length >= this.NAME_MAX) { e.preventDefault(); return; }
+            return;
+        }
         if (e.key && e.key.length === 1 && !/\p{L}/u.test(e.key)) {
             e.preventDefault();
+            return;
         }
+        const value = e.target.value || '';
+        if (value.length >= this.NAME_MAX) { e.preventDefault(); }
     }
 
     _handleNamePaste(field, e) {
         e.preventDefault();
         const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
-        const sanitized = this._sanitizeLetters(text);
-        const value = e.target.value || '';
-        const start = e.target.selectionStart ?? value.length;
-        const end = e.target.selectionEnd ?? value.length;
-        const next = value.slice(0, start) + sanitized + value.slice(end);
+        let sanitized = this._sanitizeLetters(text);
+        const currentValue = e.target.value || '';
+        const start = e.target.selectionStart ?? currentValue.length;
+        const end = e.target.selectionEnd ?? currentValue.length;
+        const next = (currentValue.slice(0, start) + sanitized + currentValue.slice(end)).slice(0, this.NAME_MAX);
         e.target.value = next;
         this._updateField(field, next);
+        if (next.length >= this.NAME_MAX) {
+            this.errors = { ...this.errors, [field]: this.t('validationMaxLength', [this.NAME_MAX]) };
+        }
     }
 
     _handlePhoneInput(e) {
@@ -106,6 +131,12 @@ export class EmployeeForm extends LitElement {
         if (allowed.includes(e.key)) return;
         if (e.key && e.key.length === 1 && !/[0-9]/.test(e.key)) {
             e.preventDefault();
+            return;
+        }
+        const digitsLen = (this.employee.phone || '').length;
+        if (digitsLen >= this.PHONE_MAX) {
+            e.preventDefault();
+            this.errors = { ...this.errors, phone: this.t('validationMaxDigits', [this.PHONE_MAX]) };
         }
     }
 
@@ -117,10 +148,12 @@ export class EmployeeForm extends LitElement {
         const value = e.target.value || '';
         const start = e.target.selectionStart ?? value.length;
         const end = e.target.selectionEnd ?? value.length;
-        const prefix = (current.slice(0, start)).replace(/\D/g,'');
-        const suffix = (current.slice(end)).replace(/\D/g,'');
-        const nextDigits = (current.slice(0, start).replace(/\D/g,'') + digits + current.slice(end).replace(/\D/g,''));
+        const nextDigitsRaw = (current.slice(0, start) + digits + current.slice(end));
+        const nextDigits = nextDigitsRaw.replace(/\D/g,'').slice(0, this.PHONE_MAX);
         this._updateField('phone', nextDigits);
+        if (nextDigits.length >= this.PHONE_MAX) {
+            this.errors = { ...this.errors, phone: this.t('validationMaxDigits', [this.PHONE_MAX]) };
+        }
     }
 
     _formatPhoneDisplay(digits) {
@@ -192,13 +225,13 @@ export class EmployeeForm extends LitElement {
                 <form @submit=${this._handleSubmit}>
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
-                        <input id="firstName" .value=${this.employee.firstName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('firstName', e)} @input=${(e) => this._handleNameInput('firstName', e)}>
+                        <input id="firstName" maxlength="50" .value=${this.employee.firstName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('firstName', e)} @input=${(e) => this._handleNameInput('firstName', e)}>
                         ${this.errors.firstName ? html`<span class="error-text">${this.errors.firstName}</span>` : ''}
                     </div>
 
                     <div class="field">
                         <label for="lastName">${this.t('lastName')}</label>
-                        <input id="lastName" .value=${this.employee.lastName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('lastName', e)} @input=${(e) => this._handleNameInput('lastName', e)}>
+                        <input id="lastName" maxlength="50" .value=${this.employee.lastName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('lastName', e)} @input=${(e) => this._handleNameInput('lastName', e)}>
                         ${this.errors.lastName ? html`<span class="error-text">${this.errors.lastName}</span>` : ''}
                     </div>
 
@@ -222,7 +255,16 @@ export class EmployeeForm extends LitElement {
 
                     <div class="field">
                         <label for="email">${this.t('email')}</label>
-                        <input id="email" type="email" .value=${this.employee.email} @input=${(e) => this._updateField('email', e.target.value)}>
+                        <input id="email" type="email" maxlength="254" .value=${this.employee.email} @input=${(e) => {
+                            let val = e.target.value || '';
+                            if (val.length > this.EMAIL_MAX) val = val.slice(0, this.EMAIL_MAX);
+                            this._updateField('email', val);
+                            if (val.length >= this.EMAIL_MAX) {
+                                this.errors = { ...this.errors, email: this.t('validationMaxLength', [this.EMAIL_MAX]) };
+                            } else if (this.errors.email && /\d+/.test(this.errors.email)) {
+                                const { email, ...rest } = this.errors; this.errors = rest;
+                            }
+                        }}>
                         ${this.errors.email ? html`<span class="error-text">${this.errors.email}</span>` : ''}
                     </div>
 
