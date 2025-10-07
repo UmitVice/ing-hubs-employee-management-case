@@ -65,14 +65,62 @@ export class EmployeeForm extends LitElement {
         }
     }
 
+    _sanitizeLetters(text) {
+        return (text || '').replace(/[^\p{L}]/gu, '');
+    }
+
+    _sanitizeDigits(text) {
+        return (text || '').replace(/\D/g, '');
+    }
+
     _handleNameInput(field, e) {
-        const sanitized = (e.target.value || '').replace(/[^\p{L}\s'-]/gu, '');
+        const sanitized = this._sanitizeLetters(e.target.value);
         this._updateField(field, sanitized);
     }
 
+    _handleNameKeydown(e) {
+        if (e.key && e.key.length === 1 && !/\p{L}/u.test(e.key)) {
+            e.preventDefault();
+        }
+    }
+
+    _handleNamePaste(field, e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        const sanitized = this._sanitizeLetters(text);
+        const value = e.target.value || '';
+        const start = e.target.selectionStart ?? value.length;
+        const end = e.target.selectionEnd ?? value.length;
+        const next = value.slice(0, start) + sanitized + value.slice(end);
+        e.target.value = next;
+        this._updateField(field, next);
+    }
+
     _handlePhoneInput(e) {
-        const digitsOnly = (e.target.value || '').replace(/\D/g, '');
+        const digitsOnly = this._sanitizeDigits(e.target.value);
         this._updateField('phone', digitsOnly);
+    }
+
+    _handlePhoneKeydown(e) {
+        const allowed = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End','Enter'];
+        if (allowed.includes(e.key)) return;
+        if (e.key && e.key.length === 1 && !/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    }
+
+    _handlePhonePaste(e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        const digits = this._sanitizeDigits(text);
+        const current = this.employee.phone || '';
+        const value = e.target.value || '';
+        const start = e.target.selectionStart ?? value.length;
+        const end = e.target.selectionEnd ?? value.length;
+        const prefix = (current.slice(0, start)).replace(/\D/g,'');
+        const suffix = (current.slice(end)).replace(/\D/g,'');
+        const nextDigits = (current.slice(0, start).replace(/\D/g,'') + digits + current.slice(end).replace(/\D/g,''));
+        this._updateField('phone', nextDigits);
     }
 
     _formatPhoneDisplay(digits) {
@@ -144,13 +192,13 @@ export class EmployeeForm extends LitElement {
                 <form @submit=${this._handleSubmit}>
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
-                        <input id="firstName" .value=${this.employee.firstName} @input=${(e) => this._handleNameInput('firstName', e)}>
+                        <input id="firstName" .value=${this.employee.firstName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('firstName', e)} @input=${(e) => this._handleNameInput('firstName', e)}>
                         ${this.errors.firstName ? html`<span class="error-text">${this.errors.firstName}</span>` : ''}
                     </div>
 
                     <div class="field">
                         <label for="lastName">${this.t('lastName')}</label>
-                        <input id="lastName" .value=${this.employee.lastName} @input=${(e) => this._handleNameInput('lastName', e)}>
+                        <input id="lastName" .value=${this.employee.lastName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('lastName', e)} @input=${(e) => this._handleNameInput('lastName', e)}>
                         ${this.errors.lastName ? html`<span class="error-text">${this.errors.lastName}</span>` : ''}
                     </div>
 
@@ -168,7 +216,7 @@ export class EmployeeForm extends LitElement {
 
                     <div class="field">
                         <label for="phone">${this.t('phoneNumber')}</label>
-                        <input id="phone" inputmode="numeric" .value=${this._formatPhoneDisplay(this.employee.phone)} @input=${this._handlePhoneInput}>
+                        <input id="phone" inputmode="numeric" .value=${this._formatPhoneDisplay(this.employee.phone)} @keydown=${this._handlePhoneKeydown} @paste=${this._handlePhonePaste} @input=${this._handlePhoneInput}>
                         ${this.errors.phone ? html`<span class="error-text">${this.errors.phone}</span>` : ''}
                     </div>
 
