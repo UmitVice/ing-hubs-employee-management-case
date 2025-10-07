@@ -1,7 +1,8 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
+import { adoptStylesheets } from '@/utils/style-loader.js';
 
 export class EmployeeForm extends LitElement {
     static properties = {
@@ -10,63 +11,9 @@ export class EmployeeForm extends LitElement {
         errors: { type: Object }
     };
 
-    static styles = css`
-        .page-title {
-            max-width: var(--container-max-width);
-            margin: var(--spacing-l) auto var(--spacing-s) auto;
-            padding: 0 var(--spacing-xl);
-            color: var(--color-primary);
-            font-size: var(--font-size-large);
-            font-weight: 600;
-        }
-        .form-container {
-            max-width: var(--container-max-width);
-            margin: var(--spacing-none) auto;
-            padding: var(--spacing-xl);
-            background-color: var(--color-surface);
-            border-radius: var(--border-radius-base);
-            box-shadow: var(--shadow-subtle);
-            min-height: var(--form-container-min-height);
-        }
-        form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-m);
-        }
-        .field { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-        label { font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-muted); letter-spacing: 0.2px; }
-        input, select {
-            padding: var(--spacing-s);
-            border: var(--border-width-thin) solid var(--color-border);
-            border-radius: var(--border-radius-base);
-            font-size: var(--font-size-base);
-        }
-        .actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-m); margin-top: var(--spacing-l); justify-content: center; }
-        .btn-primary {
-            background-color: var(--color-primary);
-            color: var(--color-surface);
-            border: none;
-            padding: var(--spacing-s) var(--spacing-m);
-            border-radius: var(--border-radius-base);
-            cursor: pointer;
-            transition: opacity var(--transition-speed-fast);
-        }
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--color-accent);
-            border: var(--border-width-thin) solid var(--color-accent);
-            padding: var(--spacing-s) var(--spacing-m);
-            border-radius: var(--border-radius-base);
-            cursor: pointer;
-            transition: opacity var(--transition-speed-fast);
-        }
-        .btn-primary:hover, .btn-secondary:hover { opacity: 0.85; }
-        .error-text { color: var(--color-error); font-size: var(--font-size-small); }
-        @media (max-width: 768px) {
-            /* Custom exception: one-off concrete breakpoint for layout */
-            form { grid-template-columns: 1fr; }
-        }
-    `;
+    async firstUpdated() {
+        await adoptStylesheets(this.shadowRoot, [new URL('./employee-form.css', import.meta.url)]);
+    }
 
     t(key, params = []) { return translate(key, params); }
 

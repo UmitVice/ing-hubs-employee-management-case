@@ -1,7 +1,8 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
+import { adoptStylesheets } from '@/utils/style-loader.js';
 
 export class EmployeeList extends LitElement {
     static properties = {
@@ -12,199 +13,9 @@ export class EmployeeList extends LitElement {
         viewFormat: { type: String }
     };
 
-    static styles = css`
-        .employee-list-wrapper {
-            max-width: var(--container-max-width);
-            margin: var(--spacing-l) auto;
-        }
-
-        .list-container {
-            padding: var(--spacing-xl);
-            background-color: var(--color-surface);
-            border-radius: var(--border-radius-base);
-            box-shadow: var(--shadow-subtle);
-        }
-
-        .list-container[data-view='cards'] {
-            background: none;
-            box-shadow: none;
-            padding: 0;
-        }
-
-        .header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-m);
-        }
-        .page-title {
-            color: var(--color-primary);
-            font-size: var(--font-size-large);
-            font-weight: 600;
-            margin: var(--spacing-none);
-        }
-        
-        .list-container[data-view="cards"] .data-table,
-        .list-container[data-view="table"] .cards-grid {
-            display: none;
-        }
-
-        .view-toggles {
-            display: inline-flex;
-            gap: var(--spacing-s);
-            align-items: center;
-        }
-        .icon-btn {
-            background: none;
-            border: var(--border-width-thin) solid transparent;
-            padding: var(--spacing-xs);
-            border-radius: var(--border-radius-base);
-            cursor: pointer;
-            transition: border-color var(--transition-speed-fast), opacity var(--transition-speed-fast);
-            opacity: 0.85;
-        }
-        .icon-btn.active {
-            border-color: var(--color-primary);
-            opacity: 1;
-        }
-        .icon-img { display: block; }
-        .icon-img.list {
-            width: var(--size-toggle-list-icon-width);
-            height: var(--size-toggle-list-icon-height);
-        }
-        .icon-img.grid {
-            width: var(--size-toggle-grid-icon);
-            height: var(--size-toggle-grid-icon);
-        }
-        .controls {
-            display: none;
-        }
-        .search-input {
-            padding: var(--spacing-s);
-            border: var(--border-width-thin) solid var(--color-border);
-            border-radius: var(--border-radius-base);
-            width: var(--input-width-md);
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: var(--spacing-m);
-            border: var(--border-width-thin) solid var(--color-border);
-            border-radius: var(--border-radius-base);
-            overflow: hidden;
-        }
-        .data-table th, .data-table td {
-            padding: var(--spacing-s) var(--spacing-m);
-            border-bottom: var(--border-width-thin) solid var(--color-border);
-            text-align: left;
-            font-size: var(--font-size-base);
-        }
-        .data-table th {
-            background-color: var(--color-background-light);
-            color: var(--color-text-dark);
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .actions-cell button {
-            padding: var(--spacing-xs) var(--spacing-s);
-            margin-left: var(--spacing-s);
-            cursor: pointer;
-            border-radius: var(--border-radius-base);
-            border: var(--border-width-thin) solid var(--color-border);
-            background-color: transparent;
-            transition: background-color var(--transition-speed-fast);
-        }
-        .actions-cell button:hover {
-            background-color: var(--color-border);
-        }
-        .actions-cell .action-btn {
-            padding: 0;
-            width: var(--size-action-btn);
-            height: var(--size-action-btn);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            border: none;
-            border-radius: var(--border-radius-base);
-            cursor: pointer;
-            color: var(--color-primary);
-            transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast);
-        }
-        .actions-cell { white-space: nowrap; }
-        .actions-cell .action-btn + .action-btn { margin-left: var(--spacing-s); }
-        .actions-cell .action-btn.delete { color: var(--color-error); }
-        .actions-cell .action-btn:hover { background-color: var(--color-background-light); }
-        .actions-cell .action-btn svg { width: var(--size-icon-md); height: var(--size-icon-md); display: block; }
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: var(--spacing-l);
-            gap: var(--spacing-s);
-        }
-        .pagination-controls .pager-btn,
-        .pagination-controls .pager-num {
-            width: var(--pagination-item-size);
-            height: var(--pagination-item-size);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            user-select: none;
-        }
-        .pagination-controls .pager-num.active {
-            background: var(--color-primary);
-            color: var(--color-surface);
-            border-color: transparent;
-            font-weight: 600;
-        }
-        .pagination-controls .pager-btn[disabled] { opacity: var(--opacity-disabled); cursor: not-allowed; }
-        .pagination-controls .ellipsis { padding: 0 var(--spacing-s); color: var(--color-text-muted); }
-        .pagination-controls .arrow { width: var(--size-icon-sm); height: var(--size-icon-sm); display: block; }
-        .pagination-controls .prev .arrow { transform: scaleX(-1); }
-        .empty-state {
-            height: var(--table-empty-state-height);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        /* Card grid view */
-        .cards-grid {
-            display: grid;
-            gap: var(--spacing-l);
-            grid-template-columns: repeat(2, 1fr);
-        }
-        .card {
-            background-color: var(--color-surface);
-            border-radius: var(--border-radius-base);
-            box-shadow: var(--shadow-subtle);
-            padding: var(--spacing-l);
-            border: var(--border-width-thin) solid var(--color-border);
-            min-height: var(--card-min-height);
-        }
-        .card-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: var(--spacing-m);
-        }
-        .card h3 { margin: var(--spacing-none); }
-        .meta {
-            color: var(--color-text-dark);
-            opacity: 0.8;
-            font-size: var(--font-size-small);
-        }
-        .card .field-label { font-weight: 600; opacity: 0.8; color: var(--color-text-muted); font-size: var(--font-size-2xs); letter-spacing: 0.2px; }
-        .card .actions { margin-top: var(--spacing-m); display: inline-flex; gap: var(--spacing-m); }
-        .btn { padding: var(--spacing-s) var(--spacing-m); border-radius: var(--border-radius-base); cursor: pointer; border: var(--border-width-thin) solid var(--color-border); background: var(--color-background-light); }
-        .btn.primary { background-color: var(--color-primary); color: var(--color-surface); border: none; }
-        .btn.edit { background-color: var(--color-accent); color: var(--color-surface); border: none; }
-    `;
+    async firstUpdated() {
+        await adoptStylesheets(this.shadowRoot, [new URL('./employee-list.css', import.meta.url)]);
+    }
 
     // Lightweight bridge to the global translator
     t(key, params = []) { return translate(key, params); }
@@ -338,15 +149,6 @@ export class EmployeeList extends LitElement {
                     </div>
                 </div>
                 <div class="list-container" data-view="${this.viewFormat}">
-                    <div class="controls">
-                        <input 
-                            type="text" 
-                            placeholder=${this.t('searchPlaceholder')} 
-                            .value=${this.searchTerm}
-                            @input=${this._handleSearch}
-                            class="search-input"
-                        >
-                    </div>
                     
                     <table class="data-table">
                         <thead>

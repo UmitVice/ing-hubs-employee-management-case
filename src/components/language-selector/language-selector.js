@@ -1,25 +1,14 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { loadMessages } from '@/i18n/i18n.js'; 
+import { adoptStylesheets } from '@/utils/style-loader.js';
 
 const TR_FLAG_URL = '/assets/flags/tr.png'; 
 const US_FLAG_URL = '/assets/flags/us.png'; 
 
 export class LanguageSelector extends LitElement {
-    static styles = css`
-        :host { display: inline-block; }
-        button {
-            background: none;
-            border: var(--border-width-thin) solid transparent;
-            cursor: pointer;
-            padding: var(--spacing-xs);
-            opacity: 0.6;
-            transition: opacity var(--transition-speed-fast), border-color var(--transition-speed-fast);
-            border-radius: var(--border-radius-base);
-        }
-        button:hover { opacity: 0.8; }
-        button.active { opacity: 1; }
-        .flag-icon { width: 2.0rem; height: 1.5rem; display: block; }
-    `;
+    async firstUpdated() {
+        await adoptStylesheets(this.shadowRoot, [new URL('./language-selector.css', import.meta.url)]);
+    }
 
     static properties = {
         currentLocale: { type: String, state: true }
