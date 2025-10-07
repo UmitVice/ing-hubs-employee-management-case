@@ -45,8 +45,9 @@
    --size-icon-md: 1.25rem;        /* 20px icon */
    --size-action-btn: 2rem;        /* 32px square touch target */
     --pagination-item-size: 2rem;   /* 32px circle buttons */
-   --card-min-height: 18rem;       /* Standard card height for grid */
-   --cards-visible-rows: 2;        /* Show 2 rows => 4 cards with 2 columns */
+   --card-min-height: 18rem;
+   --cards-visible-rows: 2;
+   --form-container-min-height: 36rem; 
 }
 
 html { overflow-y: scroll; }

@@ -11,17 +11,22 @@ export class EmployeeForm extends LitElement {
     };
 
     static styles = css`
+        .page-title {
+            max-width: var(--container-max-width);
+            margin: var(--spacing-l) auto var(--spacing-s) auto;
+            padding: 0 var(--spacing-xl);
+            color: var(--color-primary);
+            font-size: var(--font-size-large);
+            font-weight: 600;
+        }
         .form-container {
             max-width: var(--container-max-width);
-            margin: var(--spacing-l) auto;
+            margin: var(--spacing-none) auto;
             padding: var(--spacing-xl);
             background-color: var(--color-surface);
             border-radius: var(--border-radius-base);
             box-shadow: var(--shadow-subtle);
-        }
-        h2 {
-            margin: var(--spacing-none) 0 var(--spacing-m) 0;
-            font-size: var(--font-size-large);
+            min-height: var(--form-container-min-height);
         }
         form {
             display: grid;
@@ -36,7 +41,7 @@ export class EmployeeForm extends LitElement {
             border-radius: var(--border-radius-base);
             font-size: var(--font-size-base);
         }
-        .actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-m); margin-top: var(--spacing-l); }
+        .actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-m); margin-top: var(--spacing-l); justify-content: center; }
         .btn-primary {
             background-color: var(--color-primary);
             color: var(--color-surface);
@@ -47,9 +52,9 @@ export class EmployeeForm extends LitElement {
             transition: opacity var(--transition-speed-fast);
         }
         .btn-secondary {
-            background-color: var(--color-background-light);
-            color: var(--color-text-dark);
-            border: var(--border-width-thin) solid var(--color-border);
+            background-color: transparent;
+            color: var(--color-accent);
+            border: var(--border-width-thin) solid var(--color-accent);
             padding: var(--spacing-s) var(--spacing-m);
             border-radius: var(--border-radius-base);
             cursor: pointer;
@@ -269,8 +274,8 @@ export class EmployeeForm extends LitElement {
         const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
 
         return html`
+            <div class="page-title">${title}</div>
             <div class="form-container">
-                <h2>${title}</h2>
                 <form @submit=${this._handleSubmit}>
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
