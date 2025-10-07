@@ -7,10 +7,11 @@
     "moduleResolution": "Node",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
+    "types": [],
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*", "app-root.js", "test/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*", "app-root.js"],
+  "exclude": ["node_modules", "dist", "coverage", "test", "src/**/*_test.js"]
 }

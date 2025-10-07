@@ -101,6 +101,18 @@ export default {
       'rollup.config.js'
     ]
   },
+  // Show Lit dev-mode warning only once across all test files
+  filterBrowserLogs: (() => {
+    let litDevWarnSeen = false;
+    return ({args}) => {
+      const first = args && args[0];
+      if (typeof first === 'string' && first.includes('Lit is in dev mode')) {
+        if (litDevWarnSeen) return false;
+        litDevWarnSeen = true;
+      }
+      return true;
+    };
+  })(),
   middleware: [
     function aliasAtToSrc(ctx, next) {
       if (ctx.url && ctx.url.startsWith('/@/')) {

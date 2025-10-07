@@ -25,6 +25,22 @@ suite('employee-list', () => {
     const cards = el.shadowRoot.querySelectorAll('.cards-grid .card');
     assert.isAtLeast(cards.length, 1);
   });
+
+  test('delete button removes a record after confirm', async () => {
+    const originalConfirm = window.confirm;
+    window.confirm = () => true;
+    try {
+      const el = await fixture(html`<employee-list></employee-list>`);
+      await el.updateComplete;
+      const initial = employeeService.employees.length;
+      const delBtn = el.shadowRoot.querySelector('.actions-cell .action-btn.delete');
+      delBtn.click();
+      await el.updateComplete;
+      assert.equal(employeeService.employees.length, initial - 1);
+    } finally {
+      window.confirm = originalConfirm;
+    }
+  });
 });
 
 
