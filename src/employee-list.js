@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit';
-import { LocalizeMixin, defaultTranslations } from './mixins/localize-mixin.js';
+import { t as translate } from './i18n/i18n.js';
 import { employeeService } from './employee-service.js';
 import { Router } from '@vaadin/router';
 
-export class EmployeeList extends LocalizeMixin(LitElement) {
+export class EmployeeList extends LitElement {
     static properties = {
         employees: { type: Array },
         page: { type: Number },
@@ -12,7 +12,8 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         viewFormat: { type: String }
     };
 
-    static translations = defaultTranslations;
+    // Lightweight bridge to the global translator
+    t(key, params = []) { return translate(key, params); }
 
     constructor() {
         super();
@@ -23,11 +24,13 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         this.viewFormat = 'table';
 
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
+        this._onLanguageChanged = () => this.requestUpdate();
         employeeService.addEventListener('employees-changed', this._employeeDataChanged);
     }
     
     disconnectedCallback() {
         employeeService.removeEventListener('employees-changed', this._employeeDataChanged);
+        document.removeEventListener('language-changed', this._onLanguageChanged);
         super.disconnectedCallback();
     }
 
@@ -40,6 +43,7 @@ export class EmployeeList extends LocalizeMixin(LitElement) {
         super.connectedCallback();
         // Load initial data on connect
         this.employees = employeeService.employees; 
+        document.addEventListener('language-changed', this._onLanguageChanged);
     }
 
     _handleEdit(id) {

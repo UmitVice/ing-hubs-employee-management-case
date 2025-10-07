@@ -3,7 +3,6 @@ import { Router } from '@vaadin/router';
 import { t as translate } from './i18n/i18n.js';
 import { employeeService } from './employee-service.js';
 
-/** Form for creating and editing employees. */
 export class EmployeeForm extends LitElement {
     static properties = {
         employee: { type: Object },
@@ -11,7 +10,6 @@ export class EmployeeForm extends LitElement {
         errors: { type: Object }
     };
 
-    // Lightweight bridge to the global translator
     t(key, params = []) { return translate(key, params); }
 
     constructor() {

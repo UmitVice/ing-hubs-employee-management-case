@@ -26,7 +26,7 @@ export async function loadMessages() {
             try {
                 const respEn = await fetch(`/src/i18n/en.json`, { headers: { 'Accept': 'application/json' } });
                 if (respEn.ok) loadedMessages['en'] = await respEn.json();
-            } catch (_)
+            } catch (_) { /* ignore */ }
         }
     }
     document.dispatchEvent(new CustomEvent('language-changed', { detail: { locale } }));
