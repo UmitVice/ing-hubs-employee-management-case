@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { Router } from '@vaadin/router';
-import './src/employee-list.js';
-import './src/employee-form.js';
-import './src/components/language-selector.js';
+import './src/employee-list/employee-list.js';
+import './src/employee-form/employee-form.js';
+import './src/components/language-selector/language-selector.js';
 import { loadMessages } from './src/i18n/i18n.js';
 
 export class AppRoot extends LitElement {
