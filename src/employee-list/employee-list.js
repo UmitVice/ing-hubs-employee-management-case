@@ -107,6 +107,24 @@ export class EmployeeList extends LitElement {
         .actions-cell button:hover {
             background-color: var(--color-border);
         }
+        .actions-cell .action-btn {
+            padding: 0;
+            width: var(--size-action-btn);
+            height: var(--size-action-btn);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            color: var(--color-primary);
+            transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast);
+        }
+        .actions-cell .action-btn + .action-btn { margin-left: var(--spacing-s); }
+        .actions-cell .action-btn.delete { color: var(--color-error); }
+        .actions-cell .action-btn:hover { background-color: var(--color-background-light); }
+        .actions-cell .action-btn svg { width: var(--size-icon-md); height: var(--size-icon-md); display: block; }
         .pagination-controls {
             display: flex;
             justify-content: center;
@@ -122,8 +140,8 @@ export class EmployeeList extends LitElement {
             align-items: center;
             justify-content: center;
             border-radius: 999px;
-            border: var(--border-width-thin) solid var(--color-border);
-            background: var(--color-surface);
+            border: none;
+            background: transparent;
             cursor: pointer;
             user-select: none;
         }
@@ -149,7 +167,6 @@ export class EmployeeList extends LitElement {
         .cards-grid {
             display: grid;
             gap: var(--spacing-l);
-            /* Custom exception: exactly two columns to match design */
             grid-template-columns: repeat(2, 1fr);
         }
         .card {
@@ -158,6 +175,7 @@ export class EmployeeList extends LitElement {
             box-shadow: var(--shadow-subtle);
             padding: var(--spacing-l);
             border: var(--border-width-thin) solid var(--color-border-strong);
+            min-height: var(--card-min-height);
         }
         .card-grid {
             display: grid;
@@ -213,6 +231,7 @@ export class EmployeeList extends LitElement {
 
     _setView(view) {
         this.viewFormat = view;
+        this.page = 1; // reset to first page when switching view to keep UX consistent
     }
 
     _handleEdit(id) {
@@ -231,7 +250,8 @@ export class EmployeeList extends LitElement {
     }
     
     _handlePageChange(newPage) {
-        const maxPage = Math.ceil(this.employees.length / this.pageSize);
+        const effectivePageSize = this.viewFormat === 'cards' ? 4 : this.pageSize;
+        const maxPage = Math.ceil(this.employees.length / effectivePageSize);
         if (newPage >= 1 && newPage <= maxPage) {
             this.page = newPage;
         }
@@ -252,9 +272,10 @@ export class EmployeeList extends LitElement {
             );
         });
         
-        // Pagination logic
-        const startIndex = (this.page - 1) * this.pageSize;
-        const endIndex = startIndex + this.pageSize;
+        // Pagination logic (dynamic pageSize: 4 in cards view)
+        const effectivePageSize = this.viewFormat === 'cards' ? 4 : this.pageSize;
+        const startIndex = (this.page - 1) * effectivePageSize;
+        const endIndex = startIndex + effectivePageSize;
         
         return {
             total: filteredEmployees.length,
@@ -286,7 +307,8 @@ export class EmployeeList extends LitElement {
 
     render() {
         const { total, records: currentEmployees } = this._getCurrentPageEmployees();
-        const totalPages = Math.ceil(total / this.pageSize);
+        const effectivePageSize = this.viewFormat === 'cards' ? 4 : this.pageSize;
+        const totalPages = Math.ceil(total / effectivePageSize);
         const pageItems = this._buildPageList(totalPages);
         
         return html`
@@ -340,8 +362,16 @@ export class EmployeeList extends LitElement {
                                     <td>${emp.department}</td>
                                     <td>${emp.position}</td>
                                     <td class="actions-cell">
-                                        <button @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
-                                        <button @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
+                                        <button class="action-btn edit" @click=${() => this._handleEdit(emp.id)} aria-label="${this.t('edit')}">
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm18.71-11.04a1.003 1.003 0 0 0 0-1.42l-2.5-2.5a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.99-1.66z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="action-btn delete" @click=${() => this._handleDelete(emp.id)} aria-label="${this.t('delete')}">
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path fill="currentColor" d="M6 7h12v2H6V7zm2 3h8l-1 10H9L8 10zm3-6h2l1 1h5v2H5V5h5l1-1z"/>
+                                            </svg>
+                                        </button>
                                     </td>
                                 </tr>
                               `
@@ -360,7 +390,7 @@ export class EmployeeList extends LitElement {
                         </tbody>
                     </table>
 
-                    <div class="cards-grid" style="max-height: calc(2 * (18rem + var(--spacing-l))); overflow-y: auto;">
+                    <div class="cards-grid">
                         ${currentEmployees.map(
                           emp => html`
                             <div class="card">
