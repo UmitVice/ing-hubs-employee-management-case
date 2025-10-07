@@ -29,7 +29,7 @@ export class EmployeeForm extends LitElement {
             gap: var(--spacing-m);
         }
         .field { display: flex; flex-direction: column; gap: var(--spacing-xs); }
-        label { font-weight: bold; }
+        label { font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-muted); letter-spacing: 0.2px; }
         input, select {
             padding: var(--spacing-s);
             border: var(--border-width-thin) solid var(--color-border);

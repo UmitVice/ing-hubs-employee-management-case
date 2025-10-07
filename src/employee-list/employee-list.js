@@ -21,6 +21,48 @@ export class EmployeeList extends LitElement {
             border-radius: var(--border-radius-base);
             box-shadow: var(--shadow-subtle);
         }
+
+        .list-container[data-view='cards'] {
+            background: none;
+            box-shadow: none;
+            padding-top: 0;
+        }
+
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-m);
+        }
+        
+        .list-container[data-view="cards"] .data-table,
+        .list-container[data-view="table"] .cards-grid {
+            display: none;
+        }
+
+        .view-toggles {
+            display: inline-flex;
+            gap: var(--spacing-s);
+            align-items: center;
+        }
+        .icon-btn {
+            background: none;
+            border: var(--border-width-thin) solid transparent;
+            padding: var(--spacing-xs);
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            transition: border-color var(--transition-speed-fast), opacity var(--transition-speed-fast);
+            opacity: 0.85;
+        }
+        .icon-btn.active {
+            border-color: var(--color-primary);
+            opacity: 1;
+        }
+        .icon-img {
+            width: var(--spacing-l);
+            height: var(--spacing-l);
+            display: block;
+        }
         .controls {
             display: flex;
             justify-content: flex-start;
@@ -37,6 +79,9 @@ export class EmployeeList extends LitElement {
             width: 100%;
             border-collapse: collapse;
             margin-top: var(--spacing-m);
+            border: var(--border-width-thin) solid var(--color-border-strong);
+            border-radius: var(--border-radius-base);
+            overflow: hidden;
         }
         .data-table th, .data-table td {
             padding: var(--spacing-s) var(--spacing-m);
@@ -86,6 +131,37 @@ export class EmployeeList extends LitElement {
             justify-content: center;
             text-align: center;
         }
+
+        /* Card grid view */
+        .cards-grid {
+            display: grid;
+            gap: var(--spacing-l);
+            /* Custom exception: exactly two columns to match design */
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-subtle);
+            padding: var(--spacing-l);
+            border: var(--border-width-thin) solid var(--color-border-strong);
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-m);
+        }
+        .card h3 { margin: var(--spacing-none); }
+        .meta {
+            color: var(--color-text-dark);
+            opacity: 0.8;
+            font-size: var(--font-size-small);
+        }
+        .card .field-label { font-weight: 600; opacity: 0.8; color: var(--color-text-muted); font-size: var(--font-size-2xs); letter-spacing: 0.2px; }
+        .card .actions { margin-top: var(--spacing-m); display: inline-flex; gap: var(--spacing-m); }
+        .btn { padding: var(--spacing-s) var(--spacing-m); border-radius: var(--border-radius-base); cursor: pointer; border: var(--border-width-thin) solid var(--color-border); background: var(--color-background-light); }
+        .btn.primary { background-color: var(--color-primary); color: var(--color-surface); border: none; }
+        .btn.edit { background-color: var(--color-accent); color: var(--color-surface); border: none; }
     `;
 
     // Lightweight bridge to the global translator
@@ -120,6 +196,10 @@ export class EmployeeList extends LitElement {
         // Load initial data on connect
         this.employees = employeeService.employees; 
         document.addEventListener('language-changed', this._onLanguageChanged);
+    }
+
+    _setView(view) {
+        this.viewFormat = view;
     }
 
     _handleEdit(id) {
@@ -174,8 +254,20 @@ export class EmployeeList extends LitElement {
         const totalPages = Math.ceil(total / this.pageSize);
         
         return html`
-            <div class="list-container">
-                <h2>${this.t('employeeList')}</h2>
+            <div class="list-container" data-view="${this.viewFormat}">
+                <div class="header-row">
+                    <h2>${this.t('employeeList')}</h2>
+                    <div class="view-toggles">
+                        <button class="icon-btn ${this.viewFormat === 'table' ? 'active' : ''}"
+                            @click=${() => this._setView('table')} aria-label="Table view">
+                            <img class="icon-img" src="/assets/icons/list_icon.png" alt="Table" />
+                        </button>
+                        <button class="icon-btn ${this.viewFormat === 'cards' ? 'active' : ''}"
+                            @click=${() => this._setView('cards')} aria-label="Cards view">
+                            <img class="icon-img" src="/assets/icons/square_list_icon.png" alt="Cards" />
+                        </button>
+                    </div>
+                </div>
                 
                 <div class="controls">
                     <input 
@@ -186,10 +278,11 @@ export class EmployeeList extends LitElement {
                         class="search-input"
                     >
                 </div>
-
+                
                 <table class="data-table">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>${this.t('firstName')}</th>
                             <th>${this.t('lastName')}</th>
                             <th>${this.t('dateOfEmployment')}</th>
@@ -200,8 +293,10 @@ export class EmployeeList extends LitElement {
                         </tr>
                     </thead>
                     <tbody>
-                        ${currentEmployees.map(emp => html`
+                        ${currentEmployees.map(
+                          emp => html`
                             <tr>
+                                <td><input type="checkbox" aria-label="select" /></td>
                                 <td>${emp.firstName}</td>
                                 <td>${emp.lastName}</td>
                                 <td>${emp.dateOfEmployment}</td>
@@ -213,16 +308,75 @@ export class EmployeeList extends LitElement {
                                     <button @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
                                 </td>
                             </tr>
-                        `)}
-                        ${currentEmployees.length === 0 ? html`
-                            <tr>
-                                <td colspan="7">
-                                    <div class="empty-state">${this.t('noRecordsFound')}</div>
-                                </td>
-                            </tr>
-                        ` : ''}
+                          `
+                        )}
+                        ${
+                          currentEmployees.length === 0
+                            ? html`
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="empty-state">${this.t('noRecordsFound')}</div>
+                                    </td>
+                                </tr>
+                              `
+                            : ''
+                        }
                     </tbody>
                 </table>
+
+                <div class="cards-grid" style="max-height: calc(2 * (18rem + var(--spacing-l))); overflow-y: auto;">
+                    ${currentEmployees.map(
+                      emp => html`
+                        <div class="card">
+                            <div class="card-grid">
+                                <div>
+                                    <div class="field-label">${this.t('firstName')}</div>
+                                    <div>${emp.firstName}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('lastName')}</div>
+                                    <div>${emp.lastName}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('dateOfEmployment')}</div>
+                                    <div>${emp.dateOfEmployment}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('dateOfBirth')}</div>
+                                    <div>${emp.dateOfBirth || '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('phoneNumber')}</div>
+                                    <div>${emp.phone || '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('email')}</div>
+                                    <div>${emp.email}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('department')}</div>
+                                    <div>${emp.department}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">${this.t('position')}</div>
+                                    <div>${emp.position}</div>
+                                </div>
+                            </div>
+                            <div class="actions">
+                                <button class="btn edit" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
+                                <button class="btn primary" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
+                            </div>
+                        </div>
+                      `
+                    )}
+                    ${
+                      currentEmployees.length === 0
+                        ? html`
+                            <div class="empty-state">${this.t('noRecordsFound')}</div>
+                          `
+                        : ''
+                    }
+                </div>
                 
                 <div class="pagination-controls">
                     <button 
