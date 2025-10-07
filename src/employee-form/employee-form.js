@@ -65,17 +65,49 @@ export class EmployeeForm extends LitElement {
         }
     }
 
+    _handleNameInput(field, e) {
+        const sanitized = (e.target.value || '').replace(/[^\p{L}\s'-]/gu, '');
+        this._updateField(field, sanitized);
+    }
+
+    _handlePhoneInput(e) {
+        const digitsOnly = (e.target.value || '').replace(/\D/g, '');
+        this._updateField('phone', digitsOnly);
+    }
+
+    _formatPhoneDisplay(digits) {
+        if (!digits) return '';
+        const cc = digits.slice(0, 3);
+        const rest = digits.slice(3);
+        const groups = [];
+        let remaining = rest;
+        const sizes = [3, 3, 2, 2, 2];
+        for (const size of sizes) {
+            if (!remaining) break;
+            groups.push(remaining.slice(0, size));
+            remaining = remaining.slice(size);
+        }
+        if (remaining) groups.push(remaining);
+        const ccPart = cc ? `(+${cc})` : '+';
+        return `${ccPart}${groups.length ? ' ' + groups.join(' ') : ''}`.trim();
+    }
+
     _validate() {
         const errors = {};
-        const { firstName, lastName, dateOfEmployment, email, department, position } = this.employee;
+        const { firstName, lastName, dateOfEmployment, dateOfBirth, email, phone, department, position } = this.employee;
         if (!firstName) errors.firstName = this.t('validationRequired');
+        else if (!/^\p{L}+(?:[\s'-]\p{L}+)*$/u.test(firstName)) errors.firstName = this.t('validationLettersOnly');
         if (!lastName) errors.lastName = this.t('validationRequired');
+        else if (!/^\p{L}+(?:[\s'-]\p{L}+)*$/u.test(lastName)) errors.lastName = this.t('validationLettersOnly');
         if (!dateOfEmployment) errors.dateOfEmployment = this.t('validationRequired');
+        if (!dateOfBirth) errors.dateOfBirth = this.t('validationRequired');
         if (!email) errors.email = this.t('validationRequired');
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = this.t('validationEmail');
         else if (!employeeService.isEmailUnique(email, this.mode === 'edit' ? this.employee.id : null)) {
             errors.email = this.t('validationEmailUnique');
         }
+        if (!phone) errors.phone = this.t('validationRequired');
+        else if (!/^\d{10,15}$/.test(phone)) errors.phone = this.t('validationPhone');
         if (!department) errors.department = this.t('validationRequired');
         if (!position) errors.position = this.t('validationRequired');
         this.errors = errors;
@@ -112,13 +144,13 @@ export class EmployeeForm extends LitElement {
                 <form @submit=${this._handleSubmit}>
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
-                        <input id="firstName" .value=${this.employee.firstName} @input=${(e) => this._updateField('firstName', e.target.value)}>
+                        <input id="firstName" .value=${this.employee.firstName} @input=${(e) => this._handleNameInput('firstName', e)}>
                         ${this.errors.firstName ? html`<span class="error-text">${this.errors.firstName}</span>` : ''}
                     </div>
 
                     <div class="field">
                         <label for="lastName">${this.t('lastName')}</label>
-                        <input id="lastName" .value=${this.employee.lastName} @input=${(e) => this._updateField('lastName', e.target.value)}>
+                        <input id="lastName" .value=${this.employee.lastName} @input=${(e) => this._handleNameInput('lastName', e)}>
                         ${this.errors.lastName ? html`<span class="error-text">${this.errors.lastName}</span>` : ''}
                     </div>
 
@@ -131,11 +163,13 @@ export class EmployeeForm extends LitElement {
                     <div class="field">
                         <label for="dateOfBirth">${this.t('dateOfBirth')}</label>
                         <input id="dateOfBirth" type="date" .value=${this.employee.dateOfBirth} @input=${(e) => this._updateField('dateOfBirth', e.target.value)}>
+                        ${this.errors.dateOfBirth ? html`<span class="error-text">${this.errors.dateOfBirth}</span>` : ''}
                     </div>
 
                     <div class="field">
                         <label for="phone">${this.t('phoneNumber')}</label>
-                        <input id="phone" .value=${this.employee.phone} @input=${(e) => this._updateField('phone', e.target.value)}>
+                        <input id="phone" inputmode="numeric" .value=${this._formatPhoneDisplay(this.employee.phone)} @input=${this._handlePhoneInput}>
+                        ${this.errors.phone ? html`<span class="error-text">${this.errors.phone}</span>` : ''}
                     </div>
 
                     <div class="field">
