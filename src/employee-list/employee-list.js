@@ -113,7 +113,6 @@ export class EmployeeList extends LitElement {
                         @input=${this._handleSearch}
                         class="search-input"
                     >
-                    <button class="btn-add" @click=${() => Router.go('/add')}>${this.t('add')}</button>
                 </div>
 
                 <table class="data-table">
