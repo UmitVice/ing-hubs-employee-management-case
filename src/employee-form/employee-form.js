@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
 import { t as translate } from '../i18n/i18n.js';
 import { employeeService } from '../employee-service.js';
-import styles from './employee-form.css' assert { type: 'css' };
+import { adoptStylesheets } from '../utils/style-loader.js';
 
 export class EmployeeForm extends LitElement {
     static properties = {
@@ -11,7 +11,7 @@ export class EmployeeForm extends LitElement {
         errors: { type: Object }
     };
 
-    static styles = [styles];
+    static styles = [];
 
     t(key, params = []) { return translate(key, params); }
 
@@ -22,7 +22,7 @@ export class EmployeeForm extends LitElement {
         this.errors = {};
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
         this._onLanguageChanged = () => this.requestUpdate();
         document.addEventListener('language-changed', this._onLanguageChanged);
@@ -35,6 +35,7 @@ export class EmployeeForm extends LitElement {
                 this.employee = { ...existing };
             }
         }
+        await adoptStylesheets(this.shadowRoot, [new URL('./employee-form.css', import.meta.url)]);
     }
 
     disconnectedCallback() {

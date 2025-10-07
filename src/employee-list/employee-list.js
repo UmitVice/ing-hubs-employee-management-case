@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit';
 import { t as translate } from '../i18n/i18n.js';
 import { employeeService } from '../employee-service.js';
 import { Router } from '@vaadin/router';
-import styles from './employee-list.css' assert { type: 'css' };
+import { adoptStylesheets } from '../utils/style-loader.js';
 
 export class EmployeeList extends LitElement {
     static properties = {
@@ -13,7 +13,7 @@ export class EmployeeList extends LitElement {
         viewFormat: { type: String }
     };
 
-    static styles = [styles];
+    static styles = [];
 
     // Lightweight bridge to the global translator
     t(key, params = []) { return translate(key, params); }
@@ -42,11 +42,12 @@ export class EmployeeList extends LitElement {
         this.page = 1; 
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
         // Load initial data on connect
         this.employees = employeeService.employees; 
         document.addEventListener('language-changed', this._onLanguageChanged);
+        await adoptStylesheets(this.shadowRoot, [new URL('./employee-list.css', import.meta.url)]);
     }
 
     _handleEdit(id) {

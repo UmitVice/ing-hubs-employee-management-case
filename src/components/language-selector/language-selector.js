@@ -1,12 +1,12 @@
 import { LitElement, html } from 'lit';
 import { loadMessages } from '../../i18n/i18n.js'; 
-import styles from './language-selector.css' assert { type: 'css' };
+import { adoptStylesheets } from '../../utils/style-loader.js';
 
 const TR_FLAG_URL = '/assets/flags/tr.png'; 
 const US_FLAG_URL = '/assets/flags/us.png'; 
 
 export class LanguageSelector extends LitElement {
-    static styles = [styles];
+    static styles = [];
 
     static properties = {
         currentLocale: { type: String, state: true }
@@ -23,9 +23,10 @@ export class LanguageSelector extends LitElement {
         };
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
         document.addEventListener('language-changed', this._onLanguageChanged);
+        await adoptStylesheets(this.shadowRoot, [new URL('./language-selector.css', import.meta.url)]);
     }
 
     disconnectedCallback() {
