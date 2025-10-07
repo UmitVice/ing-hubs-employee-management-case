@@ -92,6 +92,15 @@ export default {
   rootDir: '.',
   files: ['./test/**/*_test.js', './src/**/*_test.js'],
   nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
+  coverage: true,
+  coverageConfig: {
+    exclude: [
+      'node_modules/**/*',
+      'test/**/*',
+      'web-dev-server.config.js',
+      'rollup.config.js'
+    ]
+  },
   middleware: [
     function aliasAtToSrc(ctx, next) {
       if (ctx.url && ctx.url.startsWith('/@/')) {
