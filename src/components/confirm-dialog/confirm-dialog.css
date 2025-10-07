@@ -1,9 +1,9 @@
 .backdrop {
   position: fixed;
-  inset: 0; /* Custom exception for consistent overlay coverage */
+  inset: 0;
   background: var(--modal-backdrop-color);
   display: block;
-  z-index: 1000; /* Custom exception for stacking above app content */
+  z-index: 1000;
 }
 
 .dialog[hidden], .backdrop[hidden] { display: none; }
@@ -20,7 +20,7 @@
   box-shadow: var(--modal-elevation);
   border: var(--border-width-thin) solid var(--modal-border-color);
   padding: var(--spacing-l);
-  z-index: 1001; /* Custom exception for stacking above backdrop */
+  z-index: 1001;
 }
 
 .title {

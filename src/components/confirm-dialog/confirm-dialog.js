@@ -1,4 +1,3 @@
-// @ts-check
 import { LitElement, html } from 'lit';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import { t as translate } from '@/i18n/i18n.js';

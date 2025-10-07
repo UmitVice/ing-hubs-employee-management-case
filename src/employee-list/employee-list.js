@@ -157,11 +157,11 @@ export class EmployeeList extends LitElement {
                     <div class="view-toggles">
                         <button class="icon-btn ${this.viewFormat === 'table' ? 'active' : ''}"
                             @click=${() => this._setView('table')} aria-label="Table view">
-                            <img class="icon-img list" src="/assets/icons/list_icon.png" alt="Table" />
+                            <span class="toggle-icon list" aria-hidden="true"></span>
                         </button>
                         <button class="icon-btn ${this.viewFormat === 'cards' ? 'active' : ''}"
                             @click=${() => this._setView('cards')} aria-label="Cards view">
-                            <img class="icon-img grid" src="/assets/icons/square_list_icon.png" alt="Cards" />
+                            <span class="toggle-icon grid" aria-hidden="true"></span>
                         </button>
                     </div>
                 </div>

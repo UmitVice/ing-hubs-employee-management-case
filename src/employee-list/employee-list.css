@@ -13,11 +13,17 @@
 .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-m); }
 .page-title { color: var(--color-primary); font-size: var(--font-size-large); font-weight: 600; margin: var(--spacing-none); }
 .view-toggles { display: inline-flex; gap: var(--spacing-s); align-items: center; }
-.icon-btn { background: none; border: var(--border-width-thin) solid transparent; padding: var(--spacing-xs); border-radius: var(--border-radius-base); cursor: pointer; transition: border-color var(--transition-speed-fast), opacity var(--transition-speed-fast); opacity: 0.85; }
-.icon-btn.active { border-color: var(--color-primary); opacity: 1; }
-.icon-img { display: block; }
-.icon-img.list { width: var(--size-toggle-list-icon-width); height: var(--size-toggle-list-icon-height); }
-.icon-img.grid { width: var(--size-toggle-grid-icon); height: var(--size-toggle-grid-icon); }
+.icon-btn { background: transparent; border: none; padding: var(--spacing-xs); border-radius: var(--border-radius-base); cursor: pointer; transition: background-color var(--transition-speed-fast), opacity var(--transition-speed-fast); }
+.icon-btn.active { background: transparent; }
+.toggle-icon { display: block; }
+/* list icon as SVG mask */
+.toggle-icon.list { width: var(--size-toggle-list-icon-width); height: var(--size-toggle-list-icon-height); -webkit-mask: url('/assets/icons/list_icon.svg') no-repeat center / contain; mask: url('/assets/icons/list_icon.svg') no-repeat center / contain; background: currentColor; }
+/* grid icon as SVG mask */
+.toggle-icon.grid { width: var(--size-toggle-grid-icon); height: var(--size-toggle-grid-icon); -webkit-mask: url('/assets/icons/square_list_icon.svg') no-repeat center / contain; mask: url('/assets/icons/square_list_icon.svg') no-repeat center / contain; background: currentColor; }
+/* default dim state */
+.icon-btn:not(.active) .toggle-icon { color: var(--color-primary-muted); }
+/* active filled orange */
+.icon-btn.active .toggle-icon { color: var(--color-primary); }
 
 .data-table {
     width: 100%;
