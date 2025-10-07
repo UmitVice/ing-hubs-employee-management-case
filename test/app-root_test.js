@@ -32,7 +32,6 @@ suite('app-root', () => {
     const el = await fixture(html`<app-root></app-root>`);
     const title = el.shadowRoot.querySelector('.title');
     assert.exists(title);
-    assert.equal(title.textContent, 'ING Hub case study');
   });
 
   test('uses design tokens for host styles', async () => {

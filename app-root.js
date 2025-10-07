@@ -70,7 +70,6 @@ export class AppRoot extends LitElement {
     render() {
         return html`
             <app-navbar></app-navbar>
-            <div class="title">ING Hub case study</div>
             <main></main>
         `;
     }

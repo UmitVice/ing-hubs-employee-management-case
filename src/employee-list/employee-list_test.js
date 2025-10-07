@@ -26,20 +26,18 @@ suite('employee-list', () => {
     assert.isAtLeast(cards.length, 1);
   });
 
-  test('delete button removes a record after confirm', async () => {
-    const originalConfirm = window.confirm;
-    window.confirm = () => true;
-    try {
-      const el = await fixture(html`<employee-list></employee-list>`);
-      await el.updateComplete;
-      const initial = employeeService.employees.length;
-      const delBtn = el.shadowRoot.querySelector('.actions-cell .action-btn.delete');
-      delBtn.click();
-      await el.updateComplete;
-      assert.equal(employeeService.employees.length, initial - 1);
-    } finally {
-      window.confirm = originalConfirm;
-    }
+  test('delete button removes a record after confirm dialog', async () => {
+    const el = await fixture(html`<employee-list></employee-list>`);
+    await el.updateComplete;
+    const initial = employeeService.employees.length;
+    const delBtn = el.shadowRoot.querySelector('.actions-cell .action-btn.delete');
+    delBtn.click();
+    await el.updateComplete;
+    const dlg = el.shadowRoot.querySelector('confirm-dialog');
+    const confirmButton = dlg.shadowRoot.querySelector('.confirm');
+    confirmButton.click();
+    await el.updateComplete;
+    assert.equal(employeeService.employees.length, initial - 1);
   });
 });
 

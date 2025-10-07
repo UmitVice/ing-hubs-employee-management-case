@@ -1,0 +1,70 @@
+.backdrop {
+  position: fixed;
+  inset: 0; /* Custom exception for consistent overlay coverage */
+  background: var(--modal-backdrop-color);
+  display: block;
+  z-index: 1000; /* Custom exception for stacking above app content */
+}
+
+.dialog[hidden], .backdrop[hidden] { display: none; }
+
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: var(--modal-max-width);
+  width: calc(100% - var(--spacing-xl) * 2);
+  background: var(--color-surface);
+  border-radius: var(--modal-surface-radius);
+  box-shadow: var(--modal-elevation);
+  border: var(--border-width-thin) solid var(--modal-border-color);
+  padding: var(--spacing-l);
+  z-index: 1001; /* Custom exception for stacking above backdrop */
+}
+
+.title {
+  color: var(--modal-title-color);
+  font-weight: 700;
+  margin-bottom: var(--spacing-s);
+  text-align: center;
+}
+
+.message {
+  color: var(--color-text-dark);
+  opacity: 0.9;
+  margin-bottom: var(--spacing-l);
+  text-align: center;
+}
+
+/* Buttons vertically stacked, full width like in design */
+.actions { display: grid; gap: var(--spacing-s); }
+
+.btn {
+  padding: var(--spacing-s) var(--spacing-l);
+  border-radius: var(--border-radius-base);
+  border: var(--border-width-thin) solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn.primary { background: var(--color-primary); color: var(--color-surface); border: none; }
+.btn.outline { background: var(--color-surface); color: var(--color-text-dark); }
+
+.close {
+  position: absolute;
+  top: var(--spacing-s);
+  right: var(--spacing-s);
+  width: var(--size-icon-lg);
+  height: var(--size-icon-lg);
+  border: none;
+  background: transparent;
+  color: var(--color-error);
+  cursor: pointer;
+}
+
+/* Danger variant to darken backdrop specifically when needed */
+:host([variant="danger"]) .backdrop { background: var(--modal-backdrop-color-strong); }
+
+

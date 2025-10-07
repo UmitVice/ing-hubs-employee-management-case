@@ -4,6 +4,7 @@ import { Router } from '@vaadin/router';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import '@/components/confirm-dialog/confirm-dialog.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeForm extends LitElement {
@@ -203,18 +204,21 @@ export class EmployeeForm extends LitElement {
     _handleSubmit(e) {
         e.preventDefault();
         if (!this._validate()) return;
-        const confirmed = this.mode === 'edit' ?
-            confirm(this.t('confirmUpdate')) :
-            confirm(this.t('confirmCreate'));
-        if (!confirmed) return;
-
-        if (this.mode === 'edit') {
-            employeeService.updateEmployee(this.employee);
-        } else {
-            const { id, ...payload } = this.employee;
-            employeeService.addEmployee(payload);
-        }
-        Router.go('/');
+        const dlg = /** @type {import('@/components/confirm-dialog/confirm-dialog.js').ConfirmDialog} */(this.shadowRoot.querySelector('confirm-dialog'));
+        const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
+        const message = this.mode === 'edit' ? this.t('confirmUpdate') : this.t('confirmCreate');
+        dlg.openWith({ title, message, confirmText: this.t('proceed'), cancelText: this.t('cancel') });
+        const onConfirm = () => {
+            if (this.mode === 'edit') {
+                employeeService.updateEmployee(this.employee);
+            } else {
+                const { id, ...payload } = this.employee;
+                employeeService.addEmployee(payload);
+            }
+            dlg.removeEventListener('confirm', onConfirm);
+            Router.go('/');
+        };
+        dlg.addEventListener('confirm', onConfirm);
     }
 
     _handleCancel() {
@@ -300,6 +304,7 @@ export class EmployeeForm extends LitElement {
                     </div>
                 </form>
             </div>
+            <confirm-dialog></confirm-dialog>
         `;
     }
 }

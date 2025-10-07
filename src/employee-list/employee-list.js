@@ -4,6 +4,7 @@ import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import '@/components/confirm-dialog/confirm-dialog.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeList extends LitElement {
@@ -64,9 +65,22 @@ export class EmployeeList extends LitElement {
     }
 
     _handleDelete(id) {
-        if (confirm(this.t('confirmDelete'))) {
-             employeeService.deleteEmployee(id);
-        }
+        const emp = this.employees.find(e => e.id === id);
+        const dlg = /** @type {import('@/components/confirm-dialog/confirm-dialog.js').ConfirmDialog} */(this.shadowRoot.querySelector('confirm-dialog'));
+        const name = emp ? `${emp.firstName} ${emp.lastName}`.trim() : '';
+        const message = name ? this.t('deleteRecord', [name]) : this.t('confirmDelete');
+        dlg.openWith({ title: this.t('deleteConfirmation'), message, confirmText: this.t('proceed'), cancelText: this.t('cancel'), variant: 'danger' });
+        const onConfirm = () => {
+            employeeService.deleteEmployee(id);
+            dlg.removeEventListener('confirm', onConfirm);
+            dlg.removeEventListener('cancel', onCancel);
+        };
+        const onCancel = () => {
+            dlg.removeEventListener('confirm', onConfirm);
+            dlg.removeEventListener('cancel', onCancel);
+        };
+        dlg.addEventListener('confirm', onConfirm);
+        dlg.addEventListener('cancel', onCancel);
     }
     
     _handleSearch(e) {
@@ -277,6 +291,7 @@ export class EmployeeList extends LitElement {
                     </div>
                 </div>
             </div>
+            <confirm-dialog></confirm-dialog>
         `;
     }
 }

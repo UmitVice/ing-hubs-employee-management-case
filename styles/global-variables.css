@@ -39,6 +39,14 @@
     --color-surface: #ffffff;
     --min-height-screen: 100vh;
     --spacing-none: 0;
+    /* Modal/Dialog tokens */
+    --modal-backdrop-color: rgba(0, 0, 0, 0.4);
+    --modal-backdrop-color-strong: rgba(0, 0, 0, 0.6);
+    --modal-surface-radius: 6px;
+    --modal-max-width: 32rem;
+    --modal-elevation: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --modal-title-color: var(--color-primary);
+    --modal-border-color: var(--color-border);
 
     /* --- Component Sizes --- */
    --size-icon-sm: 1rem;           /* 16px icon */
