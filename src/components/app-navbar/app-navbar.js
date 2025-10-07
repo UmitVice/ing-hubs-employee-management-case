@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
-import '../language-selector/language-selector.js';
-import { adoptStylesheets } from '../../utils/style-loader.js';
+import '@/components/language-selector/language-selector.js';
+import { adoptStylesheets } from '@/utils/style-loader.js';
 
 const LOGO_URL = '/assets/ing_logo.webp';
 

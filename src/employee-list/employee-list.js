@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit';
-import { t as translate } from '../i18n/i18n.js';
-import { employeeService } from '../employee-service.js';
+import { t as translate } from '@/i18n/i18n.js';
+import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
-import { adoptStylesheets } from '../utils/style-loader.js';
+import { adoptStylesheets } from '@/utils/style-loader.js';
 
 export class EmployeeList extends LitElement {
     static properties = {

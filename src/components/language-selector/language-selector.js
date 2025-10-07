@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit';
-import { loadMessages } from '../../i18n/i18n.js'; 
-import { adoptStylesheets } from '../../utils/style-loader.js';
+import { loadMessages } from '@/i18n/i18n.js'; 
+import { adoptStylesheets } from '@/utils/style-loader.js';
 
 const TR_FLAG_URL = '/assets/flags/tr.png'; 
 const US_FLAG_URL = '/assets/flags/us.png'; 

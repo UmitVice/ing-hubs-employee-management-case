@@ -1,10 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { Router } from '@vaadin/router';
-import './src/employee-list/employee-list.js';
-import './src/employee-form/employee-form.js';
-import './src/components/language-selector/language-selector.js';
-import './src/components/app-navbar/app-navbar.js';
-import { loadMessages } from './src/i18n/i18n.js';
+import '@/employee-list/employee-list.js';
+import '@/employee-form/employee-form.js';
+import '@/components/language-selector/language-selector.js';
+import '@/components/app-navbar/app-navbar.js';
+import { loadMessages } from '@/i18n/i18n.js';
 
 export class AppRoot extends LitElement {
     static get styles() {

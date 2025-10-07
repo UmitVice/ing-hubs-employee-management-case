@@ -14,6 +14,14 @@ if (!['dev', 'prod'].includes(mode)) {
 export default {
   appIndex: 'index.html',
   nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
+  middleware: [
+    function aliasAtToSrc(ctx, next) {
+      if (ctx.url && ctx.url.startsWith('/@/')) {
+        ctx.url = ctx.url.replace('/@/', '/src/');
+      }
+      return next();
+    }
+  ],
   preserveSymlinks: true,
   plugins: [
     legacyPlugin({

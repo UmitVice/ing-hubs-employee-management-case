@@ -89,6 +89,14 @@ export default {
   rootDir: '.',
   files: ['./test/**/*_test.js'],
   nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
+  middleware: [
+    function aliasAtToSrc(ctx, next) {
+      if (ctx.url && ctx.url.startsWith('/@/')) {
+        ctx.url = ctx.url.replace('/@/', '/src/');
+      }
+      return next();
+    }
+  ],
   preserveSymlinks: true,
   browsers: commandLineBrowsers ?? Object.values(browsers),
   testFramework: {
