@@ -1,3 +1,4 @@
+// @ts-check
 import { LitElement, html, css } from 'lit';
 import { Router } from '@vaadin/router';
 import '@/employee-list/employee-list.js';

@@ -1,3 +1,5 @@
+// @ts-check
+/** @type {Record<string, Record<string, string>>} */
 let loadedMessages = {}; 
 
 /**
@@ -37,6 +39,10 @@ export async function loadMessages() {
  * @param {string} key - The translation key (e.g., 'save').
  * @param {string[]} [params=[]] - Parameters for placeholder replacement (e.g., {0}, {1}).
  * @returns {string} The translated and formatted text.
+ */
+/**
+ * @param {string} key
+ * @param {string[]} [params=[]]
  */
 export function t(key, params = []) {
     const locale = getLocale();

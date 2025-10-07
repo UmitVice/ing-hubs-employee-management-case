@@ -1,8 +1,10 @@
+// @ts-check
 import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+/** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeForm extends LitElement {
     static properties = {
@@ -20,6 +22,7 @@ export class EmployeeForm extends LitElement {
     constructor() {
         super();
         this.mode = 'add';
+        /** @type {Employee} */
         this.employee = this._createEmptyEmployee();
         this.errors = {};
         this.NAME_MAX = 50;
@@ -47,8 +50,9 @@ export class EmployeeForm extends LitElement {
         super.disconnectedCallback();
     }
 
+    /** @returns {Employee} */
     _createEmptyEmployee() {
-        return {
+        return /** @type {Employee} */ ({
             id: null,
             firstName: '',
             lastName: '',
@@ -56,9 +60,9 @@ export class EmployeeForm extends LitElement {
             dateOfBirth: '',
             phone: '',
             email: '',
-            department: '',
-            position: ''
-        };
+            department: /** @type {any} */(''),
+            position: /** @type {any} */('')
+        });
     }
 
     _updateField(key, value) {
@@ -109,7 +113,7 @@ export class EmployeeForm extends LitElement {
 
     _handleNamePaste(field, e) {
         e.preventDefault();
-        const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        const text = (e.clipboardData || /** @type {any} */(window).clipboardData)?.getData('text') || '';
         let sanitized = this._sanitizeLetters(text);
         const currentValue = e.target.value || '';
         const start = e.target.selectionStart ?? currentValue.length;
@@ -143,7 +147,7 @@ export class EmployeeForm extends LitElement {
 
     _handlePhonePaste(e) {
         e.preventDefault();
-        const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        const text = (e.clipboardData || /** @type {any} */(window).clipboardData)?.getData('text') || '';
         const digits = this._sanitizeDigits(text);
         const current = this.employee.phone || '';
         const value = e.target.value || '';

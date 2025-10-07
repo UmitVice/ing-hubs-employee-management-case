@@ -1,0 +1,16 @@
+{
+  // Enable JavaScript type checking with JSDoc types across the project
+  "compilerOptions": {
+    "checkJs": true,
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*", "app-root.js", "test/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
