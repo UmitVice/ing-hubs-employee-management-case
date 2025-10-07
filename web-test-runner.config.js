@@ -5,6 +5,9 @@
  */
 
 import {legacyPlugin} from '@web/dev-server-legacy';
+import { rollupAdapter } from '@web/dev-server-rollup';
+import alias from '@rollup/plugin-alias';
+import path from 'path';
 import {playwrightLauncher} from '@web/test-runner-playwright';
 
 const mode = process.env.MODE || 'dev';
@@ -107,6 +110,11 @@ export default {
     },
   },
   plugins: [
+    rollupAdapter(alias({
+      entries: [
+        { find: '@', replacement: path.resolve('.', 'src') },
+      ],
+    })),
     // Detect browsers without modules (e.g. IE11) and transform to SystemJS
     // (https://modern-web.dev/docs/dev-server/plugins/legacy/).
     legacyPlugin({

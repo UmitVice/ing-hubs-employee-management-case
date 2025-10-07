@@ -5,6 +5,9 @@
  */
 
 import {legacyPlugin} from '@web/dev-server-legacy';
+import { rollupAdapter } from '@web/dev-server-rollup';
+import alias from '@rollup/plugin-alias';
+import path from 'path';
 
 const mode = process.env.MODE || 'dev';
 if (!['dev', 'prod'].includes(mode)) {
@@ -24,6 +27,11 @@ export default {
   ],
   preserveSymlinks: true,
   plugins: [
+    rollupAdapter(alias({
+      entries: [
+        { find: '@', replacement: path.resolve('.', 'src') },
+      ],
+    })),
     legacyPlugin({
       polyfills: {
         // Manually imported in index.html file
