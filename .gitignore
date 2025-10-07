@@ -2,3 +2,9 @@
 custom-elements.json
 # only generated for size check
 my-element.bundled.js
+coverage/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
