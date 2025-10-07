@@ -1,0 +1,21 @@
+{
+    "listTitle": "Employee List",
+    "addEmployee": "Add Employee",
+    "editEmployee": "Edit Employee",
+    "addNew": "Employees + Add New",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "dateOfEmployment": "Date of Employment",
+    "dateOfBirth": "Date of Birth",
+    "phoneNumber": "Phone",
+    "emailAddress": "Email",
+    "department": "Department",
+    "position": "Position",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "proceed": "Proceed",
+    "deleteConfirmation": "Are you sure?",
+    "deleteRecord": "Selected Employee record of {0} will be deleted"
+}

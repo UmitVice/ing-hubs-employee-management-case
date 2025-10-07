@@ -1,0 +1,21 @@
+{
+    "employeeList": "Çalışan Listesi",
+    "addEmployee": "Çalışan Ekle",
+    "editEmployee": "Çalışan Düzenle",
+    "addNew": "Çalışanlar + Yeni Ekle",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "dateOfEmployment": "İşe Başlama Tarihi",
+    "dateOfBirth": "Doğum Tarihi",
+    "phoneNumber": "Telefon",
+    "emailAddress": "E-posta",
+    "department": "Departman",
+    "position": "Pozisyon",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "proceed": "Devam Et",
+    "deleteConfirmation": "Emin misiniz?",
+    "deleteRecord": "Seçili çalışan kaydı ({0}) silinecektir"
+}
