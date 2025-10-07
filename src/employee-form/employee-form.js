@@ -1,7 +1,8 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
-import { t as translate } from './i18n/i18n.js';
-import { employeeService } from './employee-service.js';
+import { t as translate } from '../i18n/i18n.js';
+import { employeeService } from '../employee-service.js';
+import styles from './employee-form.css' assert { type: 'css' };
 
 export class EmployeeForm extends LitElement {
     static properties = {
@@ -9,6 +10,8 @@ export class EmployeeForm extends LitElement {
         mode: { type: String },
         errors: { type: Object }
     };
+
+    static styles = [styles];
 
     t(key, params = []) { return translate(key, params); }
 
@@ -51,73 +54,6 @@ export class EmployeeForm extends LitElement {
             department: '',
             position: ''
         };
-    }
-
-    static get styles() {
-        return css`
-            .form-container {
-                max-width: var(--container-max-width);
-                margin: var(--spacing-l) auto;
-                padding: var(--spacing-xl);
-                background-color: var(--color-surface);
-                border-radius: var(--border-radius-base);
-                box-shadow: var(--shadow-subtle);
-            }
-            h2 {
-                margin: var(--spacing-none) 0 var(--spacing-m) 0;
-                font-size: var(--font-size-large);
-            }
-            form {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: var(--spacing-m);
-            }
-            .field {
-                display: flex;
-                flex-direction: column;
-                gap: var(--spacing-xs);
-            }
-            label {
-                font-weight: bold;
-            }
-            input, select {
-                padding: var(--spacing-s);
-                border: var(--border-width-thin) solid var(--color-border);
-                border-radius: var(--border-radius-base);
-                font-size: var(--font-size-base);
-            }
-            .actions {
-                grid-column: 1 / -1;
-                display: flex;
-                gap: var(--spacing-m);
-                margin-top: var(--spacing-l);
-            }
-            .btn-primary {
-                background-color: var(--color-primary);
-                color: var(--color-surface);
-                border: none;
-                padding: var(--spacing-s) var(--spacing-m);
-                border-radius: var(--border-radius-base);
-                cursor: pointer;
-                transition: opacity var(--transition-speed-fast);
-            }
-            .btn-secondary {
-                background-color: var(--color-background-light);
-                color: var(--color-text-dark);
-                border: var(--border-width-thin) solid var(--color-border);
-                padding: var(--spacing-s) var(--spacing-m);
-                border-radius: var(--border-radius-base);
-                cursor: pointer;
-                transition: opacity var(--transition-speed-fast);
-            }
-            .btn-primary:hover, .btn-secondary:hover { opacity: 0.85; }
-            .error-text { color: var(--color-error); font-size: var(--font-size-small); }
-
-            @media (max-width: 768px) {
-                /* Custom exception: one-off concrete breakpoint for layout */
-                form { grid-template-columns: 1fr; }
-            }
-        `;
     }
 
     _updateField(key, value) {
