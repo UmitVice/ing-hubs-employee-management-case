@@ -39,7 +39,13 @@
     --color-surface: #ffffff;
     --min-height-screen: 100vh;
     --spacing-none: 0;
+
+    /* --- Component Sizes --- */
+    --size-icon-sm: 1rem;           /* 16px icon */
+    --pagination-item-size: 2rem;   /* 32px circle buttons */
 }
+
+html { overflow-y: scroll; }
 
 body {
     margin: 0;

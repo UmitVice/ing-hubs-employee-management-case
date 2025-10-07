@@ -13,9 +13,12 @@ export class EmployeeList extends LitElement {
     };
 
     static styles = css`
-        .list-container {
+        .employee-list-wrapper {
             max-width: var(--container-max-width);
             margin: var(--spacing-l) auto;
+        }
+
+        .list-container {
             padding: var(--spacing-xl);
             background-color: var(--color-surface);
             border-radius: var(--border-radius-base);
@@ -25,7 +28,7 @@ export class EmployeeList extends LitElement {
         .list-container[data-view='cards'] {
             background: none;
             box-shadow: none;
-            padding-top: 0;
+            padding: 0;
         }
 
         .header-row {
@@ -64,10 +67,7 @@ export class EmployeeList extends LitElement {
             display: block;
         }
         .controls {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            margin-bottom: var(--spacing-m);
+            display: none;
         }
         .search-input {
             padding: var(--spacing-s);
@@ -112,18 +112,31 @@ export class EmployeeList extends LitElement {
             justify-content: center;
             align-items: center;
             margin-top: var(--spacing-l);
-            gap: var(--spacing-m);
+            gap: var(--spacing-s);
         }
-        .pagination-controls button {
-            padding: var(--spacing-s);
+        .pagination-controls .pager-btn,
+        .pagination-controls .pager-num {
+            width: var(--pagination-item-size);
+            height: var(--pagination-item-size);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
             border: var(--border-width-thin) solid var(--color-border);
-            background-color: var(--color-surface);
+            background: var(--color-surface);
             cursor: pointer;
+            user-select: none;
         }
-        .pagination-controls button:disabled {
-            opacity: var(--opacity-disabled);
-            cursor: not-allowed;
+        .pagination-controls .pager-num.active {
+            background: var(--color-primary);
+            color: var(--color-surface);
+            border-color: transparent;
+            font-weight: 600;
         }
+        .pagination-controls .pager-btn[disabled] { opacity: var(--opacity-disabled); cursor: not-allowed; }
+        .pagination-controls .ellipsis { padding: 0 var(--spacing-s); color: var(--color-text-muted); }
+        .pagination-controls .arrow { width: var(--size-icon-sm); height: var(--size-icon-sm); display: block; }
+        .pagination-controls .prev .arrow { transform: scaleX(-1); }
         .empty-state {
             height: var(--table-empty-state-height);
             display: flex;
@@ -249,12 +262,35 @@ export class EmployeeList extends LitElement {
         };
     }
 
+    _buildPageList(totalPages) {
+        const current = this.page;
+        const pages = [];
+        const push = p => pages.push(p);
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) push(i);
+            return pages;
+        }
+
+        push(1);
+        if (current > 4) push('...l');
+
+        const start = Math.max(2, current - 1);
+        const end = Math.min(totalPages - 1, current + 1);
+        for (let i = start; i <= end; i++) push(i);
+
+        if (current < totalPages - 3) push('...r');
+        push(totalPages);
+        return pages;
+    }
+
     render() {
         const { total, records: currentEmployees } = this._getCurrentPageEmployees();
         const totalPages = Math.ceil(total / this.pageSize);
+        const pageItems = this._buildPageList(totalPages);
         
         return html`
-            <div class="list-container" data-view="${this.viewFormat}">
+            <div class="employee-list-wrapper">
                 <div class="header-row">
                     <h2>${this.t('employeeList')}</h2>
                     <div class="view-toggles">
@@ -268,130 +304,127 @@ export class EmployeeList extends LitElement {
                         </button>
                     </div>
                 </div>
-                
-                <div class="controls">
-                    <input 
-                        type="text" 
-                        placeholder=${this.t('searchPlaceholder')} 
-                        .value=${this.searchTerm}
-                        @input=${this._handleSearch}
-                        class="search-input"
-                    >
-                </div>
-                
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>${this.t('firstName')}</th>
-                            <th>${this.t('lastName')}</th>
-                            <th>${this.t('dateOfEmployment')}</th>
-                            <th>${this.t('email')}</th>
-                            <th>${this.t('department')}</th>
-                            <th>${this.t('position')}</th>
-                            <th>${this.t('actions')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="list-container" data-view="${this.viewFormat}">
+                    <div class="controls">
+                        <input 
+                            type="text" 
+                            placeholder=${this.t('searchPlaceholder')} 
+                            .value=${this.searchTerm}
+                            @input=${this._handleSearch}
+                            class="search-input"
+                        >
+                    </div>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>${this.t('firstName')}</th>
+                                <th>${this.t('lastName')}</th>
+                                <th>${this.t('dateOfEmployment')}</th>
+                                <th>${this.t('email')}</th>
+                                <th>${this.t('department')}</th>
+                                <th>${this.t('position')}</th>
+                                <th>${this.t('actions')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${currentEmployees.map(
+                              emp => html`
+                                <tr>
+                                    <td><input type="checkbox" aria-label="select" /></td>
+                                    <td>${emp.firstName}</td>
+                                    <td>${emp.lastName}</td>
+                                    <td>${emp.dateOfEmployment}</td>
+                                    <td>${emp.email}</td>
+                                    <td>${emp.department}</td>
+                                    <td>${emp.position}</td>
+                                    <td class="actions-cell">
+                                        <button @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
+                                        <button @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
+                                    </td>
+                                </tr>
+                              `
+                            )}
+                            ${
+                              currentEmployees.length === 0
+                                ? html`
+                                    <tr>
+                                        <td colspan="8">
+                                            <div class="empty-state">${this.t('noRecordsFound')}</div>
+                                        </td>
+                                    </tr>
+                                  `
+                                : ''
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="cards-grid" style="max-height: calc(2 * (18rem + var(--spacing-l))); overflow-y: auto;">
                         ${currentEmployees.map(
                           emp => html`
-                            <tr>
-                                <td><input type="checkbox" aria-label="select" /></td>
-                                <td>${emp.firstName}</td>
-                                <td>${emp.lastName}</td>
-                                <td>${emp.dateOfEmployment}</td>
-                                <td>${emp.email}</td>
-                                <td>${emp.department}</td>
-                                <td>${emp.position}</td>
-                                <td class="actions-cell">
-                                    <button @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
-                                    <button @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
-                                </td>
-                            </tr>
+                            <div class="card">
+                                <div class="card-grid">
+                                    <div>
+                                        <div class="field-label">${this.t('firstName')}</div>
+                                        <div>${emp.firstName}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('lastName')}</div>
+                                        <div>${emp.lastName}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('dateOfEmployment')}</div>
+                                        <div>${emp.dateOfEmployment}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('dateOfBirth')}</div>
+                                        <div>${emp.dateOfBirth || '-'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('phoneNumber')}</div>
+                                        <div>${emp.phone || '-'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('email')}</div>
+                                        <div>${emp.email}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('department')}</div>
+                                        <div>${emp.department}</div>
+                                    </div>
+                                    <div>
+                                        <div class="field-label">${this.t('position')}</div>
+                                        <div>${emp.position}</div>
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    <button class="btn edit" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
+                                    <button class="btn primary" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
+                                </div>
+                            </div>
                           `
                         )}
                         ${
                           currentEmployees.length === 0
                             ? html`
-                                <tr>
-                                    <td colspan="8">
-                                        <div class="empty-state">${this.t('noRecordsFound')}</div>
-                                    </td>
-                                </tr>
+                                <div class="empty-state">${this.t('noRecordsFound')}</div>
                               `
                             : ''
                         }
-                    </tbody>
-                </table>
-
-                <div class="cards-grid" style="max-height: calc(2 * (18rem + var(--spacing-l))); overflow-y: auto;">
-                    ${currentEmployees.map(
-                      emp => html`
-                        <div class="card">
-                            <div class="card-grid">
-                                <div>
-                                    <div class="field-label">${this.t('firstName')}</div>
-                                    <div>${emp.firstName}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('lastName')}</div>
-                                    <div>${emp.lastName}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('dateOfEmployment')}</div>
-                                    <div>${emp.dateOfEmployment}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('dateOfBirth')}</div>
-                                    <div>${emp.dateOfBirth || '-'}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('phoneNumber')}</div>
-                                    <div>${emp.phone || '-'}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('email')}</div>
-                                    <div>${emp.email}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('department')}</div>
-                                    <div>${emp.department}</div>
-                                </div>
-                                <div>
-                                    <div class="field-label">${this.t('position')}</div>
-                                    <div>${emp.position}</div>
-                                </div>
-                            </div>
-                            <div class="actions">
-                                <button class="btn edit" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
-                                <button class="btn primary" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
-                            </div>
-                        </div>
-                      `
-                    )}
-                    ${
-                      currentEmployees.length === 0
-                        ? html`
-                            <div class="empty-state">${this.t('noRecordsFound')}</div>
-                          `
-                        : ''
-                    }
-                </div>
-                
-                <div class="pagination-controls">
-                    <button 
-                        @click=${() => this._handlePageChange(this.page - 1)} 
-                        ?disabled=${this.page === 1}
-                    >
-                        ${this.t('previous')}
-                    </button>
-                    <span>${this.t('page')} ${this.page} ${this.t('of')} ${totalPages}</span>
-                    <button 
-                        @click=${() => this._handlePageChange(this.page + 1)} 
-                        ?disabled=${this.page === totalPages || total === 0}
-                    >
-                        ${this.t('next')}
-                    </button>
+                    </div>
+                    
+                    <div class="pagination-controls">
+                        <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
+                            <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
+                        </button>
+                        ${pageItems.map(item => typeof item === 'number'
+                            ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
+                            : html`<span class="ellipsis">…</span>`)}
+                        <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
+                            <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
