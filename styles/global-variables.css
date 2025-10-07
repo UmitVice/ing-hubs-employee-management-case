@@ -12,12 +12,12 @@
    --color-text-muted: #6B6B6B;    /* Secondary text color */
 
     /* --- Typography --- */
-    --font-family-base: 'Arial', sans-serif;
-    --font-size-base: 1rem;         /* 16px */
-    --font-size-large: 1.5rem;      /* For headers */
-   --font-size-small: 0.875rem;    /* For small text */
-   --font-size-xs: 0.75rem;        /* For labels/captions */
-   --font-size-2xs: 0.6875rem;     /* Extra small labels */
+   --font-family-base: 'Arimo', Arial, sans-serif;
+   --font-size-base: 0.75rem;      /* 12px body */
+   --font-size-large: 1.125rem;    /* 18px subheadings */
+  --font-size-small: 0.75rem;
+  --font-size-xs: 0.75rem;        /* labels/captions at body size */
+  --font-size-2xs: 0.6875rem;     /* Extra small labels (11px) */
 
     /* --- Spacing System (8px grid, REM units enforced) --- */
     --spacing-xs: 0.25rem;          /* 4px */
@@ -43,6 +43,7 @@
     /* --- Component Sizes --- */
    --size-icon-sm: 1rem;           /* 16px icon */
    --size-icon-md: 1.25rem;        /* 20px icon */
+   --size-icon-lg: 1.5rem;         /* 24px icon */
    --size-action-btn: 2rem;        /* 32px square touch target */
     --pagination-item-size: 2rem;   /* 32px circle buttons */
    --card-min-height: 18rem;

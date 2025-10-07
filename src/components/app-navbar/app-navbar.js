@@ -35,7 +35,7 @@ export class AppNavbar extends LitElement {
             height: 1.25rem;
         }
         .brand-text {
-            color: var(--color-primary);
+            color: var(--color-text-dark);
             font-weight: bold;
         }
         .spacer {
@@ -50,24 +50,24 @@ export class AppNavbar extends LitElement {
             background: none;
             border: none;
             cursor: pointer;
-            color: var(--color-text-dark);
+            color: var(--color-primary);
             padding: var(--spacing-xs) var(--spacing-s);
             border-radius: var(--border-radius-base);
         }
-        .btn-primary {
-            background-color: var(--color-primary);
-            color: var(--color-surface);
+        .text-button {
+            background: none;
             border: none;
-            padding: var(--spacing-s) var(--spacing-m);
-            border-radius: var(--border-radius-base);
             cursor: pointer;
-            transition: opacity var(--transition-speed-fast);
-        }
-        .btn-primary:hover {
-            opacity: 0.85;
+            color: var(--color-primary);
+            padding: var(--spacing-xs) var(--spacing-s);
+            border-radius: var(--border-radius-base);
+            display: inline-flex;
+            align-items: center;
         }
         .plus {
             margin-right: var(--spacing-xs);
+            font-size: var(--size-icon-lg);
+            line-height: 1;
         }
         @media (max-width: 640px) {
             .navbar-inner {
@@ -98,7 +98,7 @@ export class AppNavbar extends LitElement {
 
                     <div class="nav-actions">
                         <button class="link" @click=${() => this._go('/')}>Employees</button>
-                        <button class="btn-primary" @click=${() => this._go('/add')}>
+                        <button class="text-button" @click=${() => this._go('/add')}>
                             <span class="plus" aria-hidden="true">+</span>
                             <span>Add New</span>
                         </button>

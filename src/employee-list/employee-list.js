@@ -37,6 +37,12 @@ export class EmployeeList extends LitElement {
             justify-content: space-between;
             margin-bottom: var(--spacing-m);
         }
+        .page-title {
+            color: var(--color-primary);
+            font-size: var(--font-size-large);
+            font-weight: 600;
+            margin: var(--spacing-none);
+        }
         
         .list-container[data-view="cards"] .data-table,
         .list-container[data-view="table"] .cards-grid {
@@ -121,6 +127,7 @@ export class EmployeeList extends LitElement {
             color: var(--color-primary);
             transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast);
         }
+        .actions-cell { white-space: nowrap; }
         .actions-cell .action-btn + .action-btn { margin-left: var(--spacing-s); }
         .actions-cell .action-btn.delete { color: var(--color-error); }
         .actions-cell .action-btn:hover { background-color: var(--color-background-light); }
@@ -314,7 +321,7 @@ export class EmployeeList extends LitElement {
         return html`
             <div class="employee-list-wrapper">
                 <div class="header-row">
-                    <h2>${this.t('employeeList')}</h2>
+                    <h2 class="page-title">${this.t('employeeList')}</h2>
                     <div class="view-toggles">
                         <button class="icon-btn ${this.viewFormat === 'table' ? 'active' : ''}"
                             @click=${() => this._setView('table')} aria-label="Table view">
