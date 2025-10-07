@@ -1,37 +1,12 @@
-import { LitElement, html, css } from 'lit';
-import { loadMessages } from '../i18n/i18n.js'; 
+import { LitElement, html } from 'lit';
+import { loadMessages } from '../../i18n/i18n.js'; 
+import styles from './language-selector.css' assert { type: 'css' };
 
-const TR_FLAG_URL = '/assets/flags/TR.png'; 
+const TR_FLAG_URL = '/assets/flags/tr.png'; 
 const US_FLAG_URL = '/assets/flags/us.png'; 
 
 export class LanguageSelector extends LitElement {
-    static styles = css`
-        :host {
-            display: inline-block;
-        }
-        button {
-            background: none;
-            border: var(--border-width-thin) solid transparent;
-            cursor: pointer;
-            padding: var(--spacing-xs);
-            opacity: 0.6;
-            transition: opacity var(--transition-speed-fast), border-color var(--transition-speed-fast);
-            border-radius: var(--border-radius-base);
-        }
-        button:hover {
-            opacity: 0.8;
-        }
-        button.active {
-            opacity: 1; 
-        }
-        
-        /* Set the size for the flag images */
-        .flag-icon {
-            width: 2.0rem;
-            height: 1.5rem;
-            display: block;
-        }
-    `;
+    static styles = [styles];
 
     static properties = {
         currentLocale: { type: String, state: true }
@@ -98,3 +73,5 @@ export class LanguageSelector extends LitElement {
     }
 }
 customElements.define('language-selector', LanguageSelector);
+
+
