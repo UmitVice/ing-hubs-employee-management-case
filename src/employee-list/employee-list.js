@@ -67,10 +67,14 @@ export class EmployeeList extends LitElement {
             border-color: var(--color-primary);
             opacity: 1;
         }
-        .icon-img {
-            width: var(--spacing-l);
-            height: var(--spacing-l);
-            display: block;
+        .icon-img { display: block; }
+        .icon-img.list {
+            width: var(--size-toggle-list-icon-width);
+            height: var(--size-toggle-list-icon-height);
+        }
+        .icon-img.grid {
+            width: var(--size-toggle-grid-icon);
+            height: var(--size-toggle-grid-icon);
         }
         .controls {
             display: none;
@@ -85,7 +89,7 @@ export class EmployeeList extends LitElement {
             width: 100%;
             border-collapse: collapse;
             margin-top: var(--spacing-m);
-            border: var(--border-width-thin) solid var(--color-border-strong);
+            border: var(--border-width-thin) solid var(--color-border);
             border-radius: var(--border-radius-base);
             overflow: hidden;
         }
@@ -181,7 +185,7 @@ export class EmployeeList extends LitElement {
             border-radius: var(--border-radius-base);
             box-shadow: var(--shadow-subtle);
             padding: var(--spacing-l);
-            border: var(--border-width-thin) solid var(--color-border-strong);
+            border: var(--border-width-thin) solid var(--color-border);
             min-height: var(--card-min-height);
         }
         .card-grid {
@@ -325,11 +329,11 @@ export class EmployeeList extends LitElement {
                     <div class="view-toggles">
                         <button class="icon-btn ${this.viewFormat === 'table' ? 'active' : ''}"
                             @click=${() => this._setView('table')} aria-label="Table view">
-                            <img class="icon-img" src="/assets/icons/list_icon.png" alt="Table" />
+                            <img class="icon-img list" src="/assets/icons/list_icon.png" alt="Table" />
                         </button>
                         <button class="icon-btn ${this.viewFormat === 'cards' ? 'active' : ''}"
                             @click=${() => this._setView('cards')} aria-label="Cards view">
-                            <img class="icon-img" src="/assets/icons/square_list_icon.png" alt="Cards" />
+                            <img class="icon-img grid" src="/assets/icons/square_list_icon.png" alt="Cards" />
                         </button>
                     </div>
                 </div>
@@ -351,6 +355,8 @@ export class EmployeeList extends LitElement {
                                 <th>${this.t('firstName')}</th>
                                 <th>${this.t('lastName')}</th>
                                 <th>${this.t('dateOfEmployment')}</th>
+                                <th>${this.t('dateOfBirth')}</th>
+                                <th>${this.t('phoneNumber')}</th>
                                 <th>${this.t('email')}</th>
                                 <th>${this.t('department')}</th>
                                 <th>${this.t('position')}</th>
@@ -365,6 +371,8 @@ export class EmployeeList extends LitElement {
                                     <td>${emp.firstName}</td>
                                     <td>${emp.lastName}</td>
                                     <td>${emp.dateOfEmployment}</td>
+                                    <td>${emp.dateOfBirth || '-'}</td>
+                                    <td>${emp.phone || '-'}</td>
                                     <td>${emp.email}</td>
                                     <td>${emp.department}</td>
                                     <td>${emp.position}</td>
@@ -387,7 +395,7 @@ export class EmployeeList extends LitElement {
                               currentEmployees.length === 0
                                 ? html`
                                     <tr>
-                                        <td colspan="8">
+                                        <td colspan="10">
                                             <div class="empty-state">${this.t('noRecordsFound')}</div>
                                         </td>
                                     </tr>

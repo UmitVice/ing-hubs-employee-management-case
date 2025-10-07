@@ -23,7 +23,7 @@ export class AppNavbar extends LitElement {
         .brand {
             display: inline-flex;
             align-items: center;
-            gap: var(--spacing-s);
+            gap: var(--spacing-m);
             background: none;
             border: none;
             cursor: pointer;
@@ -33,10 +33,14 @@ export class AppNavbar extends LitElement {
         .logo {
             width: 1.25rem;
             height: 1.25rem;
+            display: block;
         }
         .brand-text {
             color: var(--color-text-dark);
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            line-height: 2;
         }
         .spacer {
             flex: 1;
