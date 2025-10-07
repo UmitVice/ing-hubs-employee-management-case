@@ -15,6 +15,14 @@ export class AppRoot extends LitElement {
                 min-height: var(--min-height-screen);
                 background-color: var(--color-background-light);
             }
+            .title {
+                max-width: var(--container-max-width);
+                margin: var(--spacing-l) auto var(--spacing-s) auto;
+                padding: 0 var(--spacing-xl);
+                color: var(--color-primary);
+                font-size: var(--font-size-large);
+                font-weight: 600;
+            }
             main {
                 max-width: var(--container-max-width);
                 margin: var(--spacing-none) auto;
@@ -62,6 +70,7 @@ export class AppRoot extends LitElement {
     render() {
         return html`
             <app-navbar></app-navbar>
+            <div class="title">ING Hub case study</div>
             <main></main>
         `;
     }
