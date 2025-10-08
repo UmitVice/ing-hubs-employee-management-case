@@ -40,12 +40,13 @@
 .nav-actions {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-m);
+    gap: var(--spacing-l);
 }
 
 .link { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); }
 
 .text-button { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); display: inline-flex; align-items: center; }
+.text-button:hover { opacity: 0.85; }
 .plus { margin-right: var(--spacing-xs); font-size: var(--size-icon-lg); line-height: 1; }
 
 .btn-primary {

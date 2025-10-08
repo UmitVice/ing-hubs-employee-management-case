@@ -4,7 +4,6 @@ import { withBase } from '@/utils/base-path.js';
 import { t as translate } from '@/i18n/i18n.js';
 import '@/components/language-selector/language-selector.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
-import '@/components/app-button/app-button.js';
 import { assetUrl } from '@/utils/asset.js';
 
 const LOGO_URL = assetUrl('ing_logo.webp');
@@ -61,11 +60,11 @@ export class AppNavbar extends LitElement {
                     <div class="spacer"></div>
 
                     <div class="nav-actions">
-                        <app-button variant="secondary" @click=${() => this._go('/')}>${this.t('employees')}</app-button>
-                        <app-button class="add-btn" variant="primary" @click=${() => this._go('/add')}>
+                        <button class="text-button" @click=${() => this._go('/')}>${this.t('employees')}</button>
+                        <button class="text-button" @click=${() => this._go('/add')}>
                             <span class="plus" aria-hidden="true">+</span>
                             <span>${this.t('addNew')}</span>
-                        </app-button>
+                        </button>
                         <language-selector></language-selector>
                     </div>
                 </div>
