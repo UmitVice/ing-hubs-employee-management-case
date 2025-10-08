@@ -50,6 +50,11 @@ class EmployeeService extends EventTarget {
     /** Adds a new employee with a generated ID. */
     /** @param {Omit<Employee,'id'>} employeeData */
     addEmployee(employeeData) {
+        // Prevent accidental duplicates by email
+        const email = (employeeData?.email || '').toLowerCase();
+        if (email && this.employees.some(e => (e.email || '').toLowerCase() === email)) {
+            return; // ignore duplicate add
+        }
         const newEmployee = /** @type {Employee} */({ ...employeeData, id: Date.now().toString(36) + Math.random().toString(36).substring(2) });
         this.employees.push(newEmployee);
         this._saveData();

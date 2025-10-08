@@ -42,11 +42,11 @@ export class ConfirmDialog extends LitElement {
   _onKeydown(e) {
     if (!this.open) return;
     if (e.key === 'Escape') {
+      e.preventDefault();
       this._cancel();
     }
-    if (e.key === 'Enter') {
-      this._confirm();
-    }
+    // Do not handle Enter here to avoid double-confirm.
+    // When the confirm button has focus, pressing Enter will trigger its click event.
   }
 
   openWith({ title, message, confirmText, cancelText, variant }) {
