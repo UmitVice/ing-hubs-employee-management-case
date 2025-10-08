@@ -4,8 +4,9 @@ import { t as translate } from '@/i18n/i18n.js';
 import '@/components/language-selector/language-selector.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import '@/components/app-button/app-button.js';
+import { assetUrl } from '@/utils/asset.js';
 
-const LOGO_URL = '/assets/ing_logo.webp';
+const LOGO_URL = assetUrl('ing_logo.webp');
 
 export class AppNavbar extends LitElement {
     static properties = {

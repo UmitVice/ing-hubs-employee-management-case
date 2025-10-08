@@ -21,9 +21,9 @@ page-container.no-container-style::part(content) {
 .icon-btn.active { background: transparent; }
 .toggle-icon { display: block; }
 /* list icon as SVG mask */
-.toggle-icon.list { width: var(--size-toggle-list-icon-width); height: var(--size-toggle-list-icon-height); -webkit-mask: url('/assets/icons/list_icon.svg') no-repeat center / contain; mask: url('/assets/icons/list_icon.svg') no-repeat center / contain; background: currentColor; }
+.toggle-icon.list { width: var(--size-toggle-list-icon-width); height: var(--size-toggle-list-icon-height); -webkit-mask: url('../../assets/icons/list_icon.svg') no-repeat center / contain; mask: url('../../assets/icons/list_icon.svg') no-repeat center / contain; background: currentColor; }
 /* grid icon as SVG mask */
-.toggle-icon.grid { width: var(--size-toggle-grid-icon); height: var(--size-toggle-grid-icon); -webkit-mask: url('/assets/icons/square_list_icon.svg') no-repeat center / contain; mask: url('/assets/icons/square_list_icon.svg') no-repeat center / contain; background: currentColor; }
+.toggle-icon.grid { width: var(--size-toggle-grid-icon); height: var(--size-toggle-grid-icon); -webkit-mask: url('../../assets/icons/square_list_icon.svg') no-repeat center / contain; mask: url('../../assets/icons/square_list_icon.svg') no-repeat center / contain; background: currentColor; }
 /* default dim state */
 .icon-btn:not(.active) .toggle-icon { color: var(--color-primary-muted); }
 /* active filled orange */

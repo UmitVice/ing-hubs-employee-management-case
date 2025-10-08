@@ -4,6 +4,7 @@ import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import { assetUrl } from '@/utils/asset.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
 import '@/components/app-button/app-button.js';
@@ -349,20 +350,20 @@ export class EmployeeList extends LitElement {
                             : ''
                         }
                     </div>
+                    
+                    <div class="pagination-controls">
+                        <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
+                            <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
+                        </button>
+                        ${pageItems.map(item => typeof item === 'number'
+                            ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
+                            : html`<span class="ellipsis">…</span>`)}
+                        <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
+                            <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
+                        </button>
+                    </div>
                 </div>
             </page-container>
-            
-            <div class="pagination-controls">
-                <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
-                    <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
-                </button>
-                ${pageItems.map(item => typeof item === 'number'
-                    ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
-                    : html`<span class="ellipsis">…</span>`)}
-                <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
-                    <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
-                </button>
-            </div>
             <confirm-dialog></confirm-dialog>
         `;
     }
