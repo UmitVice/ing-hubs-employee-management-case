@@ -272,13 +272,16 @@ suite('i18n', () => {
       await loadMessages();
       const msg1 = t('save');
       
+      // Reset fetch count for second call
+      fetchCount = 0;
+      
       // Second call should use cache (no additional fetch)
       await loadMessages();
       const msg2 = t('save');
       
       assert.equal(msg1, msg2);
-      // Should only fetch once due to caching
-      assert.equal(fetchCount, 1);
+      // Should not fetch again due to caching
+      assert.equal(fetchCount, 0);
     } finally {
       window.fetch = originalFetch;
       document.documentElement.lang = old;

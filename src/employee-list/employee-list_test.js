@@ -50,6 +50,9 @@ suite('employee-list', () => {
     el._setView('cards');
     await el.updateComplete;
     
+    // Wait for data-view attribute to be set
+    await new Promise(resolve => setTimeout(resolve, 10));
+    
     // Check view state
     assert.equal(el._currentView, 'cards');
     const wrapper = el.shadowRoot.querySelector('.list-view-wrapper');

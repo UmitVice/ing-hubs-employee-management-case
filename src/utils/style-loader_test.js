@@ -59,7 +59,10 @@ suite('style-loader', () => {
     window.fetch = () => Promise.reject(new Error('Network error'));
     
     try {
+      // Get initial count before any operations
       const initialCount = el.shadowRoot.adoptedStyleSheets.length;
+      
+      // Try to load stylesheet with network error
       await adoptStylesheets(el.shadowRoot, [new URL('../../styles/global-variables.css', import.meta.url)]);
       
       // Should not have added any stylesheets due to error

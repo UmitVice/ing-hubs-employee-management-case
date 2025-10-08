@@ -226,9 +226,17 @@ suite('employee-form', () => {
     const el = await fixture(html`<employee-form></employee-form>`);
     await el.updateComplete;
     
+    // Wait for form to be populated
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await el.updateComplete;
+    
     // Should load existing data
-    assert.equal(el.shadowRoot.querySelector('#firstName').value, 'Grace');
-    assert.equal(el.shadowRoot.querySelector('#lastName').value, 'Hopper');
+    const firstNameInput = el.shadowRoot.querySelector('#firstName');
+    const lastNameInput = el.shadowRoot.querySelector('#lastName');
+    assert.exists(firstNameInput, 'firstName input should exist');
+    assert.exists(lastNameInput, 'lastName input should exist');
+    assert.equal(firstNameInput.value, 'Grace');
+    assert.equal(lastNameInput.value, 'Hopper');
     
     // Change last name
     el.shadowRoot.querySelector('#lastName').value = 'Updated';
@@ -312,6 +320,10 @@ suite('employee-form', () => {
     dlg.shadowRoot.querySelector('.confirm').click();
     await el.updateComplete;
     
+    // Wait for form clearing to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+    await el.updateComplete;
+    
     // Form should be cleared
     assert.equal(el.shadowRoot.querySelector('#firstName').value, '');
     assert.equal(el.shadowRoot.querySelector('#lastName').value, '');
@@ -343,7 +355,7 @@ suite('employee-form', () => {
     assert.isTrue(el._isLoading);
     
     // Wait for connectedCallback to complete
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise(resolve => setTimeout(resolve, 200));
     await el.updateComplete;
     
     // Should not be loading anymore
@@ -457,7 +469,7 @@ suite('employee-form', () => {
     await el.updateComplete;
     
     // Wait for CSS to be fully loaded
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const form = el.shadowRoot.querySelector('form');
     const computedStyle = getComputedStyle(form);

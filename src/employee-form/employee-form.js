@@ -43,6 +43,7 @@ export class EmployeeForm extends LitElement {
         this.PHONE_MAX = 10;
         this._countryCodeLength = 0;
         this._isLoading = true; // Start in loading state
+        this.requestUpdate();
     }
 
     async connectedCallback() {
@@ -78,8 +79,11 @@ export class EmployeeForm extends LitElement {
             Router.go(withBase('/'));
             return;
         } finally {
-            this._isLoading = false;
-            this.requestUpdate();
+            // Only set loading to false if we're not in edit mode or if employee was found
+            if (this.mode !== 'edit' || this.employee.id) {
+                this._isLoading = false;
+                this.requestUpdate();
+            }
         }
     }
 
@@ -250,6 +254,8 @@ export class EmployeeForm extends LitElement {
         const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
         const message = this.mode === 'edit' ? this.t('confirmUpdate') : this.t('confirmCreate');
         dlg.openWith({ title, message, confirmText: this.t('proceed'), cancelText: this.t('cancel'), variant: 'default' });
+        // Ensure dialog is open
+        dlg.open = true;
         const onConfirm = () => {
             if (this.mode === 'edit') {
                 employeeService.updateEmployee(this.employee);
@@ -261,7 +267,14 @@ export class EmployeeForm extends LitElement {
                 this.errors = {};
                 this.requestUpdate();
                 // Sync form inputs after clearing
-                setTimeout(() => this._syncFormWithEmployee(), 0);
+                setTimeout(() => {
+                    this._syncFormWithEmployee();
+                    // Also reset form elements directly
+                    const form = this.shadowRoot.querySelector('form');
+                    if (form) {
+                        form.reset();
+                    }
+                }, 0);
             }
             dlg.removeEventListener('confirm', onConfirm);
             Router.go(withBase('/'));
