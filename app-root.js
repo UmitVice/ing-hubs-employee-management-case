@@ -1,6 +1,7 @@
 // @ts-check
 import { LitElement, html, css } from 'lit';
 import { Router } from '@vaadin/router';
+import { getBasePath } from '@/utils/base-path.js';
 import '@/employee-list/employee-list.js';
 import '@/employee-form/employee-form.js';
 import '@/components/language-selector/language-selector.js';
@@ -37,7 +38,7 @@ export class AppRoot extends LitElement {
         await loadMessages();
         const outlet = this.shadowRoot.querySelector('main');
         
-        const router = new Router(outlet);
+        const router = new Router(outlet, { baseUrl: getBasePath() });
         router.setRoutes([
             {
                 path: '/',

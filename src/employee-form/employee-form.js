@@ -1,6 +1,7 @@
 // @ts-check
 import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
+import { withBase, stripBase } from '@/utils/base-path.js';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
@@ -40,7 +41,7 @@ export class EmployeeForm extends LitElement {
         super.connectedCallback();
         this._onLanguageChanged = () => this.requestUpdate();
         document.addEventListener('language-changed', this._onLanguageChanged);
-        const path = window.location.pathname;
+        const path = stripBase(window.location.pathname);
         if (path.startsWith('/edit/')) {
             const id = decodeURIComponent(path.split('/').pop() || '');
             const existing = employeeService.getEmployeeById(id);
@@ -221,13 +222,13 @@ export class EmployeeForm extends LitElement {
                 employeeService.addEmployee(payload);
             }
             dlg.removeEventListener('confirm', onConfirm);
-            Router.go('/');
+            Router.go(withBase('/'));
         };
         dlg.addEventListener('confirm', onConfirm);
     }
 
     _handleCancel() {
-        Router.go('/');
+        Router.go(withBase('/'));
     }
 
     render() {

@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { Router } from '@vaadin/router';
+import { withBase } from '@/utils/base-path.js';
 import { t as translate } from '@/i18n/i18n.js';
 import '@/components/language-selector/language-selector.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
@@ -44,7 +45,7 @@ export class AppNavbar extends LitElement {
     }
 
     _go(path) {
-        Router.go(path);
+        Router.go(withBase(path));
     }
 
     render() {

@@ -3,6 +3,7 @@ import { LitElement, html } from 'lit';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
+import { withBase } from '@/utils/base-path.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import { assetUrl } from '@/utils/asset.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
@@ -79,7 +80,7 @@ export class EmployeeList extends LitElement {
     }
 
     _handleEdit(id) {
-        Router.go(`/edit/${id}`);
+        Router.go(withBase(`/edit/${id}`));
     }
 
     _handleDelete(id) {
