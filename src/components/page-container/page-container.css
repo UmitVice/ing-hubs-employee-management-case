@@ -1,0 +1,32 @@
+:host {
+    display: block;
+    opacity: 1;
+}
+
+.page-wrapper {
+    max-width: var(--container-max-width);
+    margin: var(--spacing-l) auto;
+    padding: var(--spacing-none);
+}
+
+.title-section { margin: var(--spacing-l) 0 var(--spacing-m) 0; padding-left: var(--spacing-l); padding-right: var(--spacing-l); }
+
+.toolbar-section { padding-left: var(--spacing-l); padding-right: var(--spacing-l); margin-bottom: var(--spacing-m); }
+
+.page-title {
+    color: var(--color-primary);
+    font-size: var(--font-size-large);
+    font-weight: 600;
+    margin: var(--spacing-none);
+    padding: var(--spacing-none);
+}
+
+.page-content {
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-subtle);
+    padding: var(--spacing-l);
+    min-height: var(--form-container-min-height);
+    margin-bottom: var(--spacing-xl);
+}
+

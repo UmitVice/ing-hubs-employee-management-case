@@ -19,14 +19,14 @@ export function getLocale() {
 export async function loadMessages() {
     const locale = getLocale();
     try {
-        const response = await fetch(`/src/i18n/${locale}.json`, { headers: { 'Accept': 'application/json' } });
+        const response = await fetch(new URL(`./${locale}.json`, import.meta.url).href, { headers: { 'Accept': 'application/json' } });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         loadedMessages[locale] = await response.json();
     } catch (error) {
         console.error(`Failed to load messages for locale: ${locale}`, error);
         if (!loadedMessages['en']) {
             try {
-                const respEn = await fetch(`/src/i18n/en.json`, { headers: { 'Accept': 'application/json' } });
+                const respEn = await fetch(new URL('./en.json', import.meta.url).href, { headers: { 'Accept': 'application/json' } });
                 if (respEn.ok) loadedMessages['en'] = await respEn.json();
             } catch (_) { /* ignore */ }
         }

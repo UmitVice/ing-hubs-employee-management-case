@@ -4,7 +4,11 @@ import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import { assetUrl } from '@/utils/asset.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
+import '@/components/page-container/page-container.js';
+import '@/components/app-button/app-button.js';
+import '@/components/app-search/app-search.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeList extends LitElement {
@@ -13,11 +17,15 @@ export class EmployeeList extends LitElement {
         page: { type: Number },
         pageSize: { type: Number },
         searchTerm: { type: String },
-        viewFormat: { type: String }
+        viewFormat: { type: String },
+        filters: { type: Object }
     };
 
     async firstUpdated() {
+        // Prevent FOUC: keep invisible until styles are adopted
+        this.style.visibility = 'hidden';
         await adoptStylesheets(this.shadowRoot, [new URL('./employee-list.css', import.meta.url)]);
+        this.style.visibility = 'visible';
     }
 
     // Lightweight bridge to the global translator
@@ -31,6 +39,16 @@ export class EmployeeList extends LitElement {
         this.pageSize = 10;
         this.searchTerm = '';
         this.viewFormat = 'table';
+        this.filters = {
+            firstName: '',
+            lastName: '',
+            dateOfEmployment: '',
+            dateOfBirth: '',
+            phone: '',
+            email: '',
+            department: '',
+            position: ''
+        };
 
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
         this._onLanguageChanged = () => this.requestUpdate();
@@ -87,6 +105,11 @@ export class EmployeeList extends LitElement {
         this.searchTerm = e.target.value;
         this.page = 1;
     }
+
+    _updateFilter(field, value) {
+        this.filters = { ...this.filters, [field]: value };
+        this.page = 1;
+    }
     
     _handlePageChange(newPage) {
         const effectivePageSize = this.viewFormat === 'cards' ? 4 : this.pageSize;
@@ -97,18 +120,24 @@ export class EmployeeList extends LitElement {
     }
 
     _getCurrentPageEmployees() {
-        const lowerCaseSearch = this.searchTerm.toLowerCase();
-        
+        const f = this.filters;
         const filteredEmployees = this.employees.filter(emp => {
-            const firstName = emp.firstName?.toLowerCase() || '';
-            const lastName = emp.lastName?.toLowerCase() || '';
-            const email = emp.email?.toLowerCase() || '';
-            
-            return (
-                firstName.includes(lowerCaseSearch) ||
-                lastName.includes(lowerCaseSearch) ||
-                email.includes(lowerCaseSearch)
-            );
+            if (f.firstName && !(emp.firstName || '').toLowerCase().includes(f.firstName.toLowerCase())) return false;
+            if (f.lastName && !(emp.lastName || '').toLowerCase().includes(f.lastName.toLowerCase())) return false;
+            if (f.email && !(emp.email || '').toLowerCase().includes(f.email.toLowerCase())) return false;
+            if (f.department && !(emp.department || '').toLowerCase().includes(f.department.toLowerCase())) return false;
+            if (f.position && !(emp.position || '').toLowerCase().includes(f.position.toLowerCase())) return false;
+            if (f.phone && !(emp.phone || '').toString().includes(f.phone.toString())) return false;
+            if (f.dateOfEmployment && (emp.dateOfEmployment || '') !== f.dateOfEmployment) return false;
+            if (f.dateOfBirth && (emp.dateOfBirth || '') !== f.dateOfBirth) return false;
+            // If a global quick search term exists, apply it in addition
+            if (this.searchTerm) {
+                const s = this.searchTerm.toLowerCase();
+                const any = ['firstName','lastName','email','department','position']
+                    .some(k => (emp[k] || '').toLowerCase().includes(s));
+                if (!any) return false;
+            }
+            return true;
         });
         
         // Pagination logic (dynamic pageSize: 4 in cards view)
@@ -151,8 +180,8 @@ export class EmployeeList extends LitElement {
         const pageItems = this._buildPageList(totalPages);
         
         return html`
-            <div class="employee-list-wrapper">
-                <div class="header-row">
+            <page-container class="${this.viewFormat === 'cards' ? 'no-container-style' : ''}">
+                <div slot="title" class="header-row">
                     <h2 class="page-title">${this.t('employeeList')}</h2>
                     <div class="view-toggles">
                         <button class="icon-btn ${this.viewFormat === 'table' ? 'active' : ''}"
@@ -165,7 +194,7 @@ export class EmployeeList extends LitElement {
                         </button>
                     </div>
                 </div>
-                <div class="list-container" data-view="${this.viewFormat}">
+                <div class="list-view-wrapper" data-view="${this.viewFormat}">
                     
                     <table class="data-table">
                         <thead>
@@ -180,6 +209,50 @@ export class EmployeeList extends LitElement {
                                 <th>${this.t('department')}</th>
                                 <th>${this.t('position')}</th>
                                 <th>${this.t('actions')}</th>
+                            </tr>
+                            <tr class="filters-row">
+                                <th></th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.firstName}
+                                        .placeholder=${this.t('firstName')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('firstName', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.lastName}
+                                        .placeholder=${this.t('lastName')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('lastName', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.dateOfEmployment}
+                                        type="date" .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('dateOfEmployment', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.dateOfBirth}
+                                        type="date" .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('dateOfBirth', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.phone}
+                                        .placeholder=${this.t('phoneNumber')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('phone', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.email}
+                                        .placeholder=${this.t('email')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('email', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.department}
+                                        .placeholder=${this.t('department')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('department', e.detail.value)}></app-search>
+                                </th>
+                                <th>
+                                    <app-search class="col-filter" .value=${this.filters.position}
+                                        .placeholder=${this.t('position')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('position', e.detail.value)}></app-search>
+                                </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -263,8 +336,8 @@ export class EmployeeList extends LitElement {
                                     </div>
                                 </div>
                                 <div class="actions">
-                                    <button class="btn edit" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
-                                    <button class="btn primary" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
+                                    <app-button variant="secondary" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</app-button>
+                                    <app-button variant="danger" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</app-button>
                                 </div>
                             </div>
                           `
@@ -280,17 +353,17 @@ export class EmployeeList extends LitElement {
                     
                     <div class="pagination-controls">
                         <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
-                            <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
+                            <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
                         </button>
                         ${pageItems.map(item => typeof item === 'number'
                             ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
                             : html`<span class="ellipsis">…</span>`)}
                         <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
-                            <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
+                            <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
                         </button>
                     </div>
                 </div>
-            </div>
+            </page-container>
             <confirm-dialog></confirm-dialog>
         `;
     }

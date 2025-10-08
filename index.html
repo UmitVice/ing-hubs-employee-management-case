@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Lit Starter Kit</title>
+    <link rel="icon" href="./assets/ing_logo.webp" type="image/webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -11,6 +12,15 @@
     <style>
       body { margin: 0; }
     </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "lit": "https://unpkg.com/lit@3.2.0/index.js?module",
+          "@vaadin/router": "https://unpkg.com/@vaadin/router@2.0.2/dist/vaadin-router.js?module",
+          "@/": "/ing-hubs-employee-management-case/src/"
+        }
+      }
+    </script>
   </head>
   <body>
     <script type="module" src="./app-root.js"></script>
