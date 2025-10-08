@@ -351,20 +351,21 @@ export class EmployeeList extends LitElement {
                             : ''
                         }
                     </div>
-                    
-                    <div class="pagination-controls">
-                        <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
-                            <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
-                        </button>
-                        ${pageItems.map(item => typeof item === 'number'
-                            ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
-                            : html`<span class="ellipsis">…</span>`)}
-                        <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
-                            <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
-                        </button>
-                    </div>
                 </div>
             </page-container>
+            ${total > 0 ? html`
+            <div class="pagination-controls">
+                <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
+                    <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
+                </button>
+                ${pageItems.map(item => typeof item === 'number'
+                    ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
+                    : html`<span class="ellipsis">…</span>`)}
+                <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
+                    <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
+                </button>
+            </div>
+            ` : ''}
             <confirm-dialog></confirm-dialog>
         `;
     }

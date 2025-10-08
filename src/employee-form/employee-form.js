@@ -231,6 +231,16 @@ export class EmployeeForm extends LitElement {
         Router.go(withBase('/'));
     }
 
+    _handleSaveClick() {
+        const form = this.shadowRoot.querySelector('form');
+        // Prefer requestSubmit when available to trigger the native submit
+        if (form && typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+        } else if (form) {
+            form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true, composed: true }));
+        }
+    }
+
     render() {
         const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
 
@@ -304,7 +314,7 @@ export class EmployeeForm extends LitElement {
                     </div>
 
                     <div class="actions">
-                        <app-button variant="primary" .type=${'submit'}>${this.t('save')}</app-button>
+                        <app-button variant="primary" .type=${'button'} @click=${this._handleSaveClick}>${this.t('save')}</app-button>
                         <app-button variant="secondary" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>

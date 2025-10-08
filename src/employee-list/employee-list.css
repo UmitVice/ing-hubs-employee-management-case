@@ -1,6 +1,8 @@
 /* View switching: Default is table view */
 .list-view-wrapper .data-table { display: table; }
 .list-view-wrapper .cards-grid { display: none !important; }
+/* Ensure cards are hidden unless cards view is active */
+.list-view-wrapper:not([data-view="cards"]) .cards-grid { display: none !important; }
 
 /* Card view: hide table, show cards */
 .list-view-wrapper[data-view="cards"] .data-table { display: none !important; }
