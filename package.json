@@ -20,7 +20,9 @@
     "test:dev": "wtr --coverage",
     "test:watch": "wtr --watch",
     "test:prod": "MODE=prod wtr --coverage",
-    "test:prod:watch": "MODE=prod wtr --watch --coverage"
+    "test:prod:watch": "MODE=prod wtr --watch --coverage",
+    "prepush:checks": "npm test && node scripts/check-coverage.js 85",
+    "prepare": "husky"
   },
   "keywords": [
     "web-components",
@@ -52,6 +54,7 @@
     "@webcomponents/webcomponentsjs": "^2.8.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.15.0",
+    "husky": "^9.1.7",
     "lit-analyzer": "^2.0.3",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
