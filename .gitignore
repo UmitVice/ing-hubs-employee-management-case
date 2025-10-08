@@ -2,6 +2,8 @@
 custom-elements.json
 # only generated for size check
 my-element.bundled.js
+# Build output
+dist/
 coverage/
 .env
 .env.local
