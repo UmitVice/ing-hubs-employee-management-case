@@ -141,3 +141,22 @@ page-container.no-container-style::part(content) {
 }
 
 
+/* Layout tweaks: narrow the checkbox column and tighten first-name padding
+   to free up space so phone numbers can stay on one line */
+.data-table th:first-child,
+.data-table td:first-child {
+    width: 36px; /* compact checkbox column */
+    padding-left: var(--spacing-xs);
+    padding-right: var(--spacing-xs);
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    padding-left: var(--spacing-s);
+}
+
+/* Keep phone numbers on a single line */
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    white-space: nowrap;
+}
