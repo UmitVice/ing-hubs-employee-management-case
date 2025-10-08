@@ -1,7 +1,6 @@
 // @ts-check
 
 /**
- * Extracts only local phone digits (Turkey) from an arbitrary input string.
  * Removes non-digits and a leading '90' country code if present.
  * Limits to 10 digits.
  * @param {string} input

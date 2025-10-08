@@ -45,6 +45,9 @@ page-container.no-container-style::part(content) {
     text-align: left;
     font-size: var(--font-size-base);
 }
+.select-all-wrapper { display: inline-flex; align-items: center; gap: var(--spacing-s); }
+.header-delete { background: transparent; border: none; color: var(--color-primary); cursor: pointer; }
+.header-delete[disabled] { opacity: var(--opacity-disabled); cursor: not-allowed; }
 .data-table th {
     background-color: var(--color-surface);
     color: var(--color-primary);
@@ -66,7 +69,6 @@ page-container.no-container-style::part(content) {
     justify-content: center;
     align-items: center;
     margin: var(--spacing-m) auto var(--spacing-none);
-    max-width: var(--container-max-width);
     gap: var(--spacing-m);
 }
 .pagination-controls .pager-btn,

@@ -21,7 +21,8 @@ export class EmployeeList extends LitElement {
         pageSize: { type: Number },
         searchTerm: { type: String },
         viewFormat: { type: String },
-        filters: { type: Object }
+        filters: { type: Object },
+        _selectedIds: { type: Object, state: true }
     };
 
     async firstUpdated() {
@@ -56,6 +57,8 @@ export class EmployeeList extends LitElement {
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
         this._onLanguageChanged = () => this.requestUpdate();
         employeeService.addEventListener('employees-changed', this._employeeDataChanged);
+        /** @type {Set<string>} */
+        this._selectedIds = new Set();
     }
     
     disconnectedCallback() {
@@ -93,6 +96,41 @@ export class EmployeeList extends LitElement {
         dlg.openWith({ title: this.t('deleteConfirmation'), message, confirmText: this.t('proceed'), cancelText: this.t('cancel'), variant: 'danger' });
         const onConfirm = () => {
             employeeService.deleteEmployee(id);
+            dlg.removeEventListener('confirm', onConfirm);
+            dlg.removeEventListener('cancel', onCancel);
+        };
+        const onCancel = () => {
+            dlg.removeEventListener('confirm', onConfirm);
+            dlg.removeEventListener('cancel', onCancel);
+        };
+        dlg.addEventListener('confirm', onConfirm);
+        dlg.addEventListener('cancel', onCancel);
+    }
+
+    _toggleSelect(id, checked) {
+        const set = new Set(this._selectedIds);
+        if (checked) set.add(id); else set.delete(id);
+        this._selectedIds = set;
+    }
+
+    _toggleAllCurrent(checked, currentEmployees) {
+        const set = new Set(this._selectedIds);
+        if (checked) {
+            currentEmployees.forEach(emp => set.add(emp.id));
+        } else {
+            currentEmployees.forEach(emp => set.delete(emp.id));
+        }
+        this._selectedIds = set;
+    }
+
+    _handleBulkDelete() {
+        const selected = Array.from(this._selectedIds);
+        if (selected.length === 0) return;
+        const dlg = /** @type {import('@/components/confirm-dialog/confirm-dialog.js').ConfirmDialog} */(this.shadowRoot.querySelector('confirm-dialog'));
+        dlg.openWith({ title: this.t('deleteConfirmation'), message: `Delete ${selected.length} selected employees?`, confirmText: this.t('proceed'), cancelText: this.t('cancel'), variant: 'danger' });
+        const onConfirm = () => {
+            selected.forEach(id => employeeService.deleteEmployee(id));
+            this._selectedIds = new Set();
             dlg.removeEventListener('confirm', onConfirm);
             dlg.removeEventListener('cancel', onCancel);
         };
@@ -265,7 +303,7 @@ export class EmployeeList extends LitElement {
                             ${currentEmployees.map(
                               emp => html`
                                 <tr>
-                                    <td><input type="checkbox" aria-label="select" /></td>
+                                    <td><input type="checkbox" aria-label="select" .checked=${this._selectedIds.has(emp.id)} @change=${(e) => this._toggleSelect(emp.id, e.target.checked)} /></td>
                                     <td>${emp.firstName}</td>
                                     <td>${emp.lastName}</td>
                                     <td>${formatDateToDDMMYYYY(emp.dateOfEmployment)}</td>
