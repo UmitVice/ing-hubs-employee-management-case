@@ -5,6 +5,7 @@ import { employeeService } from '@/employee-service.js';
 import { Router } from '@vaadin/router';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
+import '@/components/page-container/page-container.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeList extends LitElement {
@@ -17,7 +18,10 @@ export class EmployeeList extends LitElement {
     };
 
     async firstUpdated() {
+        // Prevent FOUC: keep invisible until styles are adopted
+        this.style.visibility = 'hidden';
         await adoptStylesheets(this.shadowRoot, [new URL('./employee-list.css', import.meta.url)]);
+        this.style.visibility = 'visible';
     }
 
     // Lightweight bridge to the global translator
@@ -151,8 +155,8 @@ export class EmployeeList extends LitElement {
         const pageItems = this._buildPageList(totalPages);
         
         return html`
-            <div class="employee-list-wrapper">
-                <div class="header-row">
+            <page-container class="${this.viewFormat === 'cards' ? 'no-container-style' : ''}">
+                <div slot="title" class="header-row">
                     <h2 class="page-title">${this.t('employeeList')}</h2>
                     <div class="view-toggles">
                         <button class="icon-btn ${this.viewFormat === 'table' ? 'active' : ''}"
@@ -165,7 +169,7 @@ export class EmployeeList extends LitElement {
                         </button>
                     </div>
                 </div>
-                <div class="list-container" data-view="${this.viewFormat}">
+                <div class="list-view-wrapper" data-view="${this.viewFormat}">
                     
                     <table class="data-table">
                         <thead>
@@ -277,19 +281,19 @@ export class EmployeeList extends LitElement {
                             : ''
                         }
                     </div>
-                    
-                    <div class="pagination-controls">
-                        <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
-                            <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
-                        </button>
-                        ${pageItems.map(item => typeof item === 'number'
-                            ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
-                            : html`<span class="ellipsis">…</span>`)}
-                        <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
-                            <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
-                        </button>
-                    </div>
                 </div>
+            </page-container>
+            
+            <div class="pagination-controls">
+                <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
+                    <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
+                </button>
+                ${pageItems.map(item => typeof item === 'number'
+                    ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
+                    : html`<span class="ellipsis">…</span>`)}
+                <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
+                    <img class="arrow" src="/assets/icons/right_arrow.svg" alt="" />
+                </button>
             </div>
             <confirm-dialog></confirm-dialog>
         `;

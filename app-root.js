@@ -14,6 +14,8 @@ export class AppRoot extends LitElement {
                 display: block;
                 min-height: var(--min-height-screen);
                 background-color: var(--color-background-light);
+                /* Prevent FOUC: keep app hidden until first render completes */
+                visibility: hidden;
             }
             .title {
                 max-width: var(--container-max-width);
@@ -30,9 +32,6 @@ export class AppRoot extends LitElement {
             }
         `;
     }
-
-    
-    /* Initializes the Vaadin Router after the component is first rendered. */
      
     async firstUpdated() {
         await loadMessages();
@@ -65,6 +64,8 @@ export class AppRoot extends LitElement {
                 }
             }
         ]);
+   
+        this.style.visibility = 'visible';
     }
 
     render() {
