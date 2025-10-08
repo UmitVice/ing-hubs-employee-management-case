@@ -380,41 +380,55 @@ export class EmployeeForm extends LitElement {
                         ${this.errors.lastName ? html`<span class="error-text">${this.errors.lastName}</span>` : ''}
                     </div>
 
-                    <div class="field">
+                    <div class="field date-field">
                         <label for="dateOfEmployment">${this.t('dateOfEmployment')}</label>
-                        <input
-                            id="dateOfEmployment"
-                            type="text"
-                            inputmode="numeric"
-                            maxlength="10"
-                            .value=${formatDigitsToDDMMYYYY(this.employee.dateOfEmployment ? this.employee.dateOfEmployment.replace(/\D/g, '').slice(6,8) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(4,6) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(0,4) : '')}
-                            placeholder="dd/mm/yyyy"
-                            @change=${(e) => this._handleDateChange('dateOfEmployment', e)}
-                            @input=${(e) => {
-                                const formatted = formatDigitsToDDMMYYYY(e.target.value);
-                                e.target.value = formatted;
-                                this._handleDateChange('dateOfEmployment', e);
-                            }}
-                        >
+                        <div class="date-input-wrapper">
+                            <input
+                                id="dateOfEmployment"
+                                type="text"
+                                inputmode="numeric"
+                                maxlength="10"
+                                .value=${formatDigitsToDDMMYYYY(this.employee.dateOfEmployment ? this.employee.dateOfEmployment.replace(/\D/g, '').slice(6,8) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(4,6) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(0,4) : '')}
+                                placeholder="dd/mm/yyyy"
+                                @change=${(e) => this._handleDateChange('dateOfEmployment', e)}
+                                @input=${(e) => {
+                                    const formatted = formatDigitsToDDMMYYYY(e.target.value);
+                                    e.target.value = formatted;
+                                    this._handleDateChange('dateOfEmployment', e);
+                                }}
+                            >
+                            <button class="date-icon" @click=${() => { const el = /** @type {any} */(this.shadowRoot.querySelector('#dateOfEmployment')); if (el && typeof el.showPicker === 'function') el.showPicker(); }} aria-label="Open date picker">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="currentColor" d="M7 10h5v5H7zM6 2h2v2h8V2h2v2h2v16H4V4h2V2zm0 6h12V6H6v2z"/>
+                                </svg>
+                            </button>
+                        </div>
                         ${this.errors.dateOfEmployment ? html`<span class="error-text">${this.errors.dateOfEmployment}</span>` : ''}
                     </div>
 
-                    <div class="field">
+                    <div class="field date-field">
                         <label for="dateOfBirth">${this.t('dateOfBirth')}</label>
-                        <input
-                            id="dateOfBirth"
-                            type="text"
-                            inputmode="numeric"
-                            maxlength="10"
-                            .value=${formatDigitsToDDMMYYYY(this.employee.dateOfBirth ? this.employee.dateOfBirth.replace(/\D/g, '').slice(6,8) + this.employee.dateOfBirth.replace(/\D/g, '').slice(4,6) + this.employee.dateOfBirth.replace(/\D/g, '').slice(0,4) : '')}
-                            placeholder="dd/mm/yyyy"
-                            @change=${(e) => this._handleDateChange('dateOfBirth', e)}
-                            @input=${(e) => {
-                                const formatted = formatDigitsToDDMMYYYY(e.target.value);
-                                e.target.value = formatted;
-                                this._handleDateChange('dateOfBirth', e);
-                            }}
-                        >
+                        <div class="date-input-wrapper">
+                            <input
+                                id="dateOfBirth"
+                                type="text"
+                                inputmode="numeric"
+                                maxlength="10"
+                                .value=${formatDigitsToDDMMYYYY(this.employee.dateOfBirth ? this.employee.dateOfBirth.replace(/\D/g, '').slice(6,8) + this.employee.dateOfBirth.replace(/\D/g, '').slice(4,6) + this.employee.dateOfBirth.replace(/\D/g, '').slice(0,4) : '')}
+                                placeholder="dd/mm/yyyy"
+                                @change=${(e) => this._handleDateChange('dateOfBirth', e)}
+                                @input=${(e) => {
+                                    const formatted = formatDigitsToDDMMYYYY(e.target.value);
+                                    e.target.value = formatted;
+                                    this._handleDateChange('dateOfBirth', e);
+                                }}
+                            >
+                            <button class="date-icon" @click=${() => { const el = /** @type {any} */(this.shadowRoot.querySelector('#dateOfBirth')); if (el && typeof el.showPicker === 'function') el.showPicker(); }} aria-label="Open date picker">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="currentColor" d="M7 10h5v5H7zM6 2h2v2h8V2h2v2h2v16H4V4h2V2zm0 6h12V6H6v2z"/>
+                                </svg>
+                            </button>
+                        </div>
                         ${this.errors.dateOfBirth ? html`<span class="error-text">${this.errors.dateOfBirth}</span>` : ''}
                     </div>
 

@@ -34,7 +34,7 @@
 .message {
   color: var(--color-text-dark);
   opacity: 0.9;
-  margin-bottom: var(--spacing-l);
+  margin-bottom: var(--spacing-xl);
   text-align: center;
 }
 
