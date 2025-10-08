@@ -1,13 +1,10 @@
 :host { display: block; width: 100%; }
-.search { width: 100%; }
+.search { width: 100%; position: relative; }
 .search input { width: 100%; padding: var(--spacing-s) var(--spacing-m); border: var(--border-width-thin) solid var(--color-border); border-radius: var(--border-radius-base); font-size: var(--font-size-base); }
 .search.compact input { padding: var(--spacing-xs) var(--spacing-s); }
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     filter: invert(48%) sepia(99%) saturate(1652%) hue-rotate(358deg) brightness(100%) contrast(102%);
 }
-.icon-btn {
-    position: absolute;
-    right: 0;
-}
+.clear-button { position: absolute; right: var(--spacing-s); top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--color-primary); cursor: pointer; padding: 0; line-height: 1; font-size: var(--font-size-large); }
 

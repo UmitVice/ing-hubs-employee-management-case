@@ -40,16 +40,12 @@
     flex: 1;
 }
 
-.nav-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--spacing-l);
-}
+.nav-items { display: inline-flex; align-items: center; gap: var(--spacing-s); }
 
 .link { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); }
 
-.text-button { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); display: inline-flex; align-items: center; }
-.text-button { min-width: var(--nav-text-btn-min-width); justify-content: center; }
+.text-button { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); display: inline-flex; align-items: center; min-width: auto; }
+.text-button + .text-button { margin-left: 0; }
 .text-button:hover { opacity: 0.85; }
 .plus { margin-right: var(--spacing-xs); font-size: var(--size-icon-lg); line-height: 1; }
 

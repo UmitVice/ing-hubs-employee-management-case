@@ -9,6 +9,8 @@ button {
     opacity: 0.6;
     transition: opacity var(--transition-speed-fast), border-color var(--transition-speed-fast);
     border-radius: var(--border-radius-base);
+    position: relative;
+    top: var(--spacing-2xs, 0.25rem); /* slight vertical alignment tweak */
 }
 button:hover {
     opacity: 0.8;

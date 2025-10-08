@@ -18,7 +18,8 @@ export class EmployeeForm extends LitElement {
         mode: { type: String },
         errors: { type: Object },
         _countryCodeLength: { type: Number, state: true },
-        _isLoading: { type: Boolean, state: true }
+        _isLoading: { type: Boolean, state: true },
+        _originalDisplayName: { type: String, state: true }
     };
 
     async firstUpdated() {
@@ -43,6 +44,7 @@ export class EmployeeForm extends LitElement {
         this.PHONE_MAX = 10;
         this._countryCodeLength = 0;
         this._isLoading = true; // Start in loading state
+        this._originalDisplayName = '';
         this.requestUpdate();
     }
 
@@ -67,6 +69,7 @@ export class EmployeeForm extends LitElement {
                 if (existing) {
                     this.mode = 'edit';
                     this.employee = { ...existing };
+                    this._originalDisplayName = `${existing.firstName || ''} ${existing.lastName || ''}`.trim();
                 } else {
                     // Employee not found, redirect to home page
                     console.warn(`Employee with ID ${id} not found, redirecting to home`);
@@ -178,6 +181,13 @@ export class EmployeeForm extends LitElement {
         this._updateField('phone', digitsOnly);
     }
 
+    _handlePhoneBlur() {
+        const digitsLen = (this.employee.phone || '').length;
+        if (digitsLen === this.PHONE_MAX && this.errors.phone) {
+            const { phone, ...rest } = this.errors; this.errors = rest;
+        }
+    }
+
     _handleDateChange(field, e) {
         const raw = (e.target.value || '').trim();
         if (!raw) {
@@ -264,7 +274,7 @@ export class EmployeeForm extends LitElement {
             errors.email = this.t('validationEmailUnique');
         }
         if (!phone) errors.phone = this.t('validationRequired');
-        else if (!/^\d{10,15}$/.test(phone)) errors.phone = this.t('validationPhone');
+        else if (!/^\d{10}$/.test(phone)) errors.phone = this.t('validationPhone');
         if (!department) errors.department = this.t('validationRequired');
         if (!position) errors.position = this.t('validationRequired');
         this.errors = errors;
@@ -311,17 +321,7 @@ export class EmployeeForm extends LitElement {
         Router.go(withBase('/'));
     }
 
-    _handleReset() {
-        this.employee = this._createEmptyEmployee();
-        this.errors = {};
-        this.requestUpdate();
-        
-        // Also clear the form inputs in the DOM
-        const form = this.shadowRoot.querySelector('form');
-        if (form) {
-            form.reset();
-        }
-    }
+    
 
     _syncFormWithEmployee() {
         // Sync form inputs with employee data
@@ -364,10 +364,10 @@ export class EmployeeForm extends LitElement {
         return html`
             <page-container title="${title}">
                 ${this.mode === 'edit'
-                    ? html`<p class="subtitle">${this.t('editingUserLabel', [`${this.employee.firstName} ${this.employee.lastName}`])}</p>`
+                    ? html`<p class="subtitle">${this.t('editingUserLabel', [this._originalDisplayName])}</p>`
                     : ''
                 }
-                <form @submit=${this._handleSubmit} style="max-width:900px;margin-left:auto;margin-right:auto;">
+                <form id="employeeForm" @submit=${this._handleSubmit} style="max-width:900px;margin-left:auto;margin-right:auto;">
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
                         <input id="firstName" maxlength="50" .value=${this.employee.firstName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('firstName', e)} @input=${(e) => this._handleNameInput('firstName', e)}>
@@ -393,6 +393,7 @@ export class EmployeeForm extends LitElement {
                             @input=${(e) => {
                                 const formatted = formatDigitsToDDMMYYYY(e.target.value);
                                 e.target.value = formatted;
+                                this._handleDateChange('dateOfEmployment', e);
                             }}
                         >
                         ${this.errors.dateOfEmployment ? html`<span class="error-text">${this.errors.dateOfEmployment}</span>` : ''}
@@ -411,6 +412,7 @@ export class EmployeeForm extends LitElement {
                             @input=${(e) => {
                                 const formatted = formatDigitsToDDMMYYYY(e.target.value);
                                 e.target.value = formatted;
+                                this._handleDateChange('dateOfBirth', e);
                             }}
                         >
                         ${this.errors.dateOfBirth ? html`<span class="error-text">${this.errors.dateOfBirth}</span>` : ''}
@@ -418,7 +420,7 @@ export class EmployeeForm extends LitElement {
 
                     <div class="field">
                         <label for="phone">${this.t('phoneNumber')}</label>
-                        <input id="phone" inputmode="numeric" .value=${this._formatPhoneDisplay(this.employee.phone)} @keydown=${this._handlePhoneKeydown} @paste=${this._handlePhonePaste} @input=${this._handlePhoneInput}>
+                        <input id="phone" inputmode="numeric" .value=${this._formatPhoneDisplay(this.employee.phone)} @keydown=${this._handlePhoneKeydown} @paste=${this._handlePhonePaste} @input=${this._handlePhoneInput} @blur=${this._handlePhoneBlur}>
                         ${this.errors.phone ? html`<span class="error-text">${this.errors.phone}</span>` : ''}
                     </div>
 
@@ -459,8 +461,7 @@ export class EmployeeForm extends LitElement {
                     </div>
 
                     <div class="actions">
-                        <app-button variant="primary" type="submit">${this.t('save')}</app-button>
-                        <app-button variant="outline" type="reset" @click=${this._handleReset}>${this.t('reset')}</app-button>
+                        <app-button variant="primary" type="button" @click=${this._handleSaveClick}>${this.t('save')}</app-button>
                         <app-button variant="outline" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>

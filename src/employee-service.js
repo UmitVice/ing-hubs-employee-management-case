@@ -87,8 +87,8 @@ class EmployeeService extends EventTarget {
     /** Validates phone format. */
     /** @param {string} phone */
     _isValidPhone(phone) {
-        const phoneRegex = /^\d{10,15}$/;
-        return phoneRegex.test(phone.replace(/\D/g, ''));
+        const digits = String(phone || '').replace(/\D/g, '');
+        return /^\d{10}$/.test(digits);
     }
 
     /** Adds a new employee with a generated ID. */
@@ -105,7 +105,8 @@ class EmployeeService extends EventTarget {
             return; // ignore duplicate add
         }
         const newEmployee = /** @type {Employee} */({ ...employeeData, id: Date.now().toString(36) + Math.random().toString(36).substring(2) });
-        this.employees.push(newEmployee);
+        // Insert newest at the beginning so it appears first in the list
+        this.employees.unshift(newEmployee);
         this._saveData();
     }
 

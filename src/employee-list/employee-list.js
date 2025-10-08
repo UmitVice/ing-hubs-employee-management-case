@@ -291,19 +291,13 @@ export class EmployeeList extends LitElement {
                         </button>
                     </div>
                 </div>
-                <div slot="toolbar" class="toolbar">
-                    <button class="header-delete" 
-                            ?disabled=${this._selectedIds.size === 0}
-                            @click=${this._handleBulkDelete}>
-                        ${this.t('deleteSelected')} (${this._selectedIds.size})
-                    </button>
-                </div>
+                <div slot="toolbar" class="toolbar"></div>
                 <div class="list-view-wrapper" data-view="${this._currentView}">
                     
                     <table class="data-table ${this._currentView === 'cards' ? 'hidden' : ''}">
                         <thead>
                             <tr>
-                                <th>
+                                <th class="select-col">
                                     <input type="checkbox" 
                                            ?checked=${this._selectedIds.size === currentEmployees.length && currentEmployees.length > 0}
                                            @change=${(e) => this._toggleAllCurrent(e.target.checked, currentEmployees)}
@@ -321,10 +315,20 @@ export class EmployeeList extends LitElement {
                             </tr>
                             <tr class="filters-row">
                                 <th></th>
-                                <th>
+                                <th class="first-name-filter">
                                     <app-search class="col-filter" .value=${this.filters.firstName}
                                         .placeholder=${this.t('firstName')} .compact=${true}
                                         @value-changed=${(e) => this._updateFilter('firstName', e.detail.value)}></app-search>
+                                    ${this._currentView === 'table' && this._selectedIds.size > 0 ? html`
+                                        <div class="bulk-controls" role="group">
+                                            <span class="bulk-count">${this._selectedIds.size}</span>
+                                            <button class="icon-trash" @click=${this._handleBulkDelete} aria-label="${this.t('deleteSelected')}">
+                                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                    <path fill="currentColor" d="M6 7h12v2H6V7zm2 3h8l-1 10H9L8 10zm3-6h2l1 1h5v2H5V5h5l1-1z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ` : ''}
                                 </th>
                                 <th>
                                     <app-search class="col-filter" .value=${this.filters.lastName}
@@ -411,10 +415,6 @@ export class EmployeeList extends LitElement {
                           emp => html`
                             <div class="card">
                                 <div class="card-header">
-                                    <input type="checkbox" 
-                                           ?checked=${this._selectedIds.has(emp.id)}
-                                           @change=${(e) => this._toggleSelect(emp.id, e.target.checked)}
-                                           aria-label="Select employee" />
                                     <span class="employee-name">${emp.firstName} ${emp.lastName}</span>
                                 </div>
                                 <div class="card-grid">

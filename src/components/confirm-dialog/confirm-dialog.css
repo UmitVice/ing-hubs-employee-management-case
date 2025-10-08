@@ -13,7 +13,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: var(--modal-max-width);
+  max-width: 28rem; /* Custom exception: modal width aligned to design */
   width: calc(100% - var(--spacing-xl) * 2);
   background: var(--color-surface);
   border-radius: var(--modal-surface-radius);
@@ -23,11 +23,12 @@
   z-index: 1001;
 }
 
-.title {
-  color: var(--modal-title-color);
+.dialog-title {
+  color: var(--color-primary);
   font-weight: 700;
+  font-size: 1.25rem;
   margin-bottom: var(--spacing-s);
-  text-align: center;
+  text-align: left;
 }
 
 .message {

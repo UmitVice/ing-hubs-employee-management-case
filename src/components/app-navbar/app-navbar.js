@@ -105,22 +105,9 @@ export class AppNavbar extends LitElement {
                         </button>
                         <language-selector></language-selector>
                     </div>
-
-                    <button class="hamburger" @click=${this._toggleMobileMenu} aria-label="Toggle mobile menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
+                    
                 </div>
 
-                <div class="mobile-menu" ?hidden=${!this.mobileMenuOpen}>
-                    <button class="text-button" @click=${() => this._go('/')}>${this.t('employees')}</button>
-                    <button class="text-button" @click=${() => this._go('/add')}>
-                        <span class="plus" aria-hidden="true">+</span>
-                        <span>${this.t('addNew')}</span>
-                    </button>
-                    <language-selector></language-selector>
-                </div>
             </nav>
         `;
     }

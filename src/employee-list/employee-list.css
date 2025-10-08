@@ -38,6 +38,9 @@ page-container.no-container-style::part(content) {
     border: var(--border-width-thin) solid var(--color-border-subtle);
     border-radius: var(--border-radius-base);
     overflow: hidden;
+    /* Custom exception: fixed checkbox column width exposed as a local token
+       so we can align bulk controls exactly with checkbox centers */
+    --checkbox-col-width: 36px;
 }
 .data-table th, .data-table td {
     padding: 7px;
@@ -48,6 +51,12 @@ page-container.no-container-style::part(content) {
 .select-all-wrapper { display: inline-flex; align-items: center; gap: var(--spacing-s); }
 .header-delete { background: transparent; border: none; color: var(--color-primary); cursor: pointer; }
 .header-delete[disabled] { opacity: var(--opacity-disabled); cursor: not-allowed; }
+/* Show bulk delete inside first header cell when any row is selected */
+.data-table th.first-name-filter { position: relative; }
+.data-table th.first-name-filter .bulk-controls { position: absolute; left: calc((-0.5 * var(--checkbox-col-width)) - var(--spacing-s) - var(--spacing-xs)); top: 50%; transform: translate(-50%, -50%); display: grid; grid-template-rows: auto auto; justify-items: center; gap: var(--spacing-xxs, 0.125rem); pointer-events: none; }
+.data-table th.first-name-filter .bulk-count { color: var(--color-text-dark); font-size: var(--font-size-base); line-height: 1; }
+.data-table th.first-name-filter .icon-trash { background: transparent; border: none; color: var(--color-primary); cursor: pointer; width: var(--size-action-btn); height: var(--size-action-btn); display: inline-flex; align-items: center; justify-content: center; pointer-events: auto; }
+.data-table th.first-name-filter .icon-trash svg { width: var(--size-icon-md); height: var(--size-icon-md); display: block; }
 .data-table th {
     background-color: var(--color-surface);
     color: var(--color-primary);
@@ -70,6 +79,7 @@ page-container.no-container-style::part(content) {
     justify-content: center;
     align-items: center;
     margin-top: -15px;
+    margin-bottom: var(--spacing-l);
     gap: var(--spacing-m);
 }
 .pagination-controls .pager-btn,
@@ -96,7 +106,7 @@ page-container.no-container-style::part(content) {
     grid-template-columns: repeat(2, minmax(0, 450px));
     justify-content: center;
 }
-.card { background-color: var(--color-surface); border-radius: var(--border-radius-base); box-shadow: var(--shadow-subtle); padding: var(--spacing-xl); border: var(--border-width-thin) solid var(--color-border-subtle); min-height: var(--card-min-height); }
+.card { background-color: var(--color-surface); border-radius: var(--border-radius-base); box-shadow: var(--shadow-subtle); padding: var(--spacing-l); border: var(--border-width-thin) solid var(--color-border-subtle); min-height: var(--card-min-height); }
 .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); }
 .card h3 { margin: var(--spacing-none); }
 .meta { color: var(--color-text-dark); opacity: 0.8; font-size: var(--font-size-small); }
@@ -154,7 +164,7 @@ page-container.no-container-style::part(content) {
    to free up space so phone numbers can stay on one line */
 .data-table th:first-child,
 .data-table td:first-child {
-    width: 36px; /* compact checkbox column */
+    width: 36px; /* Custom exception: fixed width to align checkbox column */
     padding-left: var(--spacing-xs);
     padding-right: var(--spacing-xs);
 }

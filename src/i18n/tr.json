@@ -27,7 +27,7 @@
     "validationRequired": "Bu alan zorunludur",
     "validationEmail": "Geçerli bir e-posta giriniz",
     "validationEmailUnique": "Bu e-posta zaten kullanılıyor",
-    "validationPhone": "Lütfen 10-15 haneli sadece rakam giriniz",
+    "validationPhone": "Lütfen 10 haneli sadece rakam giriniz",
     "validationLettersOnly": "Sadece harf giriniz",
     "validationMaxLength": "En fazla {0} karakter",
     "validationMaxDigits": "En fazla {0} hane",

@@ -65,7 +65,7 @@ export class LanguageSelector extends LitElement {
         const nextLocale = isTR ? 'en' : 'tr';
         const icon = isTR ? US_FLAG_URL : TR_FLAG_URL;
         const label = isTR ? 'Switch language to English' : 'Switch language to Turkish';
-        const languageText = isTR ? 'TR' : 'EN';
+        
         
         return html`
             <button
@@ -86,7 +86,6 @@ export class LanguageSelector extends LitElement {
                 title="${label}"
             >
                 <img src="${icon}" alt="${label}" class="flag-icon" />
-                <span class="language-text">${languageText}</span>
             </button>
         `;
     }

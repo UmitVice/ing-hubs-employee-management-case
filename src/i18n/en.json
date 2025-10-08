@@ -27,7 +27,7 @@
     "validationRequired": "This field is required",
     "validationEmail": "Please enter a valid email",
     "validationEmailUnique": "This email is already used",
-    "validationPhone": "Please enter 10-15 digits",
+    "validationPhone": "Please enter 10 digits",
     "validationLettersOnly": "Only letters are allowed",
     "validationMaxLength": "Maximum {0} characters",
     "validationMaxDigits": "Maximum {0} digits",

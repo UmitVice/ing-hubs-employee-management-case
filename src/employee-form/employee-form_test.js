@@ -329,23 +329,16 @@ suite('employee-form', () => {
     assert.equal(el.shadowRoot.querySelector('#lastName').value, '');
   });
 
-  test('handles form reset button', async () => {
+  // Removed reset button: ensure only Save and Cancel exist
+  test('form actions contain only Save and Cancel', async () => {
     const el = await fixture(html`<employee-form></employee-form>`);
-    
-    // Fill form
-    el.shadowRoot.querySelector('#firstName').value = 'Ada';
-    el.shadowRoot.querySelector('#firstName').dispatchEvent(new Event('input'));
-    el.shadowRoot.querySelector('#lastName').value = 'Lovelace';
-    el.shadowRoot.querySelector('#lastName').dispatchEvent(new Event('input'));
-    
-    // Click reset button
-    const resetBtn = el.shadowRoot.querySelector('app-button[type="reset"]');
-    resetBtn.click();
     await el.updateComplete;
-    
-    // Form should be cleared
-    assert.equal(el.shadowRoot.querySelector('#firstName').value, '');
-    assert.equal(el.shadowRoot.querySelector('#lastName').value, '');
+    const actions = el.shadowRoot.querySelector('.actions');
+    const buttons = actions.querySelectorAll('app-button');
+    assert.equal(buttons.length, 2);
+    const labels = Array.from(buttons).map(b => b.textContent.trim());
+    assert.include(labels[0], 'Save');
+    assert.include(labels[1], 'Cancel');
   });
 
   // Removed: shows loading state during initial load (race-prone)
