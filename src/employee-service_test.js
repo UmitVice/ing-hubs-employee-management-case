@@ -23,7 +23,7 @@ suite('employee-service', () => {
     const employeeData = {
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     };
 
@@ -41,14 +41,14 @@ suite('employee-service', () => {
     const employee1 = {
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     };
 
     const employee2 = {
       firstName: 'Grace', lastName: 'Hopper',
       dateOfEmployment: '2025-01-02', dateOfBirth: '1991-01-01',
-      phone: '905551112234', email: 'grace@example.com',
+      phone: '5551112234', email: 'grace@example.com',
       department: 'Tech', position: 'Lead'
     };
 
@@ -68,7 +68,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -81,7 +81,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -105,7 +105,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -124,14 +124,14 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
     employeeService.addEmployee({
       firstName: 'Grace', lastName: 'Hopper',
       dateOfEmployment: '2025-01-02', dateOfBirth: '1991-01-01',
-      phone: '905551112234', email: 'grace@example.com',
+      phone: '5551112234', email: 'grace@example.com',
       department: 'Tech', position: 'Lead'
     });
 
@@ -151,7 +151,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -173,7 +173,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -185,7 +185,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -195,7 +195,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Grace', lastName: 'Hopper',
       dateOfEmployment: '2025-01-02', dateOfBirth: '1991-01-01',
-      phone: '905551112234', email: 'ada@example.com', // Same email
+      phone: '5551112234', email: 'ada@example.com', // Same email
       department: 'Tech', position: 'Lead'
     });
 
@@ -206,7 +206,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -225,7 +225,7 @@ suite('employee-service', () => {
       lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01',
       dateOfBirth: '1990-01-01',
-      phone: '905551112233',
+      phone: '5551112233',
       email: 'ada@example.com',
       department: 'Tech',
       position: 'Senior'
@@ -244,7 +244,7 @@ suite('employee-service', () => {
       lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01',
       dateOfBirth: '1990-01-01',
-      phone: '905551112233',
+      phone: '5551112233',
       email: 'invalid-email', // Invalid email format
       department: 'Tech',
       position: 'Senior'
@@ -282,7 +282,7 @@ suite('employee-service', () => {
       lastName: 'Lovelace',
       dateOfEmployment: '1990-01-01', // Before birth date
       dateOfBirth: '2025-01-01',
-      phone: '905551112233',
+      phone: '5551112233',
       email: 'ada@example.com',
       department: 'Tech',
       position: 'Senior'
@@ -299,7 +299,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -319,7 +319,7 @@ suite('employee-service', () => {
       lastName: 'User',
       dateOfEmployment: '2025-01-01',
       dateOfBirth: '1990-01-01',
-      phone: '905551112233',
+      phone: '5551112233',
       email: 'test@example.com',
       department: 'Tech',
       position: 'Senior'
@@ -347,14 +347,14 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
     employeeService.addEmployee({
       firstName: 'Grace', lastName: 'Hopper',
       dateOfEmployment: '2025-01-02', dateOfBirth: '1991-01-01',
-      phone: '905551112234', email: 'grace@example.com',
+      phone: '5551112234', email: 'grace@example.com',
       department: 'Analytics', position: 'Lead'
     });
 
@@ -371,14 +371,14 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Charlie', lastName: 'Brown',
       dateOfEmployment: '2025-01-03', dateOfBirth: '1992-01-01',
-      phone: '905551112235', email: 'charlie@example.com',
+      phone: '5551112235', email: 'charlie@example.com',
       department: 'Tech', position: 'Junior'
     });
 
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -400,7 +400,7 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
@@ -416,14 +416,14 @@ suite('employee-service', () => {
     employeeService.addEmployee({
       firstName: 'Ada', lastName: 'Lovelace',
       dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
-      phone: '905551112233', email: 'ada@example.com',
+      phone: '5551112233', email: 'ada@example.com',
       department: 'Tech', position: 'Senior'
     });
 
     employeeService.addEmployee({
       firstName: 'Grace', lastName: 'Hopper',
       dateOfEmployment: '2025-01-02', dateOfBirth: '1991-01-01',
-      phone: '905551112234', email: 'grace@example.com',
+      phone: '5551112234', email: 'grace@example.com',
       department: 'Tech', position: 'Lead'
     });
 

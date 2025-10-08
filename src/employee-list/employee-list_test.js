@@ -153,7 +153,7 @@ suite('employee-list', () => {
     });
   });
 
-  test('enables bulk delete when employees are selected', async () => {
+  test('shows bulk controls when employees are selected', async () => {
     const el = await fixture(html`<employee-list></employee-list>`);
     await el.updateComplete;
     
@@ -162,9 +162,9 @@ suite('employee-list', () => {
     firstCheckbox.click();
     await el.updateComplete;
     
-    // Bulk delete button should be enabled
-    const bulkDeleteBtn = el.shadowRoot.querySelector('.header-delete');
-    assert.isFalse(bulkDeleteBtn.hasAttribute('disabled'));
+    // Bulk controls should appear in header
+    const bulkControls = el.shadowRoot.querySelector('.first-name-filter .bulk-controls');
+    assert.exists(bulkControls);
   });
 
   test('performs bulk delete operation', async () => {
@@ -178,9 +178,9 @@ suite('employee-list', () => {
     selectAllCheckbox.click();
     await el.updateComplete;
     
-    // Click bulk delete
-    const bulkDeleteBtn = el.shadowRoot.querySelector('.header-delete');
-    bulkDeleteBtn.click();
+    // Click bulk delete icon in bulk controls
+    const bulkIcon = el.shadowRoot.querySelector('.first-name-filter .bulk-controls .icon-trash');
+    bulkIcon.click();
     await el.updateComplete;
     
     // Confirm deletion
@@ -274,7 +274,7 @@ suite('employee-list', () => {
     const el = await fixture(html`<employee-list></employee-list>`);
     await el.updateComplete;
     
-    // Add new employee
+    // Add new employee (service now unshifts to start)
     employeeService.addEmployee({
       firstName: 'New', lastName: 'Employee', dateOfEmployment: '2025-01-04',
       dateOfBirth: '1993-01-01', phone: '4444444444', email: 'new@example.com',
@@ -285,9 +285,11 @@ suite('employee-list', () => {
     await new Promise(resolve => setTimeout(resolve, 50));
     await el.updateComplete;
     
-    // Should show new employee
+    // Should show new employee at the first row
     const rows = el.shadowRoot.querySelectorAll('tbody tr');
     assert.equal(rows.length, 4);
+    const firstRowName = rows[0].querySelectorAll('td')[1].textContent.trim();
+    assert.equal(firstRowName, 'New');
   });
 
   test('handles responsive view switching', async () => {

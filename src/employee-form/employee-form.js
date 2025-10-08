@@ -367,7 +367,7 @@ export class EmployeeForm extends LitElement {
                     ? html`<p class="subtitle">${this.t('editingUserLabel', [this._originalDisplayName])}</p>`
                     : ''
                 }
-                <form id="employeeForm" @submit=${this._handleSubmit} style="max-width:900px;margin-left:auto;margin-right:auto;">
+                <form id="employeeForm" novalidate @submit=${this._handleSubmit} style="max-width:900px;margin-left:auto;margin-right:auto;">
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
                         <input id="firstName" maxlength="50" .value=${this.employee.firstName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('firstName', e)} @input=${(e) => this._handleNameInput('firstName', e)}>
