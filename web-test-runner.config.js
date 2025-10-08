@@ -93,6 +93,8 @@ export default {
   files: ['./test/**/*_test.js', './src/**/*_test.js'],
   nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
   coverage: true,
+  // Increase overall time allowed for all test files to finish in each browser
+  testsFinishTimeout: 240000,
   coverageConfig: {
     exclude: [
       'node_modules/**/*',
