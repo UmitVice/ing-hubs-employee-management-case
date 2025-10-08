@@ -37,7 +37,7 @@ export class AppRoot extends LitElement {
         await loadMessages();
         const outlet = this.shadowRoot.querySelector('main');
         
-        const router = new Router(outlet, {baseUrl: '/ing-hubs-employee-management-case/'});
+        const router = new Router(outlet);
         router.setRoutes([
             {
                 path: '/',
