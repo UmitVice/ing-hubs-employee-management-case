@@ -47,6 +47,11 @@ export async function adoptStylesheets(renderRoot, urls) {
     // Filter out null entries (failed loads)
     const validEntries = entries.filter(entry => entry !== null);
 
+    // If no valid entries, don't add anything
+    if (validEntries.length === 0) {
+        return;
+    }
+
     const supportsConstructable = !!(renderRoot && 'adoptedStyleSheets' in renderRoot && typeof CSSStyleSheet !== 'undefined' && 'replace' in CSSStyleSheet.prototype);
 
     if (supportsConstructable) {

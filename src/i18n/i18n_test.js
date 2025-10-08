@@ -1,6 +1,9 @@
 import {getLocale, t, loadMessages, setLocale} from './i18n.js';
 import {assert} from '@open-wc/testing';
 
+// Access loadedMessages for testing
+let loadedMessages = {};
+
 suite('i18n', () => {
   setup(() => {
     // Reset to default state
@@ -265,10 +268,12 @@ suite('i18n', () => {
     };
     
     try {
+      // First call should fetch
       await loadMessages();
       const msg1 = t('save');
       
-      await loadMessages(); // Should use cache
+      // Second call should use cache (no additional fetch)
+      await loadMessages();
       const msg2 = t('save');
       
       assert.equal(msg1, msg2);

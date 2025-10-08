@@ -29,11 +29,31 @@ export class PageContainer extends LitElement {
         this.removeEventListener('blur', this._handleBlur);
     }
 
+    focus() {
+        const wrapper = this.shadowRoot.querySelector('.page-wrapper');
+        if (wrapper && 'focus' in wrapper) {
+            // @ts-ignore - focus method exists on HTMLElement
+            wrapper.focus();
+        }
+    }
+
+    blur() {
+        const wrapper = this.shadowRoot.querySelector('.page-wrapper');
+        if (wrapper && 'blur' in wrapper) {
+            // @ts-ignore - blur method exists on HTMLElement
+            wrapper.blur();
+        }
+    }
+
     _handleFocus(event) {
+        // Prevent infinite loop by checking if this is our own event
+        if (event.target === this) return;
         this.dispatchEvent(new FocusEvent('focus', { bubbles: true, composed: true }));
     }
 
     _handleBlur(event) {
+        // Prevent infinite loop by checking if this is our own event
+        if (event.target === this) return;
         this.dispatchEvent(new FocusEvent('blur', { bubbles: true, composed: true }));
     }
 

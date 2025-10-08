@@ -26,6 +26,8 @@ export class EmployeeForm extends LitElement {
         this.style.visibility = 'hidden';
         await adoptStylesheets(this.shadowRoot, [new URL('./employee-form.css', import.meta.url)]);
         this.style.visibility = 'visible';
+        // Sync form inputs with employee data
+        this._syncFormWithEmployee();
     }
 
     t(key, params = []) { return translate(key, params); }
@@ -258,6 +260,8 @@ export class EmployeeForm extends LitElement {
                 this.employee = this._createEmptyEmployee();
                 this.errors = {};
                 this.requestUpdate();
+                // Sync form inputs after clearing
+                setTimeout(() => this._syncFormWithEmployee(), 0);
             }
             dlg.removeEventListener('confirm', onConfirm);
             Router.go(withBase('/'));
@@ -279,6 +283,20 @@ export class EmployeeForm extends LitElement {
         if (form) {
             form.reset();
         }
+    }
+
+    _syncFormWithEmployee() {
+        // Sync form inputs with employee data
+        const inputs = this.shadowRoot.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            const field = input.id;
+            if (field && this.employee[field] !== undefined && 'value' in input) {
+                input.value = this.employee[field] || '';
+            }
+        });
+        
+        // Force update to ensure UI reflects the changes
+        this.requestUpdate();
     }
 
     _handleSaveClick() {

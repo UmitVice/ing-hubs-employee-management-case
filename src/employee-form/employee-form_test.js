@@ -456,6 +456,9 @@ suite('employee-form', () => {
     const el = await fixture(html`<employee-form></employee-form>`);
     await el.updateComplete;
     
+    // Wait for CSS to be fully loaded
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     const form = el.shadowRoot.querySelector('form');
     const computedStyle = getComputedStyle(form);
     

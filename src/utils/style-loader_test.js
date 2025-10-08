@@ -53,13 +53,13 @@ suite('style-loader', () => {
 
   test('handles network errors gracefully', async () => {
     const el = await fixture(html`<test-style-el></test-style-el>`);
-    const initialCount = el.shadowRoot.adoptedStyleSheets.length;
     
     // Mock fetch to simulate network error
     const originalFetch = window.fetch;
     window.fetch = () => Promise.reject(new Error('Network error'));
     
     try {
+      const initialCount = el.shadowRoot.adoptedStyleSheets.length;
       await adoptStylesheets(el.shadowRoot, [new URL('../../styles/global-variables.css', import.meta.url)]);
       
       // Should not have added any stylesheets due to error

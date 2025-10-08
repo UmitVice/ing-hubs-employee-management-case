@@ -18,11 +18,12 @@ export function getLocale() {
     if (lang.startsWith('fr')) {
         return 'fr';
     }
-    // For invalid or empty locales, return empty string as expected by tests
-    if (!lang || lang === 'invalid') {
+    // For empty locales, return empty string
+    if (!lang) {
         return '';
     }
-    return lang; // Return the actual lang
+    // For invalid locales, return the actual value
+    return lang;
 }
 
 /**
@@ -49,7 +50,8 @@ export async function loadMessages() {
         loadedMessages[locale] = await response.json();
     } catch (error) {
         console.error(`Failed to load messages for locale: ${locale}`, error);
-        if (!loadedMessages['en']) {
+        // Only try to load English if we don't have any messages at all
+        if (!loadedMessages['en'] && locale !== 'en') {
             try {
                 const respEn = await fetch(new URL('./en.json', import.meta.url).href, { headers: { 'Accept': 'application/json' } });
                 if (respEn.ok) loadedMessages['en'] = await respEn.json();

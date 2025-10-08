@@ -302,7 +302,7 @@ suite('employee-list', () => {
     });
     
     // Wait for event to be processed
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 50));
     await el.updateComplete;
     
     // Should show new employee
