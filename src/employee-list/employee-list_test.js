@@ -30,8 +30,8 @@ suite('employee-list', () => {
     const el = await fixture(html`<employee-list></employee-list>`);
     await el.updateComplete;
     const firstNameFilter = el.shadowRoot.querySelectorAll('.filters-row .col-filter')[0];
-    firstNameFilter.value = 'Ada';
-    firstNameFilter.dispatchEvent(new Event('input'));
+    firstNameFilter.shadowRoot.querySelector('input').value = 'Ada';
+    firstNameFilter.shadowRoot.querySelector('input').dispatchEvent(new Event('input'));
     await el.updateComplete;
     const rows = el.shadowRoot.querySelectorAll('tbody tr');
     assert.equal(rows.length, 1);

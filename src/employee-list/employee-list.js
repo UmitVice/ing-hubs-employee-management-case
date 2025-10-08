@@ -6,6 +6,8 @@ import { Router } from '@vaadin/router';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
+import '@/components/app-button/app-button.js';
+import '@/components/app-search/app-search.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeList extends LitElement {
@@ -210,42 +212,44 @@ export class EmployeeList extends LitElement {
                             <tr class="filters-row">
                                 <th></th>
                                 <th>
-                                    <input type="text" class="col-filter" .value=${this.filters.firstName}
-                                        @input=${(e) => this._updateFilter('firstName', e.target.value)}
-                                        placeholder="${this.t('firstName')}" />
+                                    <app-search class="col-filter" .value=${this.filters.firstName}
+                                        .placeholder=${this.t('firstName')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('firstName', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="text" class="col-filter" .value=${this.filters.lastName}
-                                        @input=${(e) => this._updateFilter('lastName', e.target.value)}
-                                        placeholder="${this.t('lastName')}" />
+                                    <app-search class="col-filter" .value=${this.filters.lastName}
+                                        .placeholder=${this.t('lastName')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('lastName', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="date" class="col-filter" .value=${this.filters.dateOfEmployment}
-                                        @input=${(e) => this._updateFilter('dateOfEmployment', e.target.value)} />
+                                    <app-search class="col-filter" .value=${this.filters.dateOfEmployment}
+                                        type="date" .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('dateOfEmployment', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="date" class="col-filter" .value=${this.filters.dateOfBirth}
-                                        @input=${(e) => this._updateFilter('dateOfBirth', e.target.value)} />
+                                    <app-search class="col-filter" .value=${this.filters.dateOfBirth}
+                                        type="date" .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('dateOfBirth', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="text" class="col-filter" .value=${this.filters.phone}
-                                        @input=${(e) => this._updateFilter('phone', e.target.value)}
-                                        placeholder="${this.t('phoneNumber')}" />
+                                    <app-search class="col-filter" .value=${this.filters.phone}
+                                        .placeholder=${this.t('phoneNumber')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('phone', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="text" class="col-filter" .value=${this.filters.email}
-                                        @input=${(e) => this._updateFilter('email', e.target.value)}
-                                        placeholder="${this.t('email')}" />
+                                    <app-search class="col-filter" .value=${this.filters.email}
+                                        .placeholder=${this.t('email')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('email', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="text" class="col-filter" .value=${this.filters.department}
-                                        @input=${(e) => this._updateFilter('department', e.target.value)}
-                                        placeholder="${this.t('department')}" />
+                                    <app-search class="col-filter" .value=${this.filters.department}
+                                        .placeholder=${this.t('department')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('department', e.detail.value)}></app-search>
                                 </th>
                                 <th>
-                                    <input type="text" class="col-filter" .value=${this.filters.position}
-                                        @input=${(e) => this._updateFilter('position', e.target.value)}
-                                        placeholder="${this.t('position')}" />
+                                    <app-search class="col-filter" .value=${this.filters.position}
+                                        .placeholder=${this.t('position')} .compact=${true}
+                                        @value-changed=${(e) => this._updateFilter('position', e.detail.value)}></app-search>
                                 </th>
                                 <th></th>
                             </tr>
@@ -331,8 +335,8 @@ export class EmployeeList extends LitElement {
                                     </div>
                                 </div>
                                 <div class="actions">
-                                    <button class="btn edit" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</button>
-                                    <button class="btn primary" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</button>
+                                    <app-button variant="secondary" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</app-button>
+                                    <app-button variant="danger" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</app-button>
                                 </div>
                             </div>
                           `

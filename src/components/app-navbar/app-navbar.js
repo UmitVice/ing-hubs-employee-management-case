@@ -3,6 +3,7 @@ import { Router } from '@vaadin/router';
 import { t as translate } from '@/i18n/i18n.js';
 import '@/components/language-selector/language-selector.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import '@/components/app-button/app-button.js';
 
 const LOGO_URL = '/assets/ing_logo.webp';
 
@@ -58,11 +59,11 @@ export class AppNavbar extends LitElement {
                     <div class="spacer"></div>
 
                     <div class="nav-actions">
-                        <button class="link" @click=${() => this._go('/')}>${this.t('employees')}</button>
-                        <button class="text-button" @click=${() => this._go('/add')}>
+                        <app-button variant="secondary" @click=${() => this._go('/')}>${this.t('employees')}</app-button>
+                        <app-button class="add-btn" variant="primary" @click=${() => this._go('/add')}>
                             <span class="plus" aria-hidden="true">+</span>
                             <span>${this.t('addNew')}</span>
-                        </button>
+                        </app-button>
                         <language-selector></language-selector>
                     </div>
                 </div>

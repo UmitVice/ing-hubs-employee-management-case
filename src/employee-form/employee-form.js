@@ -6,6 +6,7 @@ import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
+import '@/components/app-button/app-button.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeForm extends LitElement {
@@ -302,8 +303,8 @@ export class EmployeeForm extends LitElement {
                     </div>
 
                     <div class="actions">
-                        <button type="submit" class="btn-primary">${this.t('save')}</button>
-                        <button type="button" class="btn-secondary" @click=${this._handleCancel}>${this.t('cancel')}</button>
+                        <app-button variant="primary">${this.t('save')}</app-button>
+                        <app-button variant="secondary" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>
             </page-container>
