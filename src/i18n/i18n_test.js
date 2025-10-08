@@ -1,4 +1,4 @@
-import {getLocale, t} from './i18n.js';
+import {getLocale, t, loadMessages} from './i18n.js';
 import {assert} from '@open-wc/testing';
 
 suite('i18n', () => {
@@ -15,6 +15,15 @@ suite('i18n', () => {
     const key = '___missing___';
     const msg = t(key);
     assert.match(msg, /MISSING_KEY/);
+  });
+
+  test('loadMessages loads current locale and allows translation', async () => {
+    const old = document.documentElement.lang;
+    document.documentElement.lang = 'en';
+    await loadMessages();
+    const msg = t('save');
+    assert.isString(msg);
+    document.documentElement.lang = old;
   });
 });
 

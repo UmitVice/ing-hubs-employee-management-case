@@ -7,7 +7,7 @@ import { withBase } from '@/utils/base-path.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import { assetUrl } from '@/utils/asset.js';
 import { formatDateToDDMMYYYY } from '@/utils/date.js';
-import { formatPhoneNumber } from '@/utils/phone.js';
+import { extractLocalDigits, formatPhoneTR } from '@/utils/phone.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
 import '@/components/app-button/app-button.js';
@@ -21,7 +21,8 @@ export class EmployeeList extends LitElement {
         pageSize: { type: Number },
         searchTerm: { type: String },
         viewFormat: { type: String },
-        filters: { type: Object }
+        filters: { type: Object },
+        _selectedIds: { type: Object, state: true }
     };
 
     async firstUpdated() {
@@ -56,6 +57,8 @@ export class EmployeeList extends LitElement {
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
         this._onLanguageChanged = () => this.requestUpdate();
         employeeService.addEventListener('employees-changed', this._employeeDataChanged);
+        /** @type {Set<string>} */
+        this._selectedIds = new Set();
     }
     
     disconnectedCallback() {
@@ -103,6 +106,41 @@ export class EmployeeList extends LitElement {
         dlg.addEventListener('confirm', onConfirm);
         dlg.addEventListener('cancel', onCancel);
     }
+
+    _toggleSelect(id, checked) {
+        const set = new Set(this._selectedIds);
+        if (checked) set.add(id); else set.delete(id);
+        this._selectedIds = set;
+    }
+
+    _toggleAllCurrent(checked, currentEmployees) {
+        const set = new Set(this._selectedIds);
+        if (checked) {
+            currentEmployees.forEach(emp => set.add(emp.id));
+        } else {
+            currentEmployees.forEach(emp => set.delete(emp.id));
+        }
+        this._selectedIds = set;
+    }
+
+    _handleBulkDelete() {
+        const selected = Array.from(this._selectedIds);
+        if (selected.length === 0) return;
+        const dlg = /** @type {import('@/components/confirm-dialog/confirm-dialog.js').ConfirmDialog} */(this.shadowRoot.querySelector('confirm-dialog'));
+        dlg.openWith({ title: this.t('deleteConfirmation'), message: `Delete ${selected.length} selected employees?`, confirmText: this.t('proceed'), cancelText: this.t('cancel'), variant: 'danger' });
+        const onConfirm = () => {
+            selected.forEach(id => employeeService.deleteEmployee(id));
+            this._selectedIds = new Set();
+            dlg.removeEventListener('confirm', onConfirm);
+            dlg.removeEventListener('cancel', onCancel);
+        };
+        const onCancel = () => {
+            dlg.removeEventListener('confirm', onConfirm);
+            dlg.removeEventListener('cancel', onCancel);
+        };
+        dlg.addEventListener('confirm', onConfirm);
+        dlg.addEventListener('cancel', onCancel);
+    }
     
     _handleSearch(e) {
         this.searchTerm = e.target.value;
@@ -130,7 +168,10 @@ export class EmployeeList extends LitElement {
             if (f.email && !(emp.email || '').toLowerCase().includes(f.email.toLowerCase())) return false;
             if (f.department && !(emp.department || '').toLowerCase().includes(f.department.toLowerCase())) return false;
             if (f.position && !(emp.position || '').toLowerCase().includes(f.position.toLowerCase())) return false;
-            if (f.phone && !(emp.phone || '').toString().includes(f.phone.replace(/\D/g, ''))) return false;
+            if (f.phone) {
+                const needle = extractLocalDigits(f.phone);
+                if (!extractLocalDigits(emp.phone || '').includes(needle)) return false;
+            }
             if (f.dateOfEmployment && (emp.dateOfEmployment || '') !== f.dateOfEmployment) return false;
             if (f.dateOfBirth && (emp.dateOfBirth || '') !== f.dateOfBirth) return false;
             // If a global quick search term exists, apply it in addition
@@ -262,12 +303,12 @@ export class EmployeeList extends LitElement {
                             ${currentEmployees.map(
                               emp => html`
                                 <tr>
-                                    <td><input type="checkbox" aria-label="select" /></td>
+                                    <td><input type="checkbox" aria-label="select" .checked=${this._selectedIds.has(emp.id)} @change=${(e) => this._toggleSelect(emp.id, e.target.checked)} /></td>
                                     <td>${emp.firstName}</td>
                                     <td>${emp.lastName}</td>
                                     <td>${formatDateToDDMMYYYY(emp.dateOfEmployment)}</td>
                                     <td>${formatDateToDDMMYYYY(emp.dateOfBirth) || '-'}</td>
-                                    <td>${formatPhoneNumber(emp.phone) || '-'}</td>
+                                    <td>${formatPhoneTR(emp.phone) || '-'}</td>
                                     <td>${emp.email}</td>
                                     <td>${emp.department}</td>
                                     <td>${emp.position}</td>
@@ -323,7 +364,7 @@ export class EmployeeList extends LitElement {
                                     </div>
                                     <div>
                                         <div class="field-label">${this.t('phoneNumber')}</div>
-                                        <div>${formatPhoneNumber(emp.phone) || '-'}</div>
+                                        <div>${formatPhoneTR(emp.phone) || '-'}</div>
                                     </div>
                                     <div>
                                         <div class="field-label">${this.t('email')}</div>
