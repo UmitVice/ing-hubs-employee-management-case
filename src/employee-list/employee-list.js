@@ -72,7 +72,8 @@ export class EmployeeList extends LitElement {
     }
 
     _employeeDataChanged(e) {
-        this.employees = e.detail.employees;
+        // Create a new array reference to ensure Lit detects the change
+        this.employees = [...e.detail.employees];
         this.page = 1; 
     }
 
@@ -98,17 +99,7 @@ export class EmployeeList extends LitElement {
         this.viewFormat = view;
         this._currentView = view;
         this.page = 1; // reset to first page when switching view to keep UX consistent
-        
-        // Update data-view attribute for CSS
         this.requestUpdate();
-        
-        // Update data-view attribute after render
-        setTimeout(() => {
-            const wrapper = this.shadowRoot.querySelector('.list-view-wrapper');
-            if (wrapper) {
-                wrapper.setAttribute('data-view', view);
-            }
-        }, 0);
     }
 
     _handleEdit(id) {
@@ -307,9 +298,9 @@ export class EmployeeList extends LitElement {
                         ${this.t('deleteSelected')} (${this._selectedIds.size})
                     </button>
                 </div>
-                <div class="list-view-wrapper" data-view="${this.viewFormat}">
+                <div class="list-view-wrapper" data-view="${this._currentView}">
                     
-                    <table class="data-table">
+                    <table class="data-table ${this._currentView === 'cards' ? 'hidden' : ''}">
                         <thead>
                             <tr>
                                 <th>
@@ -415,7 +406,7 @@ export class EmployeeList extends LitElement {
                         </tbody>
                     </table>
 
-                    <div class="cards-grid">
+                    <div class="cards-grid ${this._currentView === 'cards' ? '' : 'hidden'}">
                         ${currentEmployees.map(
                           emp => html`
                             <div class="card">

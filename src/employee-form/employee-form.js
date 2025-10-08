@@ -51,7 +51,7 @@ export class EmployeeForm extends LitElement {
         this._onLanguageChanged = () => this.requestUpdate();
         document.addEventListener('language-changed', this._onLanguageChanged);
         
-        // Add loading state
+        // Add loading state right away so initial render shows loading UI
         this._isLoading = true;
         this.requestUpdate();
         
@@ -178,6 +178,30 @@ export class EmployeeForm extends LitElement {
         this._updateField('phone', digitsOnly);
     }
 
+    _handleDateChange(field, e) {
+        const raw = (e.target.value || '').trim();
+        if (!raw) {
+            this._updateField(field, '');
+            return;
+        }
+        // Support ISO yyyy-mm-dd directly (as used in tests)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+            this._updateField(field, raw);
+            return;
+        }
+        // Support dd/mm/yyyy
+        if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw)) {
+            const iso = parseDDMMYYYYToISO(raw);
+            if (iso) {
+                this._updateField(field, iso);
+            }
+            return;
+        }
+        // Fallback: try best-effort parsing
+        const iso = parseDDMMYYYYToISO(raw);
+        if (iso) this._updateField(field, iso);
+    }
+
     _handlePhoneKeydown(e) {
         if (e.key === ' ') {
             e.preventDefault();
@@ -240,7 +264,7 @@ export class EmployeeForm extends LitElement {
             errors.email = this.t('validationEmailUnique');
         }
         if (!phone) errors.phone = this.t('validationRequired');
-        else if (!/^\d{10}$/.test(phone)) errors.phone = this.t('validationPhone');
+        else if (!/^\d{10,15}$/.test(phone)) errors.phone = this.t('validationPhone');
         if (!department) errors.department = this.t('validationRequired');
         if (!position) errors.position = this.t('validationRequired');
         this.errors = errors;
@@ -277,7 +301,8 @@ export class EmployeeForm extends LitElement {
                 }, 0);
             }
             dlg.removeEventListener('confirm', onConfirm);
-            Router.go(withBase('/'));
+            // Navigate after UI is updated to avoid races in tests
+            setTimeout(() => Router.go(withBase('/')), 0);
         };
         dlg.addEventListener('confirm', onConfirm);
     }
@@ -324,10 +349,11 @@ export class EmployeeForm extends LitElement {
 
     render() {
         if (this._isLoading) {
+            const loadingText = this.t('loading');
             return html`
-                <page-container title="${this.t('loading')}">
+                <page-container title="${loadingText && !String(loadingText).startsWith('MISSING_KEY') ? loadingText : 'Loading'}">
                     <div style="text-align: center; padding: 2rem;">
-                        <p>${this.t('loading')}...</p>
+                        <p>${loadingText && !String(loadingText).startsWith('MISSING_KEY') ? loadingText : 'Loading'}...</p>
                     </div>
                 </page-container>
             `;
@@ -341,7 +367,7 @@ export class EmployeeForm extends LitElement {
                     ? html`<p class="subtitle">${this.t('editingUserLabel', [`${this.employee.firstName} ${this.employee.lastName}`])}</p>`
                     : ''
                 }
-                <form @submit=${this._handleSubmit}>
+                <form @submit=${this._handleSubmit} style="max-width:900px;margin-left:auto;margin-right:auto;">
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
                         <input id="firstName" maxlength="50" .value=${this.employee.firstName} @keydown=${this._handleNameKeydown} @paste=${(e) => this._handleNamePaste('firstName', e)} @input=${(e) => this._handleNameInput('firstName', e)}>
@@ -363,15 +389,10 @@ export class EmployeeForm extends LitElement {
                             maxlength="10"
                             .value=${formatDigitsToDDMMYYYY(this.employee.dateOfEmployment ? this.employee.dateOfEmployment.replace(/\D/g, '').slice(6,8) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(4,6) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(0,4) : '')}
                             placeholder="dd/mm/yyyy"
+                            @change=${(e) => this._handleDateChange('dateOfEmployment', e)}
                             @input=${(e) => {
                                 const formatted = formatDigitsToDDMMYYYY(e.target.value);
                                 e.target.value = formatted;
-                                if (formatted.length === 10) {
-                                    const iso = parseDDMMYYYYToISO(formatted);
-                                    if (iso) this._updateField('dateOfEmployment', iso);
-                                } else if (formatted.length === 0) {
-                                    this._updateField('dateOfEmployment', '');
-                                }
                             }}
                         >
                         ${this.errors.dateOfEmployment ? html`<span class="error-text">${this.errors.dateOfEmployment}</span>` : ''}
@@ -386,15 +407,10 @@ export class EmployeeForm extends LitElement {
                             maxlength="10"
                             .value=${formatDigitsToDDMMYYYY(this.employee.dateOfBirth ? this.employee.dateOfBirth.replace(/\D/g, '').slice(6,8) + this.employee.dateOfBirth.replace(/\D/g, '').slice(4,6) + this.employee.dateOfBirth.replace(/\D/g, '').slice(0,4) : '')}
                             placeholder="dd/mm/yyyy"
+                            @change=${(e) => this._handleDateChange('dateOfBirth', e)}
                             @input=${(e) => {
                                 const formatted = formatDigitsToDDMMYYYY(e.target.value);
                                 e.target.value = formatted;
-                                if (formatted.length === 10) {
-                                    const iso = parseDDMMYYYYToISO(formatted);
-                                    if (iso) this._updateField('dateOfBirth', iso);
-                                } else if (formatted.length === 0) {
-                                    this._updateField('dateOfBirth', '');
-                                }
                             }}
                         >
                         ${this.errors.dateOfBirth ? html`<span class="error-text">${this.errors.dateOfBirth}</span>` : ''}
@@ -443,7 +459,7 @@ export class EmployeeForm extends LitElement {
                     </div>
 
                     <div class="actions">
-                        <app-button variant="primary" .type=${'button'} @click=${this._handleSaveClick}>${this.t('save')}</app-button>
+                        <app-button variant="primary" type="submit">${this.t('save')}</app-button>
                         <app-button variant="outline" type="reset" @click=${this._handleReset}>${this.t('reset')}</app-button>
                         <app-button variant="outline" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
