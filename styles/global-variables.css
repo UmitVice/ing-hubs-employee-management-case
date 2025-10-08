@@ -63,7 +63,7 @@
    --card-min-height: 18rem;
    --cards-visible-rows: 2;
    --form-container-min-height: 30rem; 
-   --page-content-fixed-height: 500px; 
+   --page-content-fixed-height: 550px; 
 }
 
 html { overflow-y: scroll; }

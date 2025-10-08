@@ -38,5 +38,6 @@
     "next": "Sonraki",
     "page": "Sayfa",
     "of": " / ",
-    "searchPlaceholder": "İsim veya e-posta ile ara"
+    "searchPlaceholder": "İsim veya e-posta ile ara",
+    "editingUserLabel": "{0} adlı çalışanı düzenliyorsunuz"
 }

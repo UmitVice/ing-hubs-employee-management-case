@@ -8,6 +8,12 @@ form {
     flex-direction: column;
     gap: var(--spacing-xs);
 }
+.subtitle {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-top: calc(var(--spacing-l) * -1);
+    margin-bottom: var(--spacing-xl);
+}
 label { font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-muted); letter-spacing: 0.2px; }
 input, select {
     padding: var(--spacing-s);

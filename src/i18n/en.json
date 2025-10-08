@@ -38,5 +38,6 @@
     "next": "Next",
     "page": "Page",
     "of": "of",
-    "searchPlaceholder": "Search by name or email"
+    "searchPlaceholder": "Search by name or email",
+    "editingUserLabel": "You are editing {0}"
 }

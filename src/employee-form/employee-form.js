@@ -5,6 +5,7 @@ import { withBase, stripBase } from '@/utils/base-path.js';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import { formatPhoneNumber } from '@/utils/phone.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
 import '@/components/app-button/app-button.js';
@@ -14,7 +15,8 @@ export class EmployeeForm extends LitElement {
     static properties = {
         employee: { type: Object },
         mode: { type: String },
-        errors: { type: Object }
+        errors: { type: Object },
+        _countryCodeLength: { type: Number, state: true }
     };
 
     async firstUpdated() {
@@ -35,6 +37,7 @@ export class EmployeeForm extends LitElement {
         this.NAME_MAX = 50;
         this.EMAIL_MAX = 254;
         this.PHONE_MAX = 15;
+        this._countryCodeLength = 0;
     }
 
     async connectedCallback() {
@@ -135,10 +138,23 @@ export class EmployeeForm extends LitElement {
 
     _handlePhoneInput(e) {
         const digitsOnly = this._sanitizeDigits(e.target.value);
+
+        if (this._countryCodeLength > 0 && digitsOnly.length < this._countryCodeLength) {
+            this._countryCodeLength = 0;
+        }
+
         this._updateField('phone', digitsOnly);
     }
 
     _handlePhoneKeydown(e) {
+        if (e.key === ' ') {
+            e.preventDefault();
+            const digits = this.employee.phone || '';
+            if (digits.length > 0 && this._countryCodeLength === 0) {
+                this._countryCodeLength = digits.length;
+            }
+            return;
+        }
         const allowed = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End','Enter'];
         if (allowed.includes(e.key)) return;
         if (e.key && e.key.length === 1 && !/[0-9]/.test(e.key)) {
@@ -169,20 +185,7 @@ export class EmployeeForm extends LitElement {
     }
 
     _formatPhoneDisplay(digits) {
-        if (!digits) return '';
-        const cc = digits.slice(0, 3);
-        const rest = digits.slice(3);
-        const groups = [];
-        let remaining = rest;
-        const sizes = [3, 3, 2, 2, 2];
-        for (const size of sizes) {
-            if (!remaining) break;
-            groups.push(remaining.slice(0, size));
-            remaining = remaining.slice(size);
-        }
-        if (remaining) groups.push(remaining);
-        const ccPart = cc ? `(+${cc})` : '+';
-        return `${ccPart}${groups.length ? ' ' + groups.join(' ') : ''}`.trim();
+        return formatPhoneNumber(digits, this._countryCodeLength);
     }
 
     _validate() {
@@ -246,6 +249,10 @@ export class EmployeeForm extends LitElement {
 
         return html`
             <page-container title="${title}">
+                ${this.mode === 'edit'
+                    ? html`<p class="subtitle">${this.t('editingUserLabel', [`${this.employee.firstName} ${this.employee.lastName}`])}</p>`
+                    : ''
+                }
                 <form @submit=${this._handleSubmit}>
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
@@ -261,13 +268,13 @@ export class EmployeeForm extends LitElement {
 
                     <div class="field">
                         <label for="dateOfEmployment">${this.t('dateOfEmployment')}</label>
-                        <input id="dateOfEmployment" type="date" .value=${this.employee.dateOfEmployment} @input=${(e) => this._updateField('dateOfEmployment', e.target.value)}>
+                        <input id="dateOfEmployment" type="date" .value=${this.employee.dateOfEmployment} @change=${(e) => this._updateField('dateOfEmployment', e.target.value)}>
                         ${this.errors.dateOfEmployment ? html`<span class="error-text">${this.errors.dateOfEmployment}</span>` : ''}
                     </div>
 
                     <div class="field">
                         <label for="dateOfBirth">${this.t('dateOfBirth')}</label>
-                        <input id="dateOfBirth" type="date" .value=${this.employee.dateOfBirth} @input=${(e) => this._updateField('dateOfBirth', e.target.value)}>
+                        <input id="dateOfBirth" type="date" .value=${this.employee.dateOfBirth} @change=${(e) => this._updateField('dateOfBirth', e.target.value)}>
                         ${this.errors.dateOfBirth ? html`<span class="error-text">${this.errors.dateOfBirth}</span>` : ''}
                     </div>
 
@@ -315,7 +322,7 @@ export class EmployeeForm extends LitElement {
 
                     <div class="actions">
                         <app-button variant="primary" .type=${'button'} @click=${this._handleSaveClick}>${this.t('save')}</app-button>
-                        <app-button variant="secondary" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
+                        <app-button variant="outline" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>
             </page-container>
