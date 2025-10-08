@@ -47,9 +47,58 @@ class EmployeeService extends EventTarget {
         }
     }
 
+    /** Validates employee data. */
+    /** @param {Omit<Employee,'id'>} employeeData */
+    _validateEmployee(employeeData) {
+        // Check required fields
+        if (!employeeData?.firstName?.trim() || !employeeData?.lastName?.trim()) {
+            return false;
+        }
+
+        // Validate email format
+        if (employeeData.email && !this._isValidEmail(employeeData.email)) {
+            return false;
+        }
+
+        // Validate phone format
+        if (employeeData.phone && !this._isValidPhone(employeeData.phone)) {
+            return false;
+        }
+
+        // Validate date relationship
+        if (employeeData.dateOfBirth && employeeData.dateOfEmployment) {
+            const birthDate = new Date(employeeData.dateOfBirth);
+            const employmentDate = new Date(employeeData.dateOfEmployment);
+            if (birthDate >= employmentDate) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /** Validates email format. */
+    /** @param {string} email */
+    _isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    /** Validates phone format. */
+    /** @param {string} phone */
+    _isValidPhone(phone) {
+        const phoneRegex = /^\d{10,15}$/;
+        return phoneRegex.test(phone.replace(/\D/g, ''));
+    }
+
     /** Adds a new employee with a generated ID. */
     /** @param {Omit<Employee,'id'>} employeeData */
     addEmployee(employeeData) {
+        // Validate employee data
+        if (!this._validateEmployee(employeeData)) {
+            return;
+        }
+
         // Prevent accidental duplicates by email
         const email = (employeeData?.email || '').toLowerCase();
         if (email && this.employees.some(e => (e.email || '').toLowerCase() === email)) {
@@ -76,7 +125,8 @@ class EmployeeService extends EventTarget {
     /** Returns employee by ID. */
     /** @param {EmployeeId} id */
     getEmployeeById(id) {
-        return this.employees.find(emp => emp.id === id);
+        const employee = this.employees.find(emp => emp.id === id);
+        return employee || null;
     }
     
     /** Checks email uniqueness, excluding currentId if provided. */
@@ -95,6 +145,42 @@ class EmployeeService extends EventTarget {
         if (!id) return;
 
         this.employees = this.employees.filter(emp => emp.id !== id);
+        this._saveData();
+    }
+
+    /** Filters employees by search term. */
+    /** @param {string} searchTerm */
+    filterEmployees(searchTerm) {
+        if (!searchTerm) return this.employees;
+
+        const term = searchTerm.toLowerCase();
+        return this.employees.filter(emp => 
+            emp.firstName?.toLowerCase().includes(term) ||
+            emp.lastName?.toLowerCase().includes(term) ||
+            emp.email?.toLowerCase().includes(term) ||
+            emp.department?.toLowerCase().includes(term) ||
+            emp.position?.toLowerCase().includes(term)
+        );
+    }
+
+    /** Sorts employees by field. */
+    /** @param {string} field */
+    sortEmployees(field) {
+        const sorted = [...this.employees];
+        sorted.sort((a, b) => {
+            const aVal = a[field] || '';
+            const bVal = b[field] || '';
+            return aVal.localeCompare(bVal);
+        });
+        return sorted;
+    }
+
+    /** Deletes multiple employees by IDs. */
+    /** @param {EmployeeId[]} ids */
+    deleteEmployees(ids) {
+        if (!Array.isArray(ids)) return;
+
+        this.employees = this.employees.filter(emp => !ids.includes(emp.id));
         this._saveData();
     }
 }

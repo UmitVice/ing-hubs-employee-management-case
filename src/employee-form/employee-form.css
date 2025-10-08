@@ -4,6 +4,8 @@ form {
     gap: var(--spacing-m);
     max-width: 900px;
     margin: var(--spacing-xl) auto 0;
+    margin-left: auto;
+    margin-right: auto;
 }
 .field {
     display: flex;

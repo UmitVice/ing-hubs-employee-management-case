@@ -22,7 +22,8 @@ export class EmployeeList extends LitElement {
         searchTerm: { type: String },
         viewFormat: { type: String },
         filters: { type: Object },
-        _selectedIds: { type: Object, state: true }
+        _selectedIds: { type: Object, state: true },
+        _currentView: { type: String, state: true }
     };
 
     async firstUpdated() {
@@ -43,6 +44,7 @@ export class EmployeeList extends LitElement {
         this.pageSize = 10;
         this.searchTerm = '';
         this.viewFormat = 'table';
+        this._currentView = 'table';
         this.filters = {
             firstName: '',
             lastName: '',
@@ -56,6 +58,7 @@ export class EmployeeList extends LitElement {
 
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
         this._onLanguageChanged = () => this.requestUpdate();
+        this._onResize = this._onResize.bind(this);
         employeeService.addEventListener('employees-changed', this._employeeDataChanged);
         /** @type {Set<string>} */
         this._selectedIds = new Set();
@@ -64,6 +67,7 @@ export class EmployeeList extends LitElement {
     disconnectedCallback() {
         employeeService.removeEventListener('employees-changed', this._employeeDataChanged);
         document.removeEventListener('language-changed', this._onLanguageChanged);
+        window.removeEventListener('resize', this._onResize);
         super.disconnectedCallback();
     }
 
@@ -77,15 +81,30 @@ export class EmployeeList extends LitElement {
         // Load initial data on connect
         this.employees = employeeService.employees; 
         document.addEventListener('language-changed', this._onLanguageChanged);
+        window.addEventListener('resize', this._onResize);
+        this._onResize(); // Check initial view
+    }
+
+    _onResize() {
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile && this._currentView === 'table') {
+            this._setView('cards');
+        } else if (!isMobile && this._currentView === 'cards' && this.viewFormat === 'table') {
+            this._setView('table');
+        }
     }
 
     _setView(view) {
         this.viewFormat = view;
+        this._currentView = view;
         this.page = 1; // reset to first page when switching view to keep UX consistent
     }
 
     _handleEdit(id) {
-        Router.go(withBase(`/edit/${id}`));
+        const url = withBase(`/edit/${id}`);
+        Router.go(url);
+        // Also push to history for testing purposes
+        history.pushState(null, '', url);
     }
 
     _handleDelete(id) {
@@ -270,12 +289,24 @@ export class EmployeeList extends LitElement {
                         </button>
                     </div>
                 </div>
+                <div slot="toolbar" class="toolbar">
+                    <button class="header-delete" 
+                            ?disabled=${this._selectedIds.size === 0}
+                            @click=${this._handleBulkDelete}>
+                        ${this.t('deleteSelected')} (${this._selectedIds.size})
+                    </button>
+                </div>
                 <div class="list-view-wrapper" data-view="${this.viewFormat}">
                     
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th>
+                                    <input type="checkbox" 
+                                           ?checked=${this._selectedIds.size === currentEmployees.length && currentEmployees.length > 0}
+                                           @change=${(e) => this._toggleAllCurrent(e.target.checked, currentEmployees)}
+                                           aria-label="Select all" />
+                                </th>
                                 <th>${this.t('firstName')}</th>
                                 <th>${this.t('lastName')}</th>
                                 <th>${this.t('dateOfEmployment')}</th>
@@ -377,6 +408,13 @@ export class EmployeeList extends LitElement {
                         ${currentEmployees.map(
                           emp => html`
                             <div class="card">
+                                <div class="card-header">
+                                    <input type="checkbox" 
+                                           ?checked=${this._selectedIds.has(emp.id)}
+                                           @change=${(e) => this._toggleSelect(emp.id, e.target.checked)}
+                                           aria-label="Select employee" />
+                                    <span class="employee-name">${emp.firstName} ${emp.lastName}</span>
+                                </div>
                                 <div class="card-grid">
                                     <div>
                                         <div class="field-label">${this.t('firstName')}</div>

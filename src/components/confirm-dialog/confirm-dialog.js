@@ -72,15 +72,19 @@ export class ConfirmDialog extends LitElement {
     this.dispatchEvent(new CustomEvent('cancel', { bubbles: true, composed: true }));
   }
 
+  close() {
+    this.open = false;
+  }
+
   _closeIconClick() { this._cancel(); }
 
   render() {
     return html`
       <div class="backdrop" ?hidden=${!this.open} @click=${this._cancel}></div>
-      <div class="dialog" role="dialog" aria-modal="true" ?hidden=${!this.open} @click=${e => e.stopPropagation()}>
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" ?hidden=${!this.open} @click=${e => e.stopPropagation()}>
         <button class="close" aria-label="close" @click=${this._closeIconClick}>×</button>
-        <div class="title">${this.title || this.t('deleteConfirmation')}</div>
-        ${this.message ? html`<div class="message">${this.message}</div>` : ''}
+        <div class="dialog-title" id="dialog-title">${this.title || this.t('deleteConfirmation')}</div>
+        ${this.message ? html`<div class="dialog-message">${this.message}</div>` : ''}
         <div class="actions">
           <button class="btn primary confirm" @click=${this._confirm}>${this.confirmText || this.t('proceed')}</button>
           <button class="btn outline" @click=${this._cancel}>${this.cancelText || this.t('cancel')}</button>

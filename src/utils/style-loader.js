@@ -11,29 +11,52 @@ async function loadStylesheet(url) {
         const sep = href.includes('?') ? '&' : '?';
         href = `${href}${sep}v=${Date.now()}`;
     }
-    const response = await fetch(href, { cache: 'no-store' });
-    const cssText = await response.text();
-    const sheet = new CSSStyleSheet();
-    await sheet.replace(cssText);
-    urlToSheetCache.set(url, sheet);
-    urlToTextCache.set(url, cssText);
-    return { sheet, cssText };
+    
+    try {
+        const response = await fetch(href, { cache: 'no-store' });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        const cssText = await response.text();
+        const sheet = new CSSStyleSheet();
+        await sheet.replace(cssText);
+        urlToSheetCache.set(url, sheet);
+        urlToTextCache.set(url, cssText);
+        return { sheet, cssText };
+    } catch (error) {
+        console.error(`Failed to load stylesheet: ${href}`, error);
+        // Don't cache failed loads, return null to indicate failure
+        return null;
+    }
 }
 
 export async function adoptStylesheets(renderRoot, urls) {
+    // Handle null/undefined renderRoot
+    if (!renderRoot) {
+        return;
+    }
+
+    // Handle invalid urls parameter
+    if (!urls || !Array.isArray(urls)) {
+        return;
+    }
+
     const hrefs = urls.map(u => (u instanceof URL ? u.href : String(u)));
     const entries = await Promise.all(hrefs.map(loadStylesheet));
+
+    // Filter out null entries (failed loads)
+    const validEntries = entries.filter(entry => entry !== null);
 
     const supportsConstructable = !!(renderRoot && 'adoptedStyleSheets' in renderRoot && typeof CSSStyleSheet !== 'undefined' && 'replace' in CSSStyleSheet.prototype);
 
     if (supportsConstructable) {
-        const sheets = entries.map(e => e.sheet);
+        const sheets = validEntries.map(e => e.sheet);
         renderRoot.adoptedStyleSheets = [...renderRoot.adoptedStyleSheets, ...sheets];
     }
 
     // Always ensure styles are visible (also covers browsers/environments where constructable
     // stylesheets are present but ineffective). Inject <style> once per href.
-    entries.forEach(({ cssText }, index) => {
+    validEntries.forEach(({ cssText }, index) => {
         const href = hrefs[index];
         const marker = `style[data-style-loader-href="${href}"]`;
         if (!renderRoot.querySelector(marker)) {

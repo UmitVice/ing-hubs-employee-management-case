@@ -12,12 +12,14 @@ export class LanguageSelector extends LitElement {
     }
 
     static properties = {
-        currentLocale: { type: String, state: true }
+        currentLocale: { type: String, state: true },
+        languages: { type: Array }
     };
 
     constructor() {
         super();
         this.currentLocale = document.documentElement.lang.startsWith('tr') ? 'tr' : 'en';
+        this.languages = ['en', 'tr'];
         this._onLanguageChanged = (e) => {
             const locale = document.documentElement.lang.startsWith('tr') ? 'tr' : 'en';
             if (this.currentLocale !== locale) {
@@ -63,14 +65,28 @@ export class LanguageSelector extends LitElement {
         const nextLocale = isTR ? 'en' : 'tr';
         const icon = isTR ? US_FLAG_URL : TR_FLAG_URL;
         const label = isTR ? 'Switch language to English' : 'Switch language to Turkish';
+        const languageText = isTR ? 'TR' : 'EN';
+        
         return html`
             <button
                 class="active"
+                role="button"
                 @click=${() => this.changeLocale(nextLocale)}
+                @keydown=${(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.changeLocale(nextLocale);
+                    }
+                }}
+                @focus=${() => this.dispatchEvent(new CustomEvent('focus', { bubbles: true, composed: true }))}
+                @blur=${() => this.dispatchEvent(new CustomEvent('blur', { bubbles: true, composed: true }))}
+                @mouseover=${() => this.dispatchEvent(new CustomEvent('mouseover', { bubbles: true, composed: true }))}
+                @touchstart=${() => this.dispatchEvent(new CustomEvent('touchstart', { bubbles: true, composed: true }))}
                 aria-label="${label}"
                 title="${label}"
             >
                 <img src="${icon}" alt="${label}" class="flag-icon" />
+                <span class="language-text">${languageText}</span>
             </button>
         `;
     }

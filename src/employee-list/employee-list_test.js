@@ -301,6 +301,8 @@ suite('employee-list', () => {
       department: 'Marketing', position: 'Manager'
     });
     
+    // Wait for event to be processed
+    await new Promise(resolve => setTimeout(resolve, 10));
     await el.updateComplete;
     
     // Should show new employee

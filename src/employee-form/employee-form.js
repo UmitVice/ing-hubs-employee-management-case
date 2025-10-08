@@ -40,7 +40,7 @@ export class EmployeeForm extends LitElement {
         this.EMAIL_MAX = 254;
         this.PHONE_MAX = 10;
         this._countryCodeLength = 0;
-        this._isLoading = false;
+        this._isLoading = true; // Start in loading state
     }
 
     async connectedCallback() {
@@ -219,6 +219,15 @@ export class EmployeeForm extends LitElement {
         else if (!/^\p{L}+(?:[\s'-]\p{L}+)*$/u.test(lastName)) errors.lastName = this.t('validationLettersOnly');
         if (!dateOfEmployment) errors.dateOfEmployment = this.t('validationRequired');
         if (!dateOfBirth) errors.dateOfBirth = this.t('validationRequired');
+        
+        // Validate date relationship
+        if (dateOfEmployment && dateOfBirth) {
+            const employmentDate = new Date(dateOfEmployment);
+            const birthDate = new Date(dateOfBirth);
+            if (birthDate >= employmentDate) {
+                errors.dateOfBirth = this.t('validationDateBeforeEmployment');
+            }
+        }
         if (!email) errors.email = this.t('validationRequired');
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = this.t('validationEmail');
         else if (!employeeService.isEmailUnique(email, this.mode === 'edit' ? this.employee.id : null)) {
@@ -245,6 +254,10 @@ export class EmployeeForm extends LitElement {
             } else {
                 const { id, ...payload } = this.employee;
                 employeeService.addEmployee(payload);
+                // Clear form after successful submission
+                this.employee = this._createEmptyEmployee();
+                this.errors = {};
+                this.requestUpdate();
             }
             dlg.removeEventListener('confirm', onConfirm);
             Router.go(withBase('/'));
@@ -254,6 +267,18 @@ export class EmployeeForm extends LitElement {
 
     _handleCancel() {
         Router.go(withBase('/'));
+    }
+
+    _handleReset() {
+        this.employee = this._createEmptyEmployee();
+        this.errors = {};
+        this.requestUpdate();
+        
+        // Also clear the form inputs in the DOM
+        const form = this.shadowRoot.querySelector('form');
+        if (form) {
+            form.reset();
+        }
     }
 
     _handleSaveClick() {
@@ -388,6 +413,7 @@ export class EmployeeForm extends LitElement {
 
                     <div class="actions">
                         <app-button variant="primary" .type=${'button'} @click=${this._handleSaveClick}>${this.t('save')}</app-button>
+                        <app-button variant="outline" type="reset" @click=${this._handleReset}>${this.t('reset')}</app-button>
                         <app-button variant="outline" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>
