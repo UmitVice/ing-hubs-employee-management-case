@@ -1,6 +1,6 @@
 .btn { padding: var(--spacing-s) var(--spacing-m); border-radius: var(--border-radius-base); cursor: pointer; border: var(--border-width-thin) solid var(--color-border); background: var(--color-background-light); font: inherit; }
 .btn.primary { background-color: var(--color-primary); color: var(--color-surface); border: none; }
-.btn.secondary { background: transparent; color: var(--color-accent); border: var(--border-width-thin) solid var(--color-accent); }
+.btn.secondary { background: #4f4b8f; color: var(--color-surface); border: none; }
 .btn.danger { background-color: var(--color-error); color: var(--color-surface); border: none; }
 .btn:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
 

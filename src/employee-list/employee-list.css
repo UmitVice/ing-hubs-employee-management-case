@@ -88,12 +88,41 @@ page-container.no-container-style::part(content) {
 }
 
 /* Card view layout */
-.cards-grid { gap: var(--spacing-l); grid-template-columns: repeat(2, 1fr); }
-.card { background-color: var(--color-surface); border-radius: var(--border-radius-base); box-shadow: var(--shadow-subtle); padding: var(--spacing-l); border: var(--border-width-thin) solid var(--color-border-subtle); min-height: var(--card-min-height); }
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-m); }
+.cards-grid { gap: var(--spacing-xl); grid-template-columns: repeat(2, 1fr); }
+.card { background-color: var(--color-surface); border-radius: var(--border-radius-base); box-shadow: var(--shadow-subtle); padding: var(--spacing-xl); border: var(--border-width-thin) solid var(--color-border-subtle); min-height: var(--card-min-height); }
+.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); }
 .card h3 { margin: var(--spacing-none); }
 .meta { color: var(--color-text-dark); opacity: 0.8; font-size: var(--font-size-small); }
-.card .field-label { font-weight: 600; opacity: 0.8; color: var(--color-text-muted); font-size: var(--font-size-2xs); letter-spacing: 0.2px; }
-.card .actions { margin-top: var(--spacing-m); display: inline-flex; gap: var(--spacing-m); }
+.card .field-label { font-weight: 600; opacity: 0.8; color: var(--color-text-muted); font-size: var(--font-size-base); letter-spacing: 0.2px; }
+.card .actions {
+    margin-top: var(--spacing-l);
+    display: flex;
+    gap: var(--spacing-m);
+    justify-content: flex-start;
+}
+.card .actions app-button {
+    flex: 0 1 auto; /* Do not grow, allow shrinking */
+}
+.card .actions app-button::part(button) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-s);
+    padding: var(--spacing-s) var(--spacing-m);
+}
+.card .actions .btn-icon {
+    width: var(--size-icon-sm);
+    height: var(--size-icon-sm);
+}
+.card .actions app-button[variant="danger"]::part(button) {
+    background-color: var(--color-primary);
+    color: var(--color-surface);
+    border: none;
+}
+.card .actions app-button[variant="secondary"]::part(button) {
+    background-color: #4f4b8f;
+    color: var(--color-surface);
+    border: none;
+}
 
 

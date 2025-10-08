@@ -337,8 +337,18 @@ export class EmployeeList extends LitElement {
                                     </div>
                                 </div>
                                 <div class="actions">
-                                    <app-button variant="secondary" @click=${() => this._handleEdit(emp.id)}>${this.t('edit')}</app-button>
-                                    <app-button variant="danger" @click=${() => this._handleDelete(emp.id)}>${this.t('delete')}</app-button>
+                                    <app-button variant="secondary" @click=${() => this._handleEdit(emp.id)}>
+                                        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm18.71-11.04a1.003 1.003 0 0 0 0-1.42l-2.5-2.5a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.99-1.66z"/>
+                                        </svg>
+                                        <span>${this.t('edit')}</span>
+                                    </app-button>
+                                    <app-button variant="danger" @click=${() => this._handleDelete(emp.id)}>
+                                        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path fill="currentColor" d="M6 7h12v2H6V7zm2 3h8l-1 10H9L8 10zm3-6h2l1 1h5v2H5V5h5l1-1z"/>
+                                        </svg>
+                                        <span>${this.t('delete')}</span>
+                                    </app-button>
                                 </div>
                             </div>
                           `
