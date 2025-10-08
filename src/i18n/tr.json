@@ -1,6 +1,8 @@
 {
     "employeeList": "Çalışan Listesi",
+    "employees": "Çalışanlar",
     "add": "Ekle",
+    "addNew": "Yeni Ekle",
     "editEmployee": "Çalışanı Düzenle",
     "addNewEmployee": "Yeni Çalışan Ekle",
     "firstName": "Ad",

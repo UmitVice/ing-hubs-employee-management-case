@@ -5,6 +5,8 @@ import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
+import '@/components/page-container/page-container.js';
+import '@/components/app-button/app-button.js';
 /** @typedef {import('@/types.js').Employee} Employee */
 
 export class EmployeeForm extends LitElement {
@@ -15,7 +17,10 @@ export class EmployeeForm extends LitElement {
     };
 
     async firstUpdated() {
+        // Prevent FOUC: hide until styles are ready
+        this.style.visibility = 'hidden';
         await adoptStylesheets(this.shadowRoot, [new URL('./employee-form.css', import.meta.url)]);
+        this.style.visibility = 'visible';
     }
 
     t(key, params = []) { return translate(key, params); }
@@ -229,8 +234,7 @@ export class EmployeeForm extends LitElement {
         const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
 
         return html`
-            <div class="page-title">${title}</div>
-            <div class="form-container">
+            <page-container title="${title}">
                 <form @submit=${this._handleSubmit}>
                     <div class="field">
                         <label for="firstName">${this.t('firstName')}</label>
@@ -299,11 +303,11 @@ export class EmployeeForm extends LitElement {
                     </div>
 
                     <div class="actions">
-                        <button type="submit" class="btn-primary">${this.t('save')}</button>
-                        <button type="button" class="btn-secondary" @click=${this._handleCancel}>${this.t('cancel')}</button>
+                        <app-button variant="primary">${this.t('save')}</app-button>
+                        <app-button variant="secondary" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>
-            </div>
+            </page-container>
             <confirm-dialog></confirm-dialog>
         `;
     }

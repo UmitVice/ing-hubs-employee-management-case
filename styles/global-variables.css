@@ -7,6 +7,7 @@
    --color-error: #E30A17;
   --color-border: #A8A8A8;
   --color-border-strong: #ADA7A7;
+  --color-border-subtle: #EFEFEF; /* lighter borders for table rows/cards */
    --color-success: #525199;
   --color-accent: #525199;        /* Accent (used for Edit buttons) */
   --color-primary-muted: #ffcdb0;
@@ -77,4 +78,9 @@ body {
 /* Standard box-sizing rule for predictability */
 *, *::before, *::after {
     box-sizing: border-box;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) for custom elements */
+:not(:defined) {
+    visibility: hidden;
 }

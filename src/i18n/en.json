@@ -1,6 +1,8 @@
 {
     "employeeList": "Employee List",
+    "employees": "Employees",
     "add": "Add",
+    "addNew": "Add New",
     "editEmployee": "Edit Employee",
     "addNewEmployee": "Add New Employee",
     "firstName": "First Name",

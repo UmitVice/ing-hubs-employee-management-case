@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit';
 import { loadMessages } from '@/i18n/i18n.js'; 
 import { adoptStylesheets } from '@/utils/style-loader.js';
+import { assetUrl } from '@/utils/asset.js';
 
-const TR_FLAG_URL = '/assets/flags/tr.png'; 
-const US_FLAG_URL = '/assets/flags/us.png'; 
+const TR_FLAG_URL = assetUrl('flags/tr.png'); 
+const US_FLAG_URL = assetUrl('flags/us.png'); 
 
 export class LanguageSelector extends LitElement {
     async firstUpdated() {
