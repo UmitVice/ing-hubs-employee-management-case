@@ -41,6 +41,20 @@ suite('employee-service', () => {
     assert.isFalse(employeeService.isEmailUnique('dup@example.com'));
     assert.isTrue(employeeService.isEmailUnique('unique@example.com'));
   });
+
+  test('addEmployee prevents duplicate emails', () => {
+    employeeService.employees = [];
+    employeeService.addEmployee({
+      firstName: 'First', lastName: 'One', dateOfEmployment: '2025-01-01', dateOfBirth: '1990-01-01',
+      phone: '1111111111', email: 'same@example.com', department: 'Tech', position: 'Junior'
+    });
+    const before = employeeService.employees.length;
+    employeeService.addEmployee({
+      firstName: 'Second', lastName: 'Two', dateOfEmployment: '2025-01-02', dateOfBirth: '1991-01-01',
+      phone: '2222222222', email: 'same@example.com', department: 'Tech', position: 'Senior'
+    });
+    assert.equal(employeeService.employees.length, before);
+  });
 });
 
 

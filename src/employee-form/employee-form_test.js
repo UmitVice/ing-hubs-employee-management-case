@@ -27,9 +27,9 @@ suite('employee-form', () => {
     el.shadowRoot.querySelector('#lastName').value = 'Lovelace';
     el.shadowRoot.querySelector('#lastName').dispatchEvent(new Event('input'));
     el.shadowRoot.querySelector('#dateOfEmployment').value = '2025-01-01';
-    el.shadowRoot.querySelector('#dateOfEmployment').dispatchEvent(new Event('input'));
+    el.shadowRoot.querySelector('#dateOfEmployment').dispatchEvent(new Event('change'));
     el.shadowRoot.querySelector('#dateOfBirth').value = '1990-01-01';
-    el.shadowRoot.querySelector('#dateOfBirth').dispatchEvent(new Event('input'));
+    el.shadowRoot.querySelector('#dateOfBirth').dispatchEvent(new Event('change'));
     el.shadowRoot.querySelector('#phone').value = '905551112233';
     el.shadowRoot.querySelector('#phone').dispatchEvent(new Event('input'));
     el.shadowRoot.querySelector('#email').value = 'ada@example.com';

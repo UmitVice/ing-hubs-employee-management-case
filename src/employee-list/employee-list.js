@@ -7,7 +7,7 @@ import { withBase } from '@/utils/base-path.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import { assetUrl } from '@/utils/asset.js';
 import { formatDateToDDMMYYYY } from '@/utils/date.js';
-import { formatPhoneNumber } from '@/utils/phone.js';
+import { extractLocalDigits, formatPhoneTR } from '@/utils/phone.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
 import '@/components/app-button/app-button.js';
@@ -130,7 +130,10 @@ export class EmployeeList extends LitElement {
             if (f.email && !(emp.email || '').toLowerCase().includes(f.email.toLowerCase())) return false;
             if (f.department && !(emp.department || '').toLowerCase().includes(f.department.toLowerCase())) return false;
             if (f.position && !(emp.position || '').toLowerCase().includes(f.position.toLowerCase())) return false;
-            if (f.phone && !(emp.phone || '').toString().includes(f.phone.replace(/\D/g, ''))) return false;
+            if (f.phone) {
+                const needle = extractLocalDigits(f.phone);
+                if (!extractLocalDigits(emp.phone || '').includes(needle)) return false;
+            }
             if (f.dateOfEmployment && (emp.dateOfEmployment || '') !== f.dateOfEmployment) return false;
             if (f.dateOfBirth && (emp.dateOfBirth || '') !== f.dateOfBirth) return false;
             // If a global quick search term exists, apply it in addition
@@ -267,7 +270,7 @@ export class EmployeeList extends LitElement {
                                     <td>${emp.lastName}</td>
                                     <td>${formatDateToDDMMYYYY(emp.dateOfEmployment)}</td>
                                     <td>${formatDateToDDMMYYYY(emp.dateOfBirth) || '-'}</td>
-                                    <td>${formatPhoneNumber(emp.phone) || '-'}</td>
+                                    <td>${formatPhoneTR(emp.phone) || '-'}</td>
                                     <td>${emp.email}</td>
                                     <td>${emp.department}</td>
                                     <td>${emp.position}</td>
@@ -323,7 +326,7 @@ export class EmployeeList extends LitElement {
                                     </div>
                                     <div>
                                         <div class="field-label">${this.t('phoneNumber')}</div>
-                                        <div>${formatPhoneNumber(emp.phone) || '-'}</div>
+                                        <div>${formatPhoneTR(emp.phone) || '-'}</div>
                                     </div>
                                     <div>
                                         <div class="field-label">${this.t('email')}</div>

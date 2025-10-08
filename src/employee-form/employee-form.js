@@ -5,7 +5,7 @@ import { withBase, stripBase } from '@/utils/base-path.js';
 import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
-import { formatPhoneNumber } from '@/utils/phone.js';
+import { extractLocalDigits, formatPhoneTR } from '@/utils/phone.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
 import '@/components/app-button/app-button.js';
@@ -36,7 +36,7 @@ export class EmployeeForm extends LitElement {
         this.errors = {};
         this.NAME_MAX = 50;
         this.EMAIL_MAX = 254;
-        this.PHONE_MAX = 15;
+        this.PHONE_MAX = 10;
         this._countryCodeLength = 0;
     }
 
@@ -137,7 +137,7 @@ export class EmployeeForm extends LitElement {
     }
 
     _handlePhoneInput(e) {
-        const digitsOnly = this._sanitizeDigits(e.target.value);
+        const digitsOnly = extractLocalDigits(e.target.value);
 
         if (this._countryCodeLength > 0 && digitsOnly.length < this._countryCodeLength) {
             this._countryCodeLength = 0;
@@ -171,13 +171,9 @@ export class EmployeeForm extends LitElement {
     _handlePhonePaste(e) {
         e.preventDefault();
         const text = (e.clipboardData || /** @type {any} */(window).clipboardData)?.getData('text') || '';
-        const digits = this._sanitizeDigits(text);
+        const pasted = extractLocalDigits(text);
         const current = this.employee.phone || '';
-        const value = e.target.value || '';
-        const start = e.target.selectionStart ?? value.length;
-        const end = e.target.selectionEnd ?? value.length;
-        const nextDigitsRaw = (current.slice(0, start) + digits + current.slice(end));
-        const nextDigits = nextDigitsRaw.replace(/\D/g,'').slice(0, this.PHONE_MAX);
+        const nextDigits = (current + pasted).slice(0, this.PHONE_MAX);
         this._updateField('phone', nextDigits);
         if (nextDigits.length >= this.PHONE_MAX) {
             this.errors = { ...this.errors, phone: this.t('validationMaxDigits', [this.PHONE_MAX]) };
@@ -185,7 +181,7 @@ export class EmployeeForm extends LitElement {
     }
 
     _formatPhoneDisplay(digits) {
-        return formatPhoneNumber(digits, this._countryCodeLength);
+        return formatPhoneTR(digits);
     }
 
     _validate() {
@@ -203,7 +199,7 @@ export class EmployeeForm extends LitElement {
             errors.email = this.t('validationEmailUnique');
         }
         if (!phone) errors.phone = this.t('validationRequired');
-        else if (!/^\d{10,15}$/.test(phone)) errors.phone = this.t('validationPhone');
+        else if (!/^\d{10}$/.test(phone)) errors.phone = this.t('validationPhone');
         if (!department) errors.department = this.t('validationRequired');
         if (!position) errors.position = this.t('validationRequired');
         this.errors = errors;

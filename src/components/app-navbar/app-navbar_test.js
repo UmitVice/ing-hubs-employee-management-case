@@ -13,8 +13,8 @@ suite('app-navbar', () => {
   test('has navigation buttons', async () => {
     const el = await fixture(html`<app-navbar></app-navbar>`);
     await el.updateComplete;
-    const employeesBtn = el.shadowRoot.querySelector('.link');
-    const addBtn = el.shadowRoot.querySelector('.text-button');
+    const employeesBtn = el.shadowRoot.querySelector('.text-button');
+    const addBtn = el.shadowRoot.querySelectorAll('.text-button')[1];
     assert.exists(employeesBtn);
     assert.exists(addBtn);
   });
