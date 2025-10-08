@@ -6,6 +6,7 @@ import { t as translate } from '@/i18n/i18n.js';
 import { employeeService } from '@/employee-service.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import { extractLocalDigits, formatPhoneTR } from '@/utils/phone.js';
+import { parseDDMMYYYYToISO, formatDigitsToDDMMYYYY } from '@/utils/date.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
 import '@/components/app-button/app-button.js';
@@ -264,13 +265,47 @@ export class EmployeeForm extends LitElement {
 
                     <div class="field">
                         <label for="dateOfEmployment">${this.t('dateOfEmployment')}</label>
-                        <input id="dateOfEmployment" type="date" .value=${this.employee.dateOfEmployment} @change=${(e) => this._updateField('dateOfEmployment', e.target.value)}>
+                        <input
+                            id="dateOfEmployment"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="10"
+                            .value=${formatDigitsToDDMMYYYY(this.employee.dateOfEmployment ? this.employee.dateOfEmployment.replace(/\D/g, '').slice(6,8) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(4,6) + this.employee.dateOfEmployment.replace(/\D/g, '').slice(0,4) : '')}
+                            placeholder="dd/mm/yyyy"
+                            @input=${(e) => {
+                                const formatted = formatDigitsToDDMMYYYY(e.target.value);
+                                e.target.value = formatted;
+                                if (formatted.length === 10) {
+                                    const iso = parseDDMMYYYYToISO(formatted);
+                                    if (iso) this._updateField('dateOfEmployment', iso);
+                                } else if (formatted.length === 0) {
+                                    this._updateField('dateOfEmployment', '');
+                                }
+                            }}
+                        >
                         ${this.errors.dateOfEmployment ? html`<span class="error-text">${this.errors.dateOfEmployment}</span>` : ''}
                     </div>
 
                     <div class="field">
                         <label for="dateOfBirth">${this.t('dateOfBirth')}</label>
-                        <input id="dateOfBirth" type="date" .value=${this.employee.dateOfBirth} @change=${(e) => this._updateField('dateOfBirth', e.target.value)}>
+                        <input
+                            id="dateOfBirth"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="10"
+                            .value=${formatDigitsToDDMMYYYY(this.employee.dateOfBirth ? this.employee.dateOfBirth.replace(/\D/g, '').slice(6,8) + this.employee.dateOfBirth.replace(/\D/g, '').slice(4,6) + this.employee.dateOfBirth.replace(/\D/g, '').slice(0,4) : '')}
+                            placeholder="dd/mm/yyyy"
+                            @input=${(e) => {
+                                const formatted = formatDigitsToDDMMYYYY(e.target.value);
+                                e.target.value = formatted;
+                                if (formatted.length === 10) {
+                                    const iso = parseDDMMYYYYToISO(formatted);
+                                    if (iso) this._updateField('dateOfBirth', iso);
+                                } else if (formatted.length === 0) {
+                                    this._updateField('dateOfBirth', '');
+                                }
+                            }}
+                        >
                         ${this.errors.dateOfBirth ? html`<span class="error-text">${this.errors.dateOfBirth}</span>` : ''}
                     </div>
 

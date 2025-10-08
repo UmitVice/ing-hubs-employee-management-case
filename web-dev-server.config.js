@@ -17,9 +17,7 @@ if (!['dev', 'prod'].includes(mode)) {
 export default {
   nodeResolve: true,
   appIndex: 'index.html',
-  mimeTypes: {
-    '**/*.css': 'js'
-  },
+  // Serve CSS with the default text/css mime type for proper <link rel="stylesheet"> loading
   middleware: [
     function aliasAtToSrc(ctx, next) {
       if (ctx.url && ctx.url.startsWith('/@/')) {

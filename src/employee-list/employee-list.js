@@ -6,7 +6,7 @@ import { Router } from '@vaadin/router';
 import { withBase } from '@/utils/base-path.js';
 import { adoptStylesheets } from '@/utils/style-loader.js';
 import { assetUrl } from '@/utils/asset.js';
-import { formatDateToDDMMYYYY } from '@/utils/date.js';
+import { formatDateToDDMMYYYY, parseDDMMYYYYToISO } from '@/utils/date.js';
 import { extractLocalDigits, formatPhoneTR } from '@/utils/phone.js';
 import '@/components/confirm-dialog/confirm-dialog.js';
 import '@/components/page-container/page-container.js';
@@ -162,6 +162,15 @@ export class EmployeeList extends LitElement {
 
     _getCurrentPageEmployees() {
         const f = this.filters;
+        const normalize = (v) => {
+            if (!v) return '';
+            const str = String(v).trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str; // already ISO
+            // Accept partial dd/mm[/yyyy] - compare on typed prefix
+            if (/^\d{1,2}(\/\d{0,2}(\/\d{0,4})?)?$/.test(str)) return str; // keep partial dd/mm
+            const iso = parseDDMMYYYYToISO(str);
+            return iso || '';
+        };
         const filteredEmployees = this.employees.filter(emp => {
             if (f.firstName && !(emp.firstName || '').toLowerCase().includes(f.firstName.toLowerCase())) return false;
             if (f.lastName && !(emp.lastName || '').toLowerCase().includes(f.lastName.toLowerCase())) return false;
@@ -172,13 +181,36 @@ export class EmployeeList extends LitElement {
                 const needle = extractLocalDigits(f.phone);
                 if (!extractLocalDigits(emp.phone || '').includes(needle)) return false;
             }
-            if (f.dateOfEmployment && (emp.dateOfEmployment || '') !== f.dateOfEmployment) return false;
-            if (f.dateOfBirth && (emp.dateOfBirth || '') !== f.dateOfBirth) return false;
+            if (f.dateOfEmployment) {
+                const filt = normalize(f.dateOfEmployment);
+                if (!filt) return false;
+                if (/^\d{4}-\d{2}-\d{2}$/.test(filt)) {
+                    if ((emp.dateOfEmployment || '') !== filt) return false;
+                } else {
+                    // partial dd/mm prefix match against formatted value
+                    const display = formatDateToDDMMYYYY(emp.dateOfEmployment);
+                    if (!display.startsWith(filt)) return false;
+                }
+            }
+            if (f.dateOfBirth) {
+                const filt = normalize(f.dateOfBirth);
+                if (!filt) return false;
+                if (/^\d{4}-\d{2}-\d{2}$/.test(filt)) {
+                    if ((emp.dateOfBirth || '') !== filt) return false;
+                } else {
+                    const display = formatDateToDDMMYYYY(emp.dateOfBirth);
+                    if (!display.startsWith(filt)) return false;
+                }
+            }
             // If a global quick search term exists, apply it in addition
             if (this.searchTerm) {
                 const s = this.searchTerm.toLowerCase();
                 const any = ['firstName','lastName','email','department','position']
-                    .some(k => (emp[k] || '').toLowerCase().includes(s));
+                    .some(k => (emp[k] || '').toLowerCase().includes(s))
+                    || formatDateToDDMMYYYY(emp.dateOfEmployment).toLowerCase().includes(s)
+                    || formatDateToDDMMYYYY(emp.dateOfBirth).toLowerCase().includes(s)
+                    || (emp.dateOfEmployment || '').includes(s) // allow typing ISO
+                    || (emp.dateOfBirth || '').includes(s);
                 if (!any) return false;
             }
             return true;

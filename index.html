@@ -9,6 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles/global-variables.css" />
+    <script>
+      (function () {
+        try {
+          if (location.hostname === 'localhost') {
+            var link = document.querySelector('link[href$="global-variables.css"]');
+            if (link) {
+              var base = link.getAttribute('href').split('?')[0];
+              link.setAttribute('href', base + '?v=' + Date.now());
+            }
+          }
+        } catch (_) { /* ignore */ }
+      })();
+    </script>
     <style>
       body { margin: 0; }
     </style>
