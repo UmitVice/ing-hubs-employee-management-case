@@ -5,6 +5,7 @@
 .navbar {
     background-color: var(--color-surface);
     box-shadow: var(--shadow-subtle);
+    min-height: var(--navbar-min-height);
 }
 
 .navbar-inner {
@@ -27,8 +28,10 @@
 }
 
 .logo {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: var(--size-logo-width);
+    height: var(--size-logo-height);
+    display: block;
+    object-fit: contain; /* prevent intrinsic size jump before image load */
 }
 
 .brand-text { color: var(--color-text-dark); font-weight: normal; line-height: 2; display: inline-flex; align-items: center; }
@@ -46,6 +49,7 @@
 .link { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); }
 
 .text-button { background: none; border: none; cursor: pointer; color: var(--color-primary); padding: var(--spacing-xs) var(--spacing-s); border-radius: var(--border-radius-base); display: inline-flex; align-items: center; }
+.text-button { min-width: var(--nav-text-btn-min-width); justify-content: center; }
 .text-button:hover { opacity: 0.85; }
 .plus { margin-right: var(--spacing-xs); font-size: var(--size-icon-lg); line-height: 1; }
 

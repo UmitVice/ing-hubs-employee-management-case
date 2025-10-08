@@ -17,9 +17,10 @@ button.active {
     opacity: 1;
 }
 .flag-icon {
-    width: 1.5rem;
-    height: 1.0rem;
+    width: var(--size-flag-icon-width);
+    height: var(--size-flag-icon-height);
     display: block;
+    object-fit: cover; /* avoid intrinsic ratio jump on first paint */
 }
 
 

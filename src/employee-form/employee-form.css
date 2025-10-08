@@ -15,12 +15,14 @@ form {
     margin-top: 0;
     margin-bottom: var(--spacing-xl);
 }
-label { font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-muted); letter-spacing: 0.2px; }
+label { font-weight: var(--font-weight-regular); font-size: var(--font-size-xs); color: var(--color-text-muted); letter-spacing: 0.2px; }
+label::after { content: ':'; }
 input, select {
     padding: var(--spacing-s);
     border: var(--border-width-thin) solid var(--color-border);
     border-radius: var(--border-radius-base);
     font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
 }
 input[type="date"] {
     position: relative;
@@ -30,6 +32,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(48%) sepia(99%) saturate(1652%) hue-rotate(358deg) brightness(100%) contrast(102%);
 }
 .actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-m); margin-top: var(--spacing-l); justify-content: center; }
+.actions app-button::part(button) { min-width: var(--btn-min-width-lg); }
 .error-text { color: var(--color-error); font-size: var(--font-size-small); }
 
 @media (max-width: 768px) {

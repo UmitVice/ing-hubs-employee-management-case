@@ -1,8 +1,10 @@
  /* styles/global-variables.css*/
 
+/* Ensure valid root selector for design tokens */
 :root {
    --color-primary: #FF6200;       /* Primary Color */
    --color-text-dark: #333333;     /* Main Text Color */
+   --color-text-strong: #000000;
    --color-background-light: #F8F8F8;
    --color-error: #E30A17;
   --color-border: #A8A8A8;
@@ -20,6 +22,9 @@
   --font-size-small: 0.75rem;
   --font-size-xs: 0.75rem;        /* labels/captions at body size */
   --font-size-2xs: 0.6875rem;     /* Extra small labels (11px) */
+   --font-weight-regular: 400;
+   --font-weight-medium: 500;
+   --font-weight-semibold: 600;
 
     /* --- Spacing System (8px grid, REM units enforced) --- */
     --spacing-xs: 0.25rem;          /* 4px */
@@ -56,10 +61,20 @@
    --size-icon-lg: 1.5rem;         /* 24px icon */
    --size-action-btn: 2rem;        /* 32px square touch target */
     --pagination-item-size: 2rem;   /* 32px circle buttons */
+   --btn-min-width-lg: 10rem;      /* wide buttons for primary actions */
+  --nav-text-btn-min-width: 8rem; /* stable width for navbar text buttons */
    /* View toggle icons (from design assets) */
    --size-toggle-list-icon-width: 1.75rem;   /* 28px */
    --size-toggle-list-icon-height: 1.25rem;  /* 20px */
    --size-toggle-grid-icon: 1.5rem;          /* 24px */
+  /* Language flag icon size */
+  --size-flag-icon-width: 1.5rem;   /* 24px */
+  --size-flag-icon-height: 1rem;    /* 16px */
+  /* Brand logo size */
+  --size-logo-width: 1.25rem;       /* 20px */
+  --size-logo-height: 1.25rem;      /* 20px */
+  /* Navbar layout */
+  --navbar-min-height: calc(var(--size-logo-height) + (var(--spacing-s) * 2));
    --card-min-height: 18rem;
    --cards-visible-rows: 2;
    --form-container-min-height: 30rem; 

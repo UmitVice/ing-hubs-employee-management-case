@@ -40,7 +40,7 @@ page-container.no-container-style::part(content) {
     overflow: hidden;
 }
 .data-table th, .data-table td {
-    padding: var(--spacing-s) var(--spacing-m);
+    padding: 7px;
     border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
     text-align: left;
     font-size: var(--font-size-base);
@@ -56,6 +56,7 @@ page-container.no-container-style::part(content) {
 }
 
 .data-table thead th { color: var(--color-primary) !important; }
+.data-table thead tr:first-child th { border-bottom: none; }
 .filters-row th { background: var(--color-surface); padding: var(--spacing-xs) var(--spacing-s); }
 .col-filter { width: 100%; display: block; }
 .actions-cell .action-btn { padding: 0; width: var(--size-action-btn); height: var(--size-action-btn); display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--border-radius-base); cursor: pointer; color: var(--color-primary); transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast); }
@@ -68,7 +69,7 @@ page-container.no-container-style::part(content) {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: var(--spacing-m) auto var(--spacing-none);
+    margin-top: -15px;
     gap: var(--spacing-m);
 }
 .pagination-controls .pager-btn,
@@ -99,7 +100,15 @@ page-container.no-container-style::part(content) {
 .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-xl); }
 .card h3 { margin: var(--spacing-none); }
 .meta { color: var(--color-text-dark); opacity: 0.8; font-size: var(--font-size-small); }
-.card .field-label { font-weight: 600; opacity: 0.8; color: var(--color-text-muted); font-size: var(--font-size-base); letter-spacing: 0.2px; }
+.card .field-label { font-weight: var(--font-weight-regular); opacity: 0.8; color: var(--color-text-muted); font-size: var(--font-size-base); letter-spacing: 0.2px; }
+.card .field-label::after { content: ':'; }
+/* Make values visually stronger than labels to match design */
+.card .field-label + div { font-weight: var(--font-weight-semibold); }
+/* Stronger value color for First/Last Name in cards */
+.card .card-grid > div:nth-child(1) .field-label + div,
+.card .card-grid > div:nth-child(2) .field-label + div {
+    color: var(--color-text-strong);
+}
 .card .actions {
     margin-top: var(--spacing-l);
     display: flex;
@@ -153,6 +162,11 @@ page-container.no-container-style::part(content) {
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
     padding-left: var(--spacing-s);
+}
+
+.data-table td:nth-child(2),
+.data-table td:nth-child(3) {
+    color: var(--color-text-strong);
 }
 
 /* Keep phone numbers on a single line */
