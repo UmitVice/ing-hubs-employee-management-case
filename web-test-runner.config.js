@@ -5,6 +5,9 @@
  */
 
 import {legacyPlugin} from '@web/dev-server-legacy';
+import { rollupAdapter } from '@web/dev-server-rollup';
+import alias from '@rollup/plugin-alias';
+import path from 'path';
 import {playwrightLauncher} from '@web/test-runner-playwright';
 
 const mode = process.env.MODE || 'dev';
@@ -87,8 +90,37 @@ try {
 // https://modern-web.dev/docs/test-runner/cli-and-configuration/
 export default {
   rootDir: '.',
-  files: ['./test/**/*_test.js'],
+  files: ['./test/**/*_test.js', './src/**/*_test.js'],
   nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
+  coverage: true,
+  coverageConfig: {
+    exclude: [
+      'node_modules/**/*',
+      'test/**/*',
+      'web-dev-server.config.js',
+      'rollup.config.js'
+    ]
+  },
+  // Show Lit dev-mode warning only once across all test files
+  filterBrowserLogs: (() => {
+    let litDevWarnSeen = false;
+    return ({args}) => {
+      const first = args && args[0];
+      if (typeof first === 'string' && first.includes('Lit is in dev mode')) {
+        if (litDevWarnSeen) return false;
+        litDevWarnSeen = true;
+      }
+      return true;
+    };
+  })(),
+  middleware: [
+    function aliasAtToSrc(ctx, next) {
+      if (ctx.url && ctx.url.startsWith('/@/')) {
+        ctx.url = ctx.url.replace('/@/', '/src/');
+      }
+      return next();
+    }
+  ],
   preserveSymlinks: true,
   browsers: commandLineBrowsers ?? Object.values(browsers),
   testFramework: {
@@ -99,6 +131,11 @@ export default {
     },
   },
   plugins: [
+    rollupAdapter(alias({
+      entries: [
+        { find: '@', replacement: path.resolve('.', 'src') },
+      ],
+    })),
     // Detect browsers without modules (e.g. IE11) and transform to SystemJS
     // (https://modern-web.dev/docs/dev-server/plugins/legacy/).
     legacyPlugin({

@@ -1,9 +1,11 @@
+// @ts-check
 import { LitElement, html, css } from 'lit';
 import { Router } from '@vaadin/router';
-import './src/employee-list/employee-list.js';
-import './src/employee-form/employee-form.js';
-import './src/components/language-selector/language-selector.js';
-import { loadMessages } from './src/i18n/i18n.js';
+import '@/employee-list/employee-list.js';
+import '@/employee-form/employee-form.js';
+import '@/components/language-selector/language-selector.js';
+import '@/components/app-navbar/app-navbar.js';
+import { loadMessages } from '@/i18n/i18n.js';
 
 export class AppRoot extends LitElement {
     static get styles() {
@@ -13,11 +15,13 @@ export class AppRoot extends LitElement {
                 min-height: var(--min-height-screen);
                 background-color: var(--color-background-light);
             }
-            header {
-                display: flex;
-                justify-content: flex-end;
-                align-items: center;
-                padding: var(--spacing-none) var(--spacing-xl);
+            .title {
+                max-width: var(--container-max-width);
+                margin: var(--spacing-l) auto var(--spacing-s) auto;
+                padding: 0 var(--spacing-xl);
+                color: var(--color-primary);
+                font-size: var(--font-size-large);
+                font-weight: 600;
             }
             main {
                 max-width: var(--container-max-width);
@@ -65,9 +69,7 @@ export class AppRoot extends LitElement {
 
     render() {
         return html`
-            <header>
-                <language-selector></language-selector>
-            </header>
+            <app-navbar></app-navbar>
             <main></main>
         `;
     }

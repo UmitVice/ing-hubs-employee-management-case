@@ -17,8 +17,8 @@ button.active {
     opacity: 1;
 }
 .flag-icon {
-    width: 2.0rem;
-    height: 1.5rem;
+    width: 1.5rem;
+    height: 1.0rem;
     display: block;
 }
 

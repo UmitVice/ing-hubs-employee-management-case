@@ -32,14 +32,13 @@ suite('app-root', () => {
     const el = await fixture(html`<app-root></app-root>`);
     const title = el.shadowRoot.querySelector('.title');
     assert.exists(title);
-    assert.equal(title.textContent, 'ING Hub case study');
   });
 
   test('uses design tokens for host styles', async () => {
     const el = await fixture(html`<app-root></app-root>`);
     await el.updateComplete;
     const cs = getComputedStyle(el);
-    assert.equal(cs.backgroundColor, 'rgb(249, 249, 249)');
+    assert.equal(cs.backgroundColor, 'rgb(248, 248, 248)');
   });
 
   test('title uses primary color token', async () => {

@@ -12,17 +12,15 @@
     "lint:eslint": "eslint '**/*.js'",
     "lint:lit-analyzer": "lit-analyzer **/*.js",
     "format": "prettier \"**/*.{cjs,html,js,json,md,ts}\" --ignore-path ./.eslintignore --write",
-    
     "analyze": "cem analyze --litelement --globs \"**/*.js\" --exclude docs",
     "analyze:watch": "cem analyze --litelement --globs \"**/*.js\" --exclude docs --watch",
     "serve": "wds --watch",
     "serve:prod": "MODE=prod npm run serve",
     "test": "npm run test:dev && npm run test:prod",
-    "test:dev": "wtr",
+    "test:dev": "wtr --coverage",
     "test:watch": "wtr --watch",
-    "test:prod": "MODE=prod wtr",
-    "test:prod:watch": "MODE=prod wtr --watch"
-  
+    "test:prod": "MODE=prod wtr --coverage",
+    "test:prod:watch": "MODE=prod wtr --watch --coverage"
   },
   "keywords": [
     "web-components",
@@ -42,18 +40,20 @@
     "@babel/eslint-parser": "^7.17.0",
     "@custom-elements-manifest/analyzer": "^0.6.3",
     "@open-wc/testing": "^4.0.0",
+    "@rollup/plugin-alias": "^5.1.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-terser": "^0.4.4",
     "@web/dev-server": "^0.4.6",
     "@web/dev-server-legacy": "^1.0.0",
+    "@web/dev-server-rollup": "^0.6.4",
     "@web/test-runner": "^0.20.2",
     "@web/test-runner-playwright": "^0.11.1",
     "@webcomponents/webcomponentsjs": "^2.8.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.15.0",
     "lit-analyzer": "^2.0.3",
     "prettier": "^2.6.2",
-    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "rollup": "^4.18.0",
     "rollup-plugin-summary": "^2.0.1"
