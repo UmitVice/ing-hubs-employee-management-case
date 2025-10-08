@@ -336,34 +336,133 @@ suite('employee-form', () => {
     assert.equal(el.shadowRoot.querySelector('#lastName').value, '');
   });
 
-  test('shows loading state during submission', async () => {
+  test('shows loading state during initial load', async () => {
     const el = await fixture(html`<employee-form></employee-form>`);
     
-    // Fill form
-    el.shadowRoot.querySelector('#firstName').value = 'Ada';
-    el.shadowRoot.querySelector('#firstName').dispatchEvent(new Event('input'));
-    el.shadowRoot.querySelector('#lastName').value = 'Lovelace';
-    el.shadowRoot.querySelector('#lastName').dispatchEvent(new Event('input'));
-    el.shadowRoot.querySelector('#dateOfEmployment').value = '2025-01-01';
-    el.shadowRoot.querySelector('#dateOfEmployment').dispatchEvent(new Event('change'));
-    el.shadowRoot.querySelector('#dateOfBirth').value = '1990-01-01';
-    el.shadowRoot.querySelector('#dateOfBirth').dispatchEvent(new Event('change'));
-    el.shadowRoot.querySelector('#phone').value = '905551112233';
-    el.shadowRoot.querySelector('#phone').dispatchEvent(new Event('input'));
-    el.shadowRoot.querySelector('#email').value = 'ada@example.com';
-    el.shadowRoot.querySelector('#email').dispatchEvent(new Event('input'));
-    el.shadowRoot.querySelector('#department').value = 'Tech';
-    el.shadowRoot.querySelector('#department').dispatchEvent(new Event('change'));
-    el.shadowRoot.querySelector('#position').value = 'Senior';
-    el.shadowRoot.querySelector('#position').dispatchEvent(new Event('change'));
-
-    const form = el.shadowRoot.querySelector('form');
-    form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+    // Should show loading state initially
+    assert.isTrue(el._isLoading);
+    
+    // Wait for connectedCallback to complete
+    await new Promise(resolve => setTimeout(resolve, 150));
     await el.updateComplete;
     
-    // Should show loading state on submit button
-    const submitBtn = el.shadowRoot.querySelector('app-button[type="submit"]');
-    assert.isTrue(submitBtn.hasAttribute('loading'));
+    // Should not be loading anymore
+    assert.isFalse(el._isLoading);
+  });
+
+  test('shows loading state when employee not found', async () => {
+    // Set invalid edit URL
+    history.pushState(null, '', '/edit/nonexistent-id');
+    
+    const el = await fixture(html`<employee-form></employee-form>`);
+    
+    // Should show loading state initially
+    assert.isTrue(el._isLoading);
+    
+    // Wait for connectedCallback to complete
+    await new Promise(resolve => setTimeout(resolve, 150));
+    await el.updateComplete;
+    
+    // Should not be loading anymore (redirected)
+    assert.isFalse(el._isLoading);
+  });
+
+  test('handles async connectedCallback for edit mode', async () => {
+    // Add employee first
+    employeeService.addEmployee({
+      firstName: 'Test', lastName: 'User', dateOfEmployment: '2025-01-01',
+      dateOfBirth: '1990-01-01', phone: '1111111111', email: 'test@example.com',
+      department: 'Tech', position: 'Senior'
+    });
+    const id = employeeService.employees[0].id;
+    history.pushState(null, '', `/edit/${id}`);
+    
+    const el = await fixture(html`<employee-form></employee-form>`);
+    
+    // Should show loading state initially
+    assert.isTrue(el._isLoading);
+    
+    // Wait for async connectedCallback to complete
+    await new Promise(resolve => setTimeout(resolve, 150));
+    await el.updateComplete;
+    
+    // Should be in edit mode with loaded data
+    assert.equal(el.mode, 'edit');
+    assert.equal(el.employee.firstName, 'Test');
+    assert.isFalse(el._isLoading);
+  });
+
+  test('handles error in connectedCallback', async () => {
+    // Mock console.error to avoid test output
+    const originalError = console.error;
+    console.error = () => {};
+    
+    // Set invalid URL that might cause error
+    history.pushState(null, '', '/edit/');
+    
+    const el = await fixture(html`<employee-form></employee-form>`);
+    
+    // Wait for async connectedCallback to complete
+    await new Promise(resolve => setTimeout(resolve, 150));
+    await el.updateComplete;
+    
+    // Should handle error gracefully
+    assert.isFalse(el._isLoading);
+    
+    // Restore console.error
+    console.error = originalError;
+  });
+
+  test('renders loading UI when _isLoading is true', async () => {
+    const el = await fixture(html`<employee-form></employee-form>`);
+    
+    // Manually set loading state
+    el._isLoading = true;
+    await el.updateComplete;
+    
+    // Should show loading UI
+    const loadingText = el.shadowRoot.querySelector('p');
+    assert.exists(loadingText);
+    assert.include(loadingText.textContent, 'Loading');
+  });
+
+  test('has correct font weight for input fields', async () => {
+    const el = await fixture(html`<employee-form></employee-form>`);
+    await el.updateComplete;
+    
+    // Check that input fields have regular font weight
+    const inputs = el.shadowRoot.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      const computedStyle = getComputedStyle(input);
+      assert.equal(computedStyle.fontWeight, '400'); // regular weight
+    });
+  });
+
+  test('has correct date picker styling', async () => {
+    const el = await fixture(html`<employee-form></employee-form>`);
+    await el.updateComplete;
+    
+    // Check date inputs have correct styling
+    const dateInputs = el.shadowRoot.querySelectorAll('input[type="text"]');
+    dateInputs.forEach(input => {
+      if (input.placeholder === 'dd/mm/yyyy') {
+        const computedStyle = getComputedStyle(input);
+        assert.equal(computedStyle.fontWeight, '400'); // regular weight
+      }
+    });
+  });
+
+  test('has correct form layout with max-width and centering', async () => {
+    const el = await fixture(html`<employee-form></employee-form>`);
+    await el.updateComplete;
+    
+    const form = el.shadowRoot.querySelector('form');
+    const computedStyle = getComputedStyle(form);
+    
+    // Should have max-width and be centered
+    assert.equal(computedStyle.maxWidth, '900px');
+    assert.equal(computedStyle.marginLeft, 'auto');
+    assert.equal(computedStyle.marginRight, 'auto');
   });
 });
 

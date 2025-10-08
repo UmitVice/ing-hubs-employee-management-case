@@ -17,7 +17,8 @@ export class EmployeeForm extends LitElement {
         employee: { type: Object },
         mode: { type: String },
         errors: { type: Object },
-        _countryCodeLength: { type: Number, state: true }
+        _countryCodeLength: { type: Number, state: true },
+        _isLoading: { type: Boolean, state: true }
     };
 
     async firstUpdated() {
@@ -39,20 +40,44 @@ export class EmployeeForm extends LitElement {
         this.EMAIL_MAX = 254;
         this.PHONE_MAX = 10;
         this._countryCodeLength = 0;
+        this._isLoading = false;
     }
 
     async connectedCallback() {
         super.connectedCallback();
         this._onLanguageChanged = () => this.requestUpdate();
         document.addEventListener('language-changed', this._onLanguageChanged);
-        const path = stripBase(window.location.pathname);
-        if (path.startsWith('/edit/')) {
-            const id = decodeURIComponent(path.split('/').pop() || '');
-            const existing = employeeService.getEmployeeById(id);
-            if (existing) {
-                this.mode = 'edit';
-                this.employee = { ...existing };
+        
+        // Add loading state
+        this._isLoading = true;
+        this.requestUpdate();
+        
+        try {
+            const path = stripBase(window.location.pathname);
+            if (path.startsWith('/edit/')) {
+                const id = decodeURIComponent(path.split('/').pop() || '');
+                
+                // Wait a bit for employeeService to be ready
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                const existing = employeeService.getEmployeeById(id);
+                if (existing) {
+                    this.mode = 'edit';
+                    this.employee = { ...existing };
+                } else {
+                    // Employee not found, redirect to home page
+                    console.warn(`Employee with ID ${id} not found, redirecting to home`);
+                    Router.go(withBase('/'));
+                    return;
+                }
             }
+        } catch (error) {
+            console.error('Error loading employee data:', error);
+            Router.go(withBase('/'));
+            return;
+        } finally {
+            this._isLoading = false;
+            this.requestUpdate();
         }
     }
 
@@ -242,6 +267,16 @@ export class EmployeeForm extends LitElement {
     }
 
     render() {
+        if (this._isLoading) {
+            return html`
+                <page-container title="${this.t('loading')}">
+                    <div style="text-align: center; padding: 2rem;">
+                        <p>${this.t('loading')}...</p>
+                    </div>
+                </page-container>
+            `;
+        }
+
         const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
 
         return html`

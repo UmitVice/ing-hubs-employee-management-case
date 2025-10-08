@@ -39,5 +39,6 @@
     "page": "Sayfa",
     "of": " / ",
     "searchPlaceholder": "İsim veya e-posta ile ara",
-    "editingUserLabel": "{0} adlı çalışanı düzenliyorsunuz"
+    "editingUserLabel": "{0} adlı çalışanı düzenliyorsunuz",
+    "loading": "Yükleniyor"
 }

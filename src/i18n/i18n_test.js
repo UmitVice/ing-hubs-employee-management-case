@@ -279,6 +279,34 @@ suite('i18n', () => {
       document.documentElement.lang = old;
     }
   });
+
+  test('loads new loading translation in English', async () => {
+    const old = document.documentElement.lang;
+    document.documentElement.lang = 'en';
+    
+    await loadMessages();
+    
+    const loadingMsg = t('loading');
+    assert.isString(loadingMsg);
+    assert.notMatch(loadingMsg, /MISSING_KEY/);
+    assert.equal(loadingMsg, 'Loading');
+    
+    document.documentElement.lang = old;
+  });
+
+  test('loads new loading translation in Turkish', async () => {
+    const old = document.documentElement.lang;
+    document.documentElement.lang = 'tr';
+    
+    await loadMessages();
+    
+    const loadingMsg = t('loading');
+    assert.isString(loadingMsg);
+    assert.notMatch(loadingMsg, /MISSING_KEY/);
+    assert.equal(loadingMsg, 'Yükleniyor');
+    
+    document.documentElement.lang = old;
+  });
 });
 
 
