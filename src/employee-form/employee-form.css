@@ -12,10 +12,7 @@ form {
     flex-direction: column;
     gap: var(--spacing-xs);
 }
-.date-field .date-input-wrapper { position: relative; }
-.date-field .date-input-wrapper input { padding-right: calc(var(--spacing-m) + var(--size-icon-md) + var(--spacing-s)); }
-.date-field .date-icon { position: absolute; right: var(--spacing-s); top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--color-primary); cursor: pointer; width: var(--size-action-btn); height: var(--size-action-btn); display: inline-flex; align-items: center; justify-content: center; }
-.date-field .date-icon svg { width: var(--size-icon-md); height: var(--size-icon-md); display: block; }
+/* Date inputs use native picker with orange indicator */
 .subtitle {
     text-align: left;
     color: var(--color-text-dark);
@@ -32,8 +29,10 @@ input, select {
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-regular);
 }
-/* Date picker icon is custom button; hide native when present */
-input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(48%) sepia(99%) saturate(1652%) hue-rotate(358deg) brightness(100%) contrast(102%);
+}
 .actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-m); margin-top: var(--spacing-l); justify-content: center; }
 .actions app-button::part(button) { min-width: var(--btn-min-width-lg); }
 .error-text { color: var(--color-error); font-size: var(--font-size-small); }
