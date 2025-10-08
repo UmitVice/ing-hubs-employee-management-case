@@ -26,6 +26,19 @@ suite('employee-list', () => {
     assert.isAtLeast(cards.length, 1);
   });
 
+  test('filters with per-column inputs', async () => {
+    const el = await fixture(html`<employee-list></employee-list>`);
+    await el.updateComplete;
+    const firstNameFilter = el.shadowRoot.querySelectorAll('.filters-row .col-filter')[0];
+    firstNameFilter.value = 'Ada';
+    firstNameFilter.dispatchEvent(new Event('input'));
+    await el.updateComplete;
+    const rows = el.shadowRoot.querySelectorAll('tbody tr');
+    assert.equal(rows.length, 1);
+    const firstNameCell = rows[0].querySelectorAll('td')[1];
+    assert.equal(firstNameCell.textContent.trim(), 'Ada');
+  });
+
   test('delete button removes a record after confirm dialog', async () => {
     const el = await fixture(html`<employee-list></employee-list>`);
     await el.updateComplete;

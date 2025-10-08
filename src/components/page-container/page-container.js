@@ -22,6 +22,9 @@ export class PageContainer extends LitElement {
                 <div class="title-section" part="title">
                     ${this.title ? html`<h2 class="page-title">${this.title}</h2>` : html`<slot name="title"></slot>`}
                 </div>
+                <div class="toolbar-section" part="toolbar">
+                    <slot name="toolbar"></slot>
+                </div>
                 <div class="page-content" part="content">
                     <slot></slot>
                 </div>

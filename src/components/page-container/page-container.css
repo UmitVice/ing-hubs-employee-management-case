@@ -5,13 +5,13 @@
 
 .page-wrapper {
     max-width: var(--container-max-width);
-    margin: var(--spacing-none) auto;
+    margin: var(--spacing-l) auto;
     padding: var(--spacing-none);
 }
 
-.title-section {
-    margin-bottom: var(--spacing-xs);
-}
+.title-section { margin: var(--spacing-l) 0 var(--spacing-m) 0; padding-left: var(--spacing-l); padding-right: var(--spacing-l); }
+
+.toolbar-section { padding-left: var(--spacing-l); padding-right: var(--spacing-l); margin-bottom: var(--spacing-m); }
 
 .page-title {
     color: var(--color-primary);
@@ -26,6 +26,7 @@
     border-radius: var(--border-radius-base);
     box-shadow: var(--shadow-subtle);
     padding: var(--spacing-l);
-    height: 550px;
+    min-height: var(--form-container-min-height);
+    margin-bottom: var(--spacing-xl);
 }
 

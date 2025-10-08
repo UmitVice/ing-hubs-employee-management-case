@@ -6,14 +6,16 @@
 .list-view-wrapper[data-view="cards"] .data-table { display: none !important; }
 .list-view-wrapper[data-view="cards"] .cards-grid { display: grid !important; }
 
-/* Card view: remove white container background */
 page-container.no-container-style::part(content) {
     background: none;
     box-shadow: none;
-    padding: 0;
+    padding: var(--spacing-l);
 }
 .header-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
 .page-title { color: var(--color-primary); font-size: var(--font-size-large); font-weight: 600; margin: var(--spacing-none); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); }
+.search { flex: 1; display: flex; }
+.search input { width: 100%; padding: var(--spacing-s) var(--spacing-m); border: var(--border-width-thin) solid var(--color-border); border-radius: var(--border-radius-base); font-size: var(--font-size-base); }
 .view-toggles { display: inline-flex; gap: var(--spacing-s); align-items: center; }
 .icon-btn { background: transparent; border: none; padding: var(--spacing-xs); border-radius: var(--border-radius-base); cursor: pointer; transition: background-color var(--transition-speed-fast), opacity var(--transition-speed-fast); }
 .icon-btn.active { background: transparent; }
@@ -47,8 +49,11 @@ page-container.no-container-style::part(content) {
     font-weight: bold;
     text-transform: none;
 }
-/* Ensure header text color is ING orange in all cases */
+
 .data-table thead th { color: var(--color-primary) !important; }
+.filters-row th { background: var(--color-surface); }
+.col-filter { width: 100%; padding: var(--spacing-xs) var(--spacing-s); border: var(--border-width-thin) solid var(--color-border); border-radius: var(--border-radius-base); font-size: var(--font-size-base); }
+.col-filter[type="date"] { padding: var(--spacing-xs); }
 .actions-cell .action-btn { padding: 0; width: var(--size-action-btn); height: var(--size-action-btn); display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--border-radius-base); cursor: pointer; color: var(--color-primary); transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast); }
 .actions-cell .action-btn:hover { background-color: var(--color-background-light); }
 .actions-cell .action-btn svg { width: var(--size-icon-md); height: var(--size-icon-md); display: block; }

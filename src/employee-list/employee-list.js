@@ -14,7 +14,8 @@ export class EmployeeList extends LitElement {
         page: { type: Number },
         pageSize: { type: Number },
         searchTerm: { type: String },
-        viewFormat: { type: String }
+        viewFormat: { type: String },
+        filters: { type: Object }
     };
 
     async firstUpdated() {
@@ -35,6 +36,16 @@ export class EmployeeList extends LitElement {
         this.pageSize = 10;
         this.searchTerm = '';
         this.viewFormat = 'table';
+        this.filters = {
+            firstName: '',
+            lastName: '',
+            dateOfEmployment: '',
+            dateOfBirth: '',
+            phone: '',
+            email: '',
+            department: '',
+            position: ''
+        };
 
         this._employeeDataChanged = this._employeeDataChanged.bind(this);
         this._onLanguageChanged = () => this.requestUpdate();
@@ -91,6 +102,11 @@ export class EmployeeList extends LitElement {
         this.searchTerm = e.target.value;
         this.page = 1;
     }
+
+    _updateFilter(field, value) {
+        this.filters = { ...this.filters, [field]: value };
+        this.page = 1;
+    }
     
     _handlePageChange(newPage) {
         const effectivePageSize = this.viewFormat === 'cards' ? 4 : this.pageSize;
@@ -101,18 +117,24 @@ export class EmployeeList extends LitElement {
     }
 
     _getCurrentPageEmployees() {
-        const lowerCaseSearch = this.searchTerm.toLowerCase();
-        
+        const f = this.filters;
         const filteredEmployees = this.employees.filter(emp => {
-            const firstName = emp.firstName?.toLowerCase() || '';
-            const lastName = emp.lastName?.toLowerCase() || '';
-            const email = emp.email?.toLowerCase() || '';
-            
-            return (
-                firstName.includes(lowerCaseSearch) ||
-                lastName.includes(lowerCaseSearch) ||
-                email.includes(lowerCaseSearch)
-            );
+            if (f.firstName && !(emp.firstName || '').toLowerCase().includes(f.firstName.toLowerCase())) return false;
+            if (f.lastName && !(emp.lastName || '').toLowerCase().includes(f.lastName.toLowerCase())) return false;
+            if (f.email && !(emp.email || '').toLowerCase().includes(f.email.toLowerCase())) return false;
+            if (f.department && !(emp.department || '').toLowerCase().includes(f.department.toLowerCase())) return false;
+            if (f.position && !(emp.position || '').toLowerCase().includes(f.position.toLowerCase())) return false;
+            if (f.phone && !(emp.phone || '').toString().includes(f.phone.toString())) return false;
+            if (f.dateOfEmployment && (emp.dateOfEmployment || '') !== f.dateOfEmployment) return false;
+            if (f.dateOfBirth && (emp.dateOfBirth || '') !== f.dateOfBirth) return false;
+            // If a global quick search term exists, apply it in addition
+            if (this.searchTerm) {
+                const s = this.searchTerm.toLowerCase();
+                const any = ['firstName','lastName','email','department','position']
+                    .some(k => (emp[k] || '').toLowerCase().includes(s));
+                if (!any) return false;
+            }
+            return true;
         });
         
         // Pagination logic (dynamic pageSize: 4 in cards view)
@@ -184,6 +206,48 @@ export class EmployeeList extends LitElement {
                                 <th>${this.t('department')}</th>
                                 <th>${this.t('position')}</th>
                                 <th>${this.t('actions')}</th>
+                            </tr>
+                            <tr class="filters-row">
+                                <th></th>
+                                <th>
+                                    <input type="text" class="col-filter" .value=${this.filters.firstName}
+                                        @input=${(e) => this._updateFilter('firstName', e.target.value)}
+                                        placeholder="${this.t('firstName')}" />
+                                </th>
+                                <th>
+                                    <input type="text" class="col-filter" .value=${this.filters.lastName}
+                                        @input=${(e) => this._updateFilter('lastName', e.target.value)}
+                                        placeholder="${this.t('lastName')}" />
+                                </th>
+                                <th>
+                                    <input type="date" class="col-filter" .value=${this.filters.dateOfEmployment}
+                                        @input=${(e) => this._updateFilter('dateOfEmployment', e.target.value)} />
+                                </th>
+                                <th>
+                                    <input type="date" class="col-filter" .value=${this.filters.dateOfBirth}
+                                        @input=${(e) => this._updateFilter('dateOfBirth', e.target.value)} />
+                                </th>
+                                <th>
+                                    <input type="text" class="col-filter" .value=${this.filters.phone}
+                                        @input=${(e) => this._updateFilter('phone', e.target.value)}
+                                        placeholder="${this.t('phoneNumber')}" />
+                                </th>
+                                <th>
+                                    <input type="text" class="col-filter" .value=${this.filters.email}
+                                        @input=${(e) => this._updateFilter('email', e.target.value)}
+                                        placeholder="${this.t('email')}" />
+                                </th>
+                                <th>
+                                    <input type="text" class="col-filter" .value=${this.filters.department}
+                                        @input=${(e) => this._updateFilter('department', e.target.value)}
+                                        placeholder="${this.t('department')}" />
+                                </th>
+                                <th>
+                                    <input type="text" class="col-filter" .value=${this.filters.position}
+                                        @input=${(e) => this._updateFilter('position', e.target.value)}
+                                        placeholder="${this.t('position')}" />
+                                </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
