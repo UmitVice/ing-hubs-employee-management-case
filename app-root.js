@@ -37,29 +37,21 @@ export class AppRoot extends LitElement {
         await loadMessages();
         const outlet = this.shadowRoot.querySelector('main');
         
-        const router = new Router(outlet);
+        const router = new Router(outlet, {baseUrl: '/ing-hubs-employee-management-case/'});
         router.setRoutes([
-          {
-            path: '/ing-hubs-employee-management-case',
-            children: [
-                { path: '/', component: 'employee-list' },
-                { path: '/add', component: 'employee-form' },
-                { path: '/edit/:id', component: 'employee-form' },
-                {
-                    path: '(.*)',
-                    component: 'app-not-found',
-                    action: async () => {
-                        if (!customElements.get('app-not-found')) {
-                            class AppNotFound extends LitElement {
-                                render() { return html`<h1>404 | Not Found</h1>`; }
-                            }
-                            customElements.define('app-not-found', AppNotFound);
-                        }
-                    }
-                }
-            ]
-          },
-          {
+            {
+                path: '/',
+                component: 'employee-list'
+            },
+            {
+                path: '/add',
+                component: 'employee-form'
+            },
+            {
+                path: '/edit/:id',
+                component: 'employee-form'
+            },
+            {
                 path: '(.*)',
                 component: 'app-not-found',
                 action: async () => {
@@ -70,7 +62,7 @@ export class AppRoot extends LitElement {
                         customElements.define('app-not-found', AppNotFound);
                     }
                 }
-          }
+            }
         ]);
    
         this.style.visibility = 'visible';
