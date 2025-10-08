@@ -23,6 +23,22 @@
     </script>
   </head>
   <body>
+    <script>
+      // Handle GitHub Pages 404 redirect back to SPA route
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var p = params.get('p');
+          if (p) {
+            var segments = window.location.pathname.split('/').filter(Boolean);
+            var base = segments.length > 0 ? '/' + segments[0] + '/' : '/';
+            var clean = p.charAt(0) === '/' ? p.slice(1) : p;
+            var newUrl = window.location.origin + base + clean;
+            window.history.replaceState(null, '', newUrl);
+          }
+        } catch (_) { /* ignore */ }
+      })();
+    </script>
     <script type="module" src="./app-root.js"></script>
     <app-root></app-root>
   </body>

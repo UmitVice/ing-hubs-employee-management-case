@@ -213,7 +213,7 @@ export class EmployeeForm extends LitElement {
         const dlg = /** @type {import('@/components/confirm-dialog/confirm-dialog.js').ConfirmDialog} */(this.shadowRoot.querySelector('confirm-dialog'));
         const title = this.mode === 'edit' ? this.t('editEmployee') : this.t('addNewEmployee');
         const message = this.mode === 'edit' ? this.t('confirmUpdate') : this.t('confirmCreate');
-        dlg.openWith({ title, message, confirmText: this.t('proceed'), cancelText: this.t('cancel') });
+        dlg.openWith({ title, message, confirmText: this.t('proceed'), cancelText: this.t('cancel'), variant: 'default' });
         const onConfirm = () => {
             if (this.mode === 'edit') {
                 employeeService.updateEmployee(this.employee);
@@ -304,7 +304,7 @@ export class EmployeeForm extends LitElement {
                     </div>
 
                     <div class="actions">
-                        <app-button variant="primary">${this.t('save')}</app-button>
+                        <app-button variant="primary" .type=${'submit'}>${this.t('save')}</app-button>
                         <app-button variant="secondary" @click=${this._handleCancel}>${this.t('cancel')}</app-button>
                     </div>
                 </form>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      (function () {
+        var l = window.location;
+        // Compute repo base from first path segment: /<repo>/
+        var segments = l.pathname.split('/').filter(Boolean);
+        var base = segments.length > 0 ? '/' + segments[0] + '/' : '/';
+        // Keep the subpath after the repo as original route
+        var subPath = '/' + segments.slice(1).join('/');
+        var target = base + '?p=' + encodeURIComponent(subPath + l.search + l.hash);
+        l.replace(target);
+      })();
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+  </html>
+
+
