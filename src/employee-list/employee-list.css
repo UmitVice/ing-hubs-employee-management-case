@@ -60,7 +60,7 @@ page-container.no-container-style::part(content) {
 .actions-cell .action-btn svg { width: var(--size-icon-md); height: var(--size-icon-md); display: block; }
 .actions-cell { white-space: nowrap; }
 .actions-cell .action-btn + .action-btn { margin-left: var(--spacing-s); }
-.actions-cell .action-btn.delete { color: var(--color-error); }
+.actions-cell .action-btn.delete { color: var(--color-primary); }
 .pagination-controls {
     display: flex;
     justify-content: center;
@@ -118,6 +118,9 @@ page-container.no-container-style::part(content) {
     background-color: var(--color-primary);
     color: var(--color-surface);
     border: none;
+}
+.card .actions app-button[variant="danger"] .btn-icon {
+    color: var(--color-surface);
 }
 .card .actions app-button[variant="secondary"]::part(button) {
     background-color: #4f4b8f;

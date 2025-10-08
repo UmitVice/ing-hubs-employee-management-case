@@ -31,7 +31,7 @@
     height: 1.25rem;
 }
 
-.brand-text { color: var(--color-text-dark); font-weight: bold; line-height: 2; display: inline-flex; align-items: center; }
+.brand-text { color: var(--color-text-dark); font-weight: normal; line-height: 2; display: inline-flex; align-items: center; }
 
 .spacer {
     flex: 1;

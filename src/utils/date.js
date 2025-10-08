@@ -11,7 +11,7 @@ export function formatDateToDDMMYYYY(isoDate) {
     try {
         const [year, month, day] = isoDate.split('-');
         if (!year || !month || !day) return '-';
-        return `${day}/${month}/${year}`;
+        return `${day}.${month}.${year}`;
     } catch (e) {
         return '-';
     }

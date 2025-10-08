@@ -1,6 +1,6 @@
 form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-m);
 }
 .field {
@@ -9,9 +9,10 @@ form {
     gap: var(--spacing-xs);
 }
 .subtitle {
-    text-align: center;
-    color: var(--color-text-muted);
-    margin-top: calc(var(--spacing-l) * -1);
+    text-align: left;
+    color: var(--color-text-dark);
+    font-weight: 600;
+    margin-top: 0;
     margin-bottom: var(--spacing-xl);
 }
 label { font-weight: 600; font-size: var(--font-size-xs); color: var(--color-text-muted); letter-spacing: 0.2px; }
@@ -20,6 +21,13 @@ input, select {
     border: var(--border-width-thin) solid var(--color-border);
     border-radius: var(--border-radius-base);
     font-size: var(--font-size-base);
+}
+input[type="date"] {
+    position: relative;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(48%) sepia(99%) saturate(1652%) hue-rotate(358deg) brightness(100%) contrast(102%);
 }
 .actions { grid-column: 1 / -1; display: flex; gap: var(--spacing-m); margin-top: var(--spacing-l); justify-content: center; }
 .error-text { color: var(--color-error); font-size: var(--font-size-small); }

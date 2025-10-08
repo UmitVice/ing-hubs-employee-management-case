@@ -15,8 +15,11 @@ if (!['dev', 'prod'].includes(mode)) {
 }
 
 export default {
+  nodeResolve: true,
   appIndex: 'index.html',
-  nodeResolve: {exportConditions: mode === 'dev' ? ['development'] : []},
+  mimeTypes: {
+    '**/*.css': 'js'
+  },
   middleware: [
     function aliasAtToSrc(ctx, next) {
       if (ctx.url && ctx.url.startsWith('/@/')) {
