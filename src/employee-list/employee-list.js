@@ -415,7 +415,6 @@ export class EmployeeList extends LitElement {
                           emp => html`
                             <div class="card">
                                 <div class="card-header">
-                                    <span class="employee-name">${emp.firstName} ${emp.lastName}</span>
                                 </div>
                                 <div class="card-grid">
                                     <div>
