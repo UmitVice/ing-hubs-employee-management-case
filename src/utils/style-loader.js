@@ -1,6 +1,26 @@
 const urlToSheetCache = new Map();
 const urlToTextCache = new Map();
 
+// Rewrite relative url(...) tokens inside CSS to absolute URLs based on the
+// stylesheet file location so assets resolve correctly under GitHub Pages
+// subpaths and when styles are injected via <style>.
+const URL_TOKEN = /url\(\s*(["']?)([^\)\"'\s]+)\1\s*\)/g;
+function rewriteRelativeUrls(cssText, baseHref) {
+    return String(cssText).replace(URL_TOKEN, (match, _q, urlPath) => {
+        const lower = urlPath.toLowerCase();
+        // Skip absolute/protocol, data, blob, fragment, or root-slash (already absolute to origin)
+        if (/^(?:[a-z]+:|data:|blob:|#|\/)/.test(lower)) {
+            return match;
+        }
+        try {
+            const abs = new URL(urlPath, baseHref).href;
+            return `url("${abs}")`;
+        } catch (_) {
+            return match;
+        }
+    });
+}
+
 async function loadStylesheet(url) {
     let href = url;
     // In dev, append a cache-busting query to ensure CSS changes are re-fetched on refresh
@@ -18,7 +38,8 @@ async function loadStylesheet(url) {
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
-        const cssText = await response.text();
+        let cssText = await response.text();
+        cssText = rewriteRelativeUrls(cssText, href);
         const sheet = new CSSStyleSheet();
         await sheet.replace(cssText);
         urlToSheetCache.set(href, sheet);
