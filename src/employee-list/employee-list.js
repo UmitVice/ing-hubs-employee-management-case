@@ -369,7 +369,7 @@ export class EmployeeList extends LitElement {
                             </tr>
                         </thead>
                         <tbody>
-                            ${currentEmployees.map(
+                            ${currentEmployees?.map(
                               emp => html`
                                 <tr>
                                     <td><input type="checkbox" aria-label="select" .checked=${this._selectedIds.has(emp.id)} @change=${(e) => this._toggleSelect(emp.id, e.target.checked)} /></td>
@@ -411,12 +411,9 @@ export class EmployeeList extends LitElement {
                     </table>
 
                     <div class="cards-grid ${this._currentView === 'cards' ? '' : 'hidden'}">
-                        ${currentEmployees.map(
+                        ${currentEmployees?.map(
                           emp => html`
                             <div class="card">
-                                <div class="card-header">
-                                    <span class="employee-name">${emp.firstName} ${emp.lastName}</span>
-                                </div>
                                 <div class="card-grid">
                                     <div>
                                         <div class="field-label">${this.t('firstName')}</div>
@@ -483,7 +480,7 @@ export class EmployeeList extends LitElement {
                 <button class="pager-btn prev" @click=${() => this._handlePageChange(this.page - 1)} ?disabled=${this.page === 1 || total === 0} aria-label="Previous page">
                     <img class="arrow" src="${assetUrl('icons/right_arrow.svg')}" alt="" />
                 </button>
-                ${pageItems.map(item => typeof item === 'number'
+                ${pageItems?.map(item => typeof item === 'number'
                     ? html`<button class="pager-num ${this.page === item ? 'active' : ''}" @click=${() => this._handlePageChange(item)} aria-label="Page ${item}">${item}</button>`
                     : html`<span class="ellipsis">…</span>`)}
                 <button class="pager-btn next" @click=${() => this._handlePageChange(this.page + 1)} ?disabled=${this.page === totalPages || total === 0} aria-label="Next page">
