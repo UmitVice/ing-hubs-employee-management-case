@@ -40,6 +40,16 @@ page-container.no-container-style::part(content) {
        so we can align bulk controls exactly with checkbox centers */
     --checkbox-col-width: 36px;
 }
+
+/* Hide scrollbar in table view */
+.list-view-wrapper[data-view="table"] .data-table {
+    overflow: hidden;
+}
+
+/* Hide scrollbar in page-container for table view */
+page-container.table-view::part(content) {
+    overflow: hidden;
+}
 .data-table th, .data-table td {
     padding: 7px;
     border-bottom: var(--border-width-thin) solid var(--color-border-subtle);
@@ -96,6 +106,17 @@ page-container.no-container-style::part(content) {
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+/* Center empty state in card view */
+.cards-grid .empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 20rem;
+    width: 100%;
 }
 
 /* Card view layout */

@@ -277,7 +277,7 @@ export class EmployeeList extends LitElement {
         const pageItems = this._buildPageList(totalPages);
         
         return html`
-            <page-container class="${this.viewFormat === 'cards' ? 'no-container-style' : ''}">
+            <page-container class="${this.viewFormat === 'cards' ? 'no-container-style' : ''} ${this.viewFormat === 'table' ? 'table-view' : ''}">
                 <div slot="title" class="header-row">
                     <h2 class="page-title">${this.t('employeeList')}</h2>
                     <div class="view-toggles">

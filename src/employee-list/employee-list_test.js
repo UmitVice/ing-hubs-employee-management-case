@@ -281,8 +281,8 @@ suite('employee-list', () => {
       department: 'Marketing', position: 'Manager'
     });
     
-    // Wait for event to be processed
-    await new Promise(resolve => setTimeout(resolve, 50));
+    // Wait for event to be processed - minimal timeout
+    await new Promise(resolve => setTimeout(resolve, 5));
     await el.updateComplete;
     
     // Should show new employee at the first row
@@ -299,6 +299,8 @@ suite('employee-list', () => {
     // Simulate mobile view
     Object.defineProperty(window, 'innerWidth', { value: 768, writable: true });
     window.dispatchEvent(new Event('resize'));
+    // Minimal wait time
+    await new Promise(resolve => setTimeout(resolve, 5));
     await el.updateComplete;
     
     // Should switch to cards view on mobile
